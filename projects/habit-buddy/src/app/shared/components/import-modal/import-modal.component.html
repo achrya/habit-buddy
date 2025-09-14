@@ -1,0 +1,87 @@
+<!-- Import Modal -->
+<div *ngIf="isOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+  <div class="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+    <!-- Header -->
+    <div class="p-6 border-b">
+      <h3 class="text-lg font-semibold text-gray-900">Import Habits</h3>
+      <p class="text-sm text-gray-600 mt-1">Duplicate habits found. How would you like to handle them?</p>
+    </div>
+
+    <!-- Content -->
+    <div class="p-6">
+      <!-- Duplicate List -->
+      <div class="mb-6">
+        <h4 class="text-sm font-medium text-gray-900 mb-2">Duplicate Habits:</h4>
+        <div class="bg-gray-50 rounded-md p-3 max-h-32 overflow-y-auto">
+          <ul class="text-sm text-gray-700 space-y-1">
+            <li *ngFor="let duplicate of duplicates" class="flex items-center">
+              <span class="w-2 h-2 bg-orange-400 rounded-full mr-2"></span>
+              {{ duplicate }}
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Action Options -->
+      <div class="space-y-3">
+        <h4 class="text-sm font-medium text-gray-900">Choose Action:</h4>
+        
+        <label class="flex items-start space-x-3 p-3 border rounded-md cursor-pointer hover:bg-gray-50" 
+               [class.bg-blue-50]="selectedAction === 'skip'" 
+               [class.border-blue-300]="selectedAction === 'skip'">
+          <input type="radio" 
+                 name="duplicateAction" 
+                 value="skip" 
+                 [(ngModel)]="selectedAction"
+                 class="mt-0.5">
+          <div>
+            <div class="text-sm font-medium text-gray-900">Skip Duplicates</div>
+            <div class="text-xs text-gray-500">Keep existing habits, ignore imported duplicates</div>
+          </div>
+        </label>
+
+        <label class="flex items-start space-x-3 p-3 border rounded-md cursor-pointer hover:bg-gray-50"
+               [class.bg-blue-50]="selectedAction === 'replace'" 
+               [class.border-blue-300]="selectedAction === 'replace'">
+          <input type="radio" 
+                 name="duplicateAction" 
+                 value="replace" 
+                 [(ngModel)]="selectedAction"
+                 class="mt-0.5">
+          <div>
+            <div class="text-sm font-medium text-gray-900">Replace Existing</div>
+            <div class="text-xs text-gray-500">Replace existing habits with imported versions</div>
+          </div>
+        </label>
+
+        <label class="flex items-start space-x-3 p-3 border rounded-md cursor-pointer hover:bg-gray-50"
+               [class.bg-blue-50]="selectedAction === 'keep-both'" 
+               [class.border-blue-300]="selectedAction === 'keep-both'">
+          <input type="radio" 
+                 name="duplicateAction" 
+                 value="keep-both" 
+                 [(ngModel)]="selectedAction"
+                 class="mt-0.5">
+          <div>
+            <div class="text-sm font-medium text-gray-900">Keep Both</div>
+            <div class="text-xs text-gray-500">Add imported habits as copies with "(Copy)" suffix</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="p-6 border-t bg-gray-50 flex justify-end space-x-3">
+      <button type="button" 
+              (click)="onClose()"
+              class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+        Cancel
+      </button>
+      <button type="button" 
+              (click)="onImport()"
+              class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+        Import
+      </button>
+    </div>
+  </div>
+</div>

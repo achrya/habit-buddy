@@ -1,0 +1,32 @@
+[
+  {
+    "id": "habit-3",
+    "title": "Morning Meditation",
+    "daysTarget": 30,
+    "categoryId": "30",
+    "color": "#10B981",
+    "createdAt": "2024-01-20",
+    "checkIns": {
+      "2024-01-20": "x1y2z3a4b5c6",
+      "2024-01-21": "y2z3a4b5c6d7"
+    },
+    "reminder": {
+      "time": "08:00",
+      "days": [1, 2, 3, 4, 5],
+      "window": 30
+    }
+  },
+  {
+    "id": "habit-4",
+    "title": "Exercise",
+    "daysTarget": 21,
+    "categoryId": "21",
+    "color": "#F59E0B",
+    "createdAt": "2024-01-18",
+    "checkIns": {
+      "2024-01-18": "m4n5o6p7q8r9",
+      "2024-01-19": "n5o6p7q8r9s0"
+    },
+    "reminder": null
+  }
+]

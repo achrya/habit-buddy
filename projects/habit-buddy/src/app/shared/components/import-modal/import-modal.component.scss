@@ -1,0 +1,33 @@
+// Import Modal Styles
+.import-modal {
+  backdrop-filter: blur(4px);
+}
+
+// Custom radio button styles
+input[type="radio"] {
+  accent-color: #3B82F6;
+}
+
+// Smooth transitions
+label {
+  transition: all 0.2s ease;
+}
+
+// Scrollbar styling for duplicate list
+.overflow-y-auto::-webkit-scrollbar {
+  width: 4px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 2px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

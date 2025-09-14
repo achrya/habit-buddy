@@ -1,0 +1,262 @@
+[
+  {
+    "id": "habit-wellness-1",
+    "title": "🌅 Morning Sunlight Exposure",
+    "daysTarget": 30,
+    "categoryId": "30",
+    "color": "#FBBF24",
+    "createdAt": "2024-01-01",
+    "checkIns": {
+      "2024-01-01": "sun1a2b3c4d5e6",
+      "2024-01-02": "sun2b3c4d5e6f7",
+      "2024-01-03": "sun3c4d5e6f7g8",
+      "2024-01-04": "sun4d5e6f7g8h9",
+      "2024-01-05": "sun5e6f7g8h9i0",
+      "2024-01-06": "sun6f7g8h9i0j1",
+      "2024-01-07": "sun7g8h9i0j1k2",
+      "2024-01-08": "sun8h9i0j1k2l3",
+      "2024-01-09": "sun9i0j1k2l3m4",
+      "2024-01-10": "sun0j1k2l3m4n5",
+      "2024-01-11": "sun1k2l3m4n5o6",
+      "2024-01-12": "sun2l3m4n5o6p7",
+      "2024-01-13": "sun3m4n5o6p7q8",
+      "2024-01-14": "sun4n5o6p7q8r9",
+      "2024-01-15": "sun5o6p7q8r9s0",
+      "2024-01-16": "sun6p7q8r9s0t1",
+      "2024-01-17": "sun7q8r9s0t1u2",
+      "2024-01-18": "sun8r9s0t1u2v3",
+      "2024-01-19": "sun9s0t1u2v3w4",
+      "2024-01-20": "sun0t1u2v3w4x5"
+    },
+    "reminder": {
+      "time": "07:30",
+      "days": [1, 2, 3, 4, 5],
+      "window": 30
+    }
+  },
+  {
+    "id": "habit-fitness-1",
+    "title": "💪 Strength Training",
+    "daysTarget": 50,
+    "categoryId": "50",
+    "color": "#DC2626",
+    "createdAt": "2024-01-01",
+    "checkIns": {
+      "2024-01-01": "gym1a2b3c4d5e6",
+      "2024-01-03": "gym2b3c4d5e6f7",
+      "2024-01-05": "gym3c4d5e6f7g8",
+      "2024-01-07": "gym4d5e6f7g8h9",
+      "2024-01-09": "gym5e6f7g8h9i0",
+      "2024-01-11": "gym6f7g8h9i0j1",
+      "2024-01-13": "gym7g8h9i0j1k2",
+      "2024-01-15": "gym8h9i0j1k2l3",
+      "2024-01-17": "gym9i0j1k2l3m4",
+      "2024-01-19": "gym0j1k2l3m4n5"
+    },
+    "reminder": {
+      "time": "18:00",
+      "days": [1, 3, 5],
+      "window": 45
+    }
+  },
+  {
+    "id": "habit-learning-1",
+    "title": "📚 Read Technical Books",
+    "daysTarget": 100,
+    "categoryId": "100",
+    "color": "#7C3AED",
+    "createdAt": "2024-01-01",
+    "checkIns": {
+      "2024-01-01": "book1a2b3c4d5e6",
+      "2024-01-02": "book2b3c4d5e6f7",
+      "2024-01-03": "book3c4d5e6f7g8",
+      "2024-01-04": "book4d5e6f7g8h9",
+      "2024-01-05": "book5e6f7g8h9i0",
+      "2024-01-06": "book6f7g8h9i0j1",
+      "2024-01-07": "book7g8h9i0j1k2",
+      "2024-01-08": "book8h9i0j1k2l3",
+      "2024-01-09": "book9i0j1k2l3m4",
+      "2024-01-10": "book0j1k2l3m4n5",
+      "2024-01-11": "book1k2l3m4n5o6",
+      "2024-01-12": "book2l3m4n5o6p7",
+      "2024-01-13": "book3m4n5o6p7q8",
+      "2024-01-14": "book4n5o6p7q8r9",
+      "2024-01-15": "book5o6p7q8r9s0",
+      "2024-01-16": "book6p7q8r9s0t1",
+      "2024-01-17": "book7q8r9s0t1u2",
+      "2024-01-18": "book8r9s0t1u2v3",
+      "2024-01-19": "book9s0t1u2v3w4",
+      "2024-01-20": "book0t1u2v3w4x5",
+      "2024-01-21": "book1u2v3w4x5y6",
+      "2024-01-22": "book2v3w4x5y6z7"
+    },
+    "reminder": {
+      "time": "20:30",
+      "days": [0, 1, 2, 3, 4, 5, 6],
+      "window": 30
+    }
+  },
+  {
+    "id": "habit-health-1",
+    "title": "🥗 Eat 5 Servings of Vegetables",
+    "daysTarget": 21,
+    "categoryId": "21",
+    "color": "#059669",
+    "createdAt": "2024-01-15",
+    "checkIns": {
+      "2024-01-15": "veg1a2b3c4d5e6",
+      "2024-01-16": "veg2b3c4d5e6f7",
+      "2024-01-17": "veg3c4d5e6f7g8",
+      "2024-01-18": "veg4d5e6f7g8h9",
+      "2024-01-19": "veg5e6f7g8h9i0",
+      "2024-01-20": "veg6f7g8h9i0j1"
+    },
+    "reminder": {
+      "time": "19:00",
+      "days": [0, 1, 2, 3, 4, 5, 6],
+      "window": 60
+    }
+  },
+  {
+    "id": "habit-mindfulness-1",
+    "title": "🧘‍♀️ 10-Minute Meditation",
+    "daysTarget": 30,
+    "categoryId": "30",
+    "color": "#8B5CF6",
+    "createdAt": "2024-01-10",
+    "checkIns": {
+      "2024-01-10": "med1a2b3c4d5e6",
+      "2024-01-11": "med2b3c4d5e6f7",
+      "2024-01-12": "med3c4d5e6f7g8",
+      "2024-01-13": "med4d5e6f7g8h9",
+      "2024-01-14": "med5e6f7g8h9i0",
+      "2024-01-15": "med6f7g8h9i0j1",
+      "2024-01-16": "med7g8h9i0j1k2",
+      "2024-01-17": "med8h9i0j1k2l3",
+      "2024-01-18": "med9i0j1k2l3m4",
+      "2024-01-19": "med0j1k2l3m4n5",
+      "2024-01-20": "med1k2l3m4n5o6"
+    },
+    "reminder": {
+      "time": "21:00",
+      "days": [0, 1, 2, 3, 4, 5, 6],
+      "window": 15
+    }
+  },
+  {
+    "id": "habit-productivity-1",
+    "title": "📝 Daily Journaling",
+    "daysTarget": 50,
+    "categoryId": "50",
+    "color": "#F59E0B",
+    "createdAt": "2024-01-01",
+    "checkIns": {
+      "2024-01-01": "jour1a2b3c4d5e6",
+      "2024-01-02": "jour2b3c4d5e6f7",
+      "2024-01-03": "jour3c4d5e6f7g8",
+      "2024-01-04": "jour4d5e6f7g8h9",
+      "2024-01-05": "jour5e6f7g8h9i0",
+      "2024-01-06": "jour6f7g8h9i0j1",
+      "2024-01-07": "jour7g8h9i0j1k2",
+      "2024-01-08": "jour8h9i0j1k2l3",
+      "2024-01-09": "jour9i0j1k2l3m4",
+      "2024-01-10": "jour0j1k2l3m4n5",
+      "2024-01-11": "jour1k2l3m4n5o6",
+      "2024-01-12": "jour2l3m4n5o6p7",
+      "2024-01-13": "jour3m4n5o6p7q8",
+      "2024-01-14": "jour4n5o6p7q8r9",
+      "2024-01-15": "jour5o6p7q8r9s0",
+      "2024-01-16": "jour6p7q8r9s0t1",
+      "2024-01-17": "jour7q8r9s0t1u2",
+      "2024-01-18": "jour8r9s0t1u2v3",
+      "2024-01-19": "jour9s0t1u2v3w4",
+      "2024-01-20": "jour0t1u2v3w4x5",
+      "2024-01-21": "jour1u2v3w4x5y6",
+      "2024-01-22": "jour2v3w4x5y6z7",
+      "2024-01-23": "jour3w4x5y6z7a8",
+      "2024-01-24": "jour4x5y6z7a8b9",
+      "2024-01-25": "jour5y6z7a8b9c0"
+    },
+    "reminder": {
+      "time": "22:00",
+      "days": [0, 1, 2, 3, 4, 5, 6],
+      "window": 30
+    }
+  },
+  {
+    "id": "habit-skill-1",
+    "title": "🎸 Practice Guitar",
+    "daysTarget": 100,
+    "categoryId": "100",
+    "color": "#DC2626",
+    "createdAt": "2024-01-01",
+    "checkIns": {
+      "2024-01-01": "guit1a2b3c4d5e6",
+      "2024-01-02": "guit2b3c4d5e6f7",
+      "2024-01-03": "guit3c4d5e6f7g8",
+      "2024-01-04": "guit4d5e6f7g8h9",
+      "2024-01-05": "guit5e6f7g8h9i0",
+      "2024-01-06": "guit6f7g8h9i0j1",
+      "2024-01-07": "guit7g8h9i0j1k2",
+      "2024-01-08": "guit8h9i0j1k2l3",
+      "2024-01-09": "guit9i0j1k2l3m4",
+      "2024-01-10": "guit0j1k2l3m4n5",
+      "2024-01-11": "guit1k2l3m4n5o6",
+      "2024-01-12": "guit2l3m4n5o6p7",
+      "2024-01-13": "guit3m4n5o6p7q8",
+      "2024-01-14": "guit4n5o6p7q8r9",
+      "2024-01-15": "guit5o6p7q8r9s0",
+      "2024-01-16": "guit6p7q8r9s0t1",
+      "2024-01-17": "guit7q8r9s0t1u2",
+      "2024-01-18": "guit8r9s0t1u2v3",
+      "2024-01-19": "guit9s0t1u2v3w4",
+      "2024-01-20": "guit0t1u2v3w4x5"
+    },
+    "reminder": {
+      "time": "19:00",
+      "days": [1, 2, 3, 4, 5],
+      "window": 60
+    }
+  },
+  {
+    "id": "habit-sleep-1",
+    "title": "😴 Sleep by 11 PM",
+    "daysTarget": 30,
+    "categoryId": "30",
+    "color": "#6366F1",
+    "createdAt": "2024-01-12",
+    "checkIns": {
+      "2024-01-12": "sleep1a2b3c4d5e6",
+      "2024-01-13": "sleep2b3c4d5e6f7",
+      "2024-01-14": "sleep3c4d5e6f7g8",
+      "2024-01-15": "sleep4d5e6f7g8h9",
+      "2024-01-16": "sleep5e6f7g8h9i0",
+      "2024-01-17": "sleep6f7g8h9i0j1",
+      "2024-01-18": "sleep7g8h9i0j1k2",
+      "2024-01-19": "sleep8h9i0j1k2l3"
+    },
+    "reminder": {
+      "time": "22:45",
+      "days": [0, 1, 2, 3, 4, 5, 6],
+      "window": 15
+    }
+  },
+  {
+    "id": "habit-social-1",
+    "title": "📞 Call Family Member",
+    "daysTarget": 7,
+    "categoryId": "7",
+    "color": "#EC4899",
+    "createdAt": "2024-01-18",
+    "checkIns": {
+      "2024-01-18": "call1a2b3c4d5e6",
+      "2024-01-19": "call2b3c4d5e6f7",
+      "2024-01-20": "call3c4d5e6f7g8"
+    },
+    "reminder": {
+      "time": "18:30",
+      "days": [0, 6],
+      "window": 30
+    }
+  }
+]

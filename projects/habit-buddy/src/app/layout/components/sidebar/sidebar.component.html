@@ -44,4 +44,12 @@
       Import JSON
     </button>
   </div>
+
+  <!-- Import Modal -->
+  <app-import-modal
+    [isOpen]="isImportModalOpen()"
+    [duplicates]="duplicateHabits"
+    (close)="onImportModalClose()"
+    (importWithAction)="onImportWithAction($event)">
+  </app-import-modal>
 </aside>

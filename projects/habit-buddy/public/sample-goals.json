@@ -1,0 +1,38 @@
+[
+  {
+    "id": "habit-1",
+    "title": "Morning Meditation",
+    "daysTarget": 30,
+    "categoryId": "30",
+    "color": "#8B5CF6",
+    "createdAt": "2024-01-15",
+    "checkIns": {
+      "2024-01-15": "a1b2c3d4e5f6",
+      "2024-01-16": "b2c3d4e5f6g7",
+      "2024-01-17": "c3d4e5f6g7h8"
+    },
+    "reminder": {
+      "time": "07:00",
+      "days": [1, 2, 3, 4, 5],
+      "window": 30
+    }
+  },
+  {
+    "id": "habit-2",
+    "title": "Drink 8 Glasses of Water",
+    "daysTarget": 21,
+    "categoryId": "21",
+    "color": "#06B6D4",
+    "createdAt": "2024-01-10",
+    "checkIns": {
+      "2024-01-10": "f6g7h8i9j0k1",
+      "2024-01-11": "g7h8i9j0k1l2",
+      "2024-01-12": "h8i9j0k1l2m3"
+    },
+    "reminder": {
+      "time": "09:00",
+      "days": [0, 1, 2, 3, 4, 5, 6],
+      "window": 60
+    }
+  }
+]

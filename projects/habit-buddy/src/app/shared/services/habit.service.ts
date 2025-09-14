@@ -1,6 +1,6 @@
-import { Injectable, signal, computed } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { Habit, Reminder, HabitStats, WeeklyTrend } from '../models/habit.model';
+import { computed, Injectable, signal } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { Habit, HabitStats, Reminder, WeeklyTrend } from '../models/habit.model';
 
 @Injectable({
   providedIn: 'root'
@@ -232,31 +232,164 @@ export class HabitService {
     return JSON.stringify(this.habits(), null, 2);
   }
 
-  importHabits(jsonData: string): boolean {
+  importHabits(jsonData: string): { success: boolean; duplicates?: string[]; message?: string } {
     try {
       const data = JSON.parse(jsonData);
-      if (Array.isArray(data)) {
-        // Validate that each item has required Habit properties
-        const isValidHabitData = data.every(habit => 
-          habit && 
-          typeof habit.id === 'string' && 
-          typeof habit.title === 'string' &&
-          typeof habit.daysTarget === 'number' &&
-          typeof habit.categoryId === 'string' &&
-          typeof habit.color === 'string' &&
-          typeof habit.createdAt === 'string' &&
-          typeof habit.checkIns === 'object'
-        );
+      if (!Array.isArray(data)) {
+        return { success: false, message: 'Invalid JSON format. Expected an array of habits.' };
+      }
+
+      // Validate that each item has required Habit properties
+      const isValidHabitData = data.every(habit => 
+        habit && 
+        typeof habit.id === 'string' && 
+        typeof habit.title === 'string' &&
+        typeof habit.daysTarget === 'number' &&
+        typeof habit.categoryId === 'string' &&
+        typeof habit.color === 'string' &&
+        typeof habit.createdAt === 'string' &&
+        typeof habit.checkIns === 'object'
+      );
+      
+      if (!isValidHabitData) {
+        return { success: false, message: 'Invalid habit data structure. Please check the JSON format.' };
+      }
+
+      const existingHabits = this.habits();
+      const duplicateTitles: string[] = [];
+      const newHabits: Habit[] = [];
+
+      // Check for duplicates and prepare new habits
+      for (const importedHabit of data) {
+        const existingHabit = existingHabits.find(h => h.title.toLowerCase() === importedHabit.title.toLowerCase());
         
-        if (isValidHabitData) {
-          this.habitsSubject.next(data);
-          this.saveHabits(data); // Persist imported data to localStorage
-          return true;
+        if (existingHabit) {
+          duplicateTitles.push(importedHabit.title);
+        } else {
+          // Generate new ID to avoid conflicts
+          importedHabit.id = this.generateId();
+          newHabits.push(importedHabit);
         }
       }
-      return false;
-    } catch {
-      return false;
+
+      // Merge existing habits with new habits
+      const mergedHabits = [...existingHabits, ...newHabits];
+      
+      this.habitsSubject.next(mergedHabits);
+      this.saveHabits(mergedHabits);
+
+      return { 
+        success: true, 
+        duplicates: duplicateTitles.length > 0 ? duplicateTitles : undefined,
+        message: duplicateTitles.length > 0 
+          ? `Imported ${newHabits.length} new habits. ${duplicateTitles.length} duplicates found and skipped.`
+          : `Successfully imported ${newHabits.length} habits.`
+      };
+    } catch (error) {
+      console.error('Import error:', error);
+      return { success: false, message: 'Failed to parse JSON file. Please check the file format.' };
+    }
+  }
+
+  importHabitsWithOptions(jsonData: string, duplicateAction: 'skip' | 'replace' | 'keep-both' = 'skip'): { success: boolean; duplicates?: string[]; message?: string } {
+    try {
+      const data = JSON.parse(jsonData);
+      if (!Array.isArray(data)) {
+        return { success: false, message: 'Invalid JSON format. Expected an array of habits.' };
+      }
+
+      // Validate that each item has required Habit properties
+      const isValidHabitData = data.every(habit => 
+        habit && 
+        typeof habit.id === 'string' && 
+        typeof habit.title === 'string' &&
+        typeof habit.daysTarget === 'number' &&
+        typeof habit.categoryId === 'string' &&
+        typeof habit.color === 'string' &&
+        typeof habit.createdAt === 'string' &&
+        typeof habit.checkIns === 'object'
+      );
+      
+      if (!isValidHabitData) {
+        return { success: false, message: 'Invalid habit data structure. Please check the JSON format.' };
+      }
+
+      const existingHabits = this.habits();
+      const duplicateTitles: string[] = [];
+      const newHabits: Habit[] = [];
+      let replacedCount = 0;
+
+      // Check for duplicates and prepare new habits based on action
+      for (const importedHabit of data) {
+        const existingIndex = existingHabits.findIndex(h => h.title.toLowerCase() === importedHabit.title.toLowerCase());
+        
+        if (existingIndex !== -1) {
+          duplicateTitles.push(importedHabit.title);
+          
+          switch (duplicateAction) {
+            case 'replace':
+              // Replace existing habit with imported one
+              importedHabit.id = this.generateId(); // Generate new ID
+              newHabits.push(importedHabit);
+              replacedCount++;
+              break;
+            case 'keep-both':
+              // Keep both - add imported habit with modified title
+              importedHabit.id = this.generateId();
+              importedHabit.title = `${importedHabit.title} (Copy)`;
+              newHabits.push(importedHabit);
+              break;
+            case 'skip':
+            default:
+              // Skip duplicate (do nothing)
+              break;
+          }
+        } else {
+          // Generate new ID to avoid conflicts
+          importedHabit.id = this.generateId();
+          newHabits.push(importedHabit);
+        }
+      }
+
+      // Merge existing habits with new habits
+      let mergedHabits = [...existingHabits, ...newHabits];
+      
+      // If replacing, remove the original duplicates
+      if (duplicateAction === 'replace' && replacedCount > 0) {
+        mergedHabits = mergedHabits.filter(habit => 
+          !duplicateTitles.some(dupTitle => 
+            habit.title.toLowerCase() === dupTitle.toLowerCase() && 
+            !newHabits.some(newHabit => newHabit.id === habit.id)
+          )
+        );
+      }
+      
+      this.habitsSubject.next(mergedHabits);
+      this.saveHabits(mergedHabits);
+
+      let message = `Successfully imported ${newHabits.length} habits.`;
+      if (duplicateTitles.length > 0) {
+        switch (duplicateAction) {
+          case 'replace':
+            message = `Imported ${newHabits.length} habits. Replaced ${replacedCount} existing habits.`;
+            break;
+          case 'keep-both':
+            message = `Imported ${newHabits.length} habits. Added ${duplicateTitles.length} as copies.`;
+            break;
+          case 'skip':
+            message = `Imported ${newHabits.length - duplicateTitles.length} new habits. Skipped ${duplicateTitles.length} duplicates.`;
+            break;
+        }
+      }
+
+      return { 
+        success: true, 
+        duplicates: duplicateTitles.length > 0 ? duplicateTitles : undefined,
+        message
+      };
+    } catch (error) {
+      console.error('Import error:', error);
+      return { success: false, message: 'Failed to parse JSON file. Please check the file format.' };
     }
   }
 

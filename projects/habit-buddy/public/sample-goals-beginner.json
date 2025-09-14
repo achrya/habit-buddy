@@ -1,0 +1,55 @@
+[
+  {
+    "id": "habit-basic-1",
+    "title": "Make Bed Every Morning",
+    "daysTarget": 7,
+    "categoryId": "7",
+    "color": "#10B981",
+    "createdAt": "2024-01-20",
+    "checkIns": {
+      "2024-01-20": "bed1a2b3c4d5e6",
+      "2024-01-21": "bed2b3c4d5e6f7",
+      "2024-01-22": "bed3c4d5e6f7g8"
+    },
+    "reminder": {
+      "time": "08:00",
+      "days": [1, 2, 3, 4, 5],
+      "window": 15
+    }
+  },
+  {
+    "id": "habit-basic-2",
+    "title": "Drink Water First Thing",
+    "daysTarget": 7,
+    "categoryId": "7",
+    "color": "#06B6D4",
+    "createdAt": "2024-01-20",
+    "checkIns": {
+      "2024-01-20": "water1a2b3c4d5e6",
+      "2024-01-21": "water2b3c4d5e6f7",
+      "2024-01-22": "water3c4d5e6f7g8"
+    },
+    "reminder": {
+      "time": "07:00",
+      "days": [1, 2, 3, 4, 5, 6, 0],
+      "window": 30
+    }
+  },
+  {
+    "id": "habit-basic-3",
+    "title": "Take a 5-Minute Walk",
+    "daysTarget": 7,
+    "categoryId": "7",
+    "color": "#84CC16",
+    "createdAt": "2024-01-20",
+    "checkIns": {
+      "2024-01-20": "walk1a2b3c4d5e6",
+      "2024-01-21": "walk2b3c4d5e6f7"
+    },
+    "reminder": {
+      "time": "12:00",
+      "days": [1, 2, 3, 4, 5],
+      "window": 60
+    }
+  }
+]
