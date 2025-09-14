@@ -43,7 +43,7 @@ describe('GoalsComponent', () => {
     
     habitService.addHabit.and.returnValue(mockCreatedHabit);
     
-    component.onHabitAdded(mockHabit);
+    (component as any).onHabitAdded(mockHabit);
     
     expect(habitService.addHabit).toHaveBeenCalledWith('Test Habit', 21, '21');
     expect(notificationService.playBell).toHaveBeenCalled();

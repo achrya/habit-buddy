@@ -1,19 +1,27 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HabitCardComponent, HabitFormComponent } from '../../../../shared';
-import { Habit, HabitCategory } from '../../../../shared/models/habit.model';
+import { Habit, HabitCategory, Reminder } from '../../../../shared/models/habit.model';
 import { HabitService, NotificationService } from '../../../../shared';
+import { ReminderModalComponent } from '../../../reminders/components/reminder-modal/reminder-modal.component';
 
 @Component({
   selector: 'app-goals',
   standalone: true,
-  imports: [CommonModule, FormsModule, HabitCardComponent, HabitFormComponent],
+  imports: [CommonModule, FormsModule, HabitCardComponent, HabitFormComponent, ReminderModalComponent],
   templateUrl: './goals.component.html',
   styleUrl: './goals.component.scss'
 })
 export class GoalsComponent implements OnInit {
+  @ViewChild(ReminderModalComponent) reminderModal!: ReminderModalComponent;
+  
   protected readonly habits = signal<Habit[]>([]);
+  
+  // Reminder modal state
+  protected readonly selectedHabitId = signal('');
+  protected readonly selectedHabitTitle = signal('');
+  protected readonly selectedHabitReminder = signal<Reminder | null>(null);
   
   protected readonly categories = signal<HabitCategory[]>([
     { value: '7', label: 'Micro (7d)', days: 7 },
@@ -69,13 +77,30 @@ export class GoalsComponent implements OnInit {
   }
 
   protected onEditReminder(habitId: string): void {
-    // This will be handled by a modal service or component
-    console.log('Edit reminder for habit:', habitId);
+    const habit = this.habits().find(h => h.id === habitId);
+    if (habit) {
+      this.selectedHabitId.set(habitId);
+      this.selectedHabitTitle.set(habit.title);
+      this.selectedHabitReminder.set(habit.reminder || null);
+      this.reminderModal.open();
+    }
   }
 
   protected onViewCalendar(habitId: string): void {
     // Navigate to calendar view with specific habit filter
     console.log('View calendar for habit:', habitId);
+  }
+
+  protected onSaveReminder(event: { habitId: string; reminder: Reminder | null }): void {
+    this.habitService.updateHabitReminder(event.habitId, event.reminder);
+    this.onCloseReminderModal();
+  }
+
+  protected onCloseReminderModal(): void {
+    // Modal will handle its own closing
+    this.selectedHabitId.set('');
+    this.selectedHabitTitle.set('');
+    this.selectedHabitReminder.set(null);
   }
 
   protected getHabitStats(habit: Habit) {

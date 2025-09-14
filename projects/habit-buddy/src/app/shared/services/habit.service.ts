@@ -337,8 +337,53 @@ export class HabitService {
    */
   private createSampleHabits(): Habit[] {
     const today = new Date().toISOString().slice(0, 10);
-    const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
-    const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+    
+    // Generate check-ins for current month (random but realistic pattern)
+    const generateCurrentMonthCheckIns = (habitIndex: number): Record<string, string> => {
+      const checkIns: Record<string, string> = {};
+      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      
+      // Each habit has different patterns:
+      // Habit 0: Daily habit (80% completion)
+      // Habit 1: Weekdays only (70% completion)
+      // Habit 2: Every other day (60% completion)
+      // Habit 3: Weekends only (50% completion)
+      // Habit 4: Random pattern (40% completion)
+      
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(currentYear, currentMonth, day);
+        const dateStr = date.toISOString().slice(0, 10);
+        const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, etc.
+        
+        let shouldCheckIn = false;
+        
+        switch (habitIndex) {
+          case 0: // Daily habit (80% completion)
+            shouldCheckIn = Math.random() < 0.8;
+            break;
+          case 1: // Weekdays only (70% completion)
+            shouldCheckIn = dayOfWeek >= 1 && dayOfWeek <= 5 && Math.random() < 0.7;
+            break;
+          case 2: // Every other day (60% completion)
+            shouldCheckIn = day % 2 === 0 && Math.random() < 0.6;
+            break;
+          case 3: // Weekends only (50% completion)
+            shouldCheckIn = (dayOfWeek === 0 || dayOfWeek === 6) && Math.random() < 0.5;
+            break;
+          case 4: // Random pattern (40% completion)
+            shouldCheckIn = Math.random() < 0.4;
+            break;
+        }
+        
+        if (shouldCheckIn) {
+          checkIns[dateStr] = `sample-hash-${habitIndex}-${day}`;
+        }
+      }
+      
+      return checkIns;
+    };
 
     return [
       {
@@ -348,10 +393,7 @@ export class HabitService {
         categoryId: '30',
         color: this.COLORS[0],
         createdAt: today,
-        checkIns: {
-          [today]: 'sample-hash-1',
-          [yesterday]: 'sample-hash-2'
-        },
+        checkIns: generateCurrentMonthCheckIns(0),
         reminder: null
       },
       {
@@ -361,11 +403,7 @@ export class HabitService {
         categoryId: '21',
         color: this.COLORS[1],
         createdAt: today,
-        checkIns: {
-          [today]: 'sample-hash-3',
-          [yesterday]: 'sample-hash-4',
-          [twoDaysAgo]: 'sample-hash-5'
-        },
+        checkIns: generateCurrentMonthCheckIns(1),
         reminder: null
       },
       {
@@ -375,9 +413,7 @@ export class HabitService {
         categoryId: '30',
         color: this.COLORS[2],
         createdAt: today,
-        checkIns: {
-          [today]: 'sample-hash-6'
-        },
+        checkIns: generateCurrentMonthCheckIns(2),
         reminder: null
       },
       {
@@ -387,9 +423,7 @@ export class HabitService {
         categoryId: '50',
         color: this.COLORS[3],
         createdAt: today,
-        checkIns: {
-          [yesterday]: 'sample-hash-7'
-        },
+        checkIns: generateCurrentMonthCheckIns(3),
         reminder: null
       },
       {
@@ -399,7 +433,7 @@ export class HabitService {
         categoryId: '21',
         color: this.COLORS[4],
         createdAt: today,
-        checkIns: {},
+        checkIns: generateCurrentMonthCheckIns(4),
         reminder: null
       }
     ];

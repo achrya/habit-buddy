@@ -33,23 +33,23 @@ describe('ReminderModalComponent', () => {
   });
 
   it('should toggle day selection', () => {
-    const initialDays = component.selectedDays().length;
-    component.toggleDay(0);
+    const initialDays = (component as any).selectedDays().length;
+    (component as any).toggleDay(0);
     
-    expect(component.selectedDays().length).not.toBe(initialDays);
+    expect((component as any).selectedDays().length).not.toBe(initialDays);
   });
 
   it('should check if day is selected', () => {
-    component.selectedDays.set([1, 2, 3]);
+    (component as any).selectedDays.set([1, 2, 3]);
     
-    expect(component.isDaySelected(1)).toBe(true);
-    expect(component.isDaySelected(0)).toBe(false);
+    expect((component as any).isDaySelected(1)).toBe(true);
+    expect((component as any).isDaySelected(0)).toBe(false);
   });
 
   it('should emit saveReminder event when save is called', () => {
     spyOn(component.saveReminder, 'emit');
     
-    component.save();
+    (component as any).save();
     
     expect(component.saveReminder.emit).toHaveBeenCalled();
   });

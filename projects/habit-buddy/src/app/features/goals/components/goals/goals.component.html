@@ -22,4 +22,13 @@
       }
     }
   </section>
+
+  <!-- Reminder Modal -->
+  <app-reminder-modal
+    [habitTitle]="selectedHabitTitle"
+    [habitId]="selectedHabitId"
+    [existingReminder]="selectedHabitReminder()"
+    (saveReminder)="onSaveReminder($event)"
+    (closeModal)="onCloseReminderModal()">
+  </app-reminder-modal>
 </div>

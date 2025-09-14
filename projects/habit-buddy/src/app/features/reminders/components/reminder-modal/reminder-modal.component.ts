@@ -89,6 +89,7 @@ export class ReminderModalComponent implements OnInit {
   }
 
   protected close(): void {
+    this.isOpen.set(false);
     this.closeModal.emit();
   }
 
