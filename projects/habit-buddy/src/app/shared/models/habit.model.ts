@@ -25,6 +25,16 @@ export interface WeeklyTrend {
   data: number[];
 }
 
+export interface MonthlyTrend {
+  labels: string[];
+  data: number[];
+}
+
+export interface YearlyTrend {
+  labels: string[];
+  data: number[];
+}
+
 export interface HabitCategory {
   value: string;
   label: string;

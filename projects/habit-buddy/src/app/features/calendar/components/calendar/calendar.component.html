@@ -3,7 +3,14 @@
   <div class="bg-white border border-slate-100 rounded-2xl p-3 mb-4 flex items-center justify-between">
     <div>
       <div class="text-sm font-semibold">{{ calendarTitle() }}</div>
-      <div class="text-xs text-slate-400">Toggle per-habit mode to edit/check today only.</div>
+      <div class="text-xs text-slate-400">
+        Toggle per-habit mode to edit/check today only.
+        @if (habits().length === 0) {
+          <span class="text-orange-500 ml-2">⚠️ No habits found. Create habits in Goals page first.</span>
+        } @else {
+          <span class="text-green-600 ml-2">✅ {{ habits().length }} habits loaded</span>
+        }
+      </div>
     </div>
     <div class="flex gap-2">
       <button (click)="previousMonth()" class="px-2 py-1 rounded bg-slate-50">◀</button>
@@ -27,6 +34,11 @@
         [title]="habit.title">
         {{ getShortTitle(habit.title) }}
       </button>
+    }
+    @if (habits().length === 0) {
+      <div class="px-3 py-1 text-xs text-slate-500 italic">
+        No habits available. Go to Goals page to create habits.
+      </div>
     }
   </div>
 

@@ -1,14 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
-export interface ImportResult {
-  success: boolean;
-  duplicates?: string[];
-  message?: string;
-}
-
-export type DuplicateAction = 'skip' | 'replace' | 'keep-both';
+import { DuplicateAction } from './import.service';
 
 @Component({
   selector: 'app-import-modal',

@@ -21,7 +21,7 @@
       routerLink="/stats" 
       routerLinkActive="bg-slate-100"
       class="nav-btn w-full text-left px-3 py-2 rounded hover:bg-slate-100">
-      📊 Stats
+      📊 Statistics
     </a>
     <a 
       routerLink="/reminders" 
@@ -43,6 +43,21 @@
       class="w-full mt-2 border px-3 py-2 rounded">
       Import JSON
     </button>
+    
+    <!-- Development Helpers -->
+    <div class="mt-4 pt-4 border-t border-slate-200">
+      <div class="text-xs text-slate-500 mb-2">Dev Tools</div>
+      <button 
+        (click)="loadSampleData()"
+        class="w-full bg-green-600 text-white px-3 py-2 rounded text-xs">
+        Load Sample Data
+      </button>
+      <button 
+        (click)="clearAllData()"
+        class="w-full mt-2 bg-red-600 text-white px-3 py-2 rounded text-xs">
+        Clear All Data
+      </button>
+    </div>
   </div>
 
   <!-- Import Modal -->

@@ -1,6 +1,6 @@
-import { Component, Input, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { WeeklyTrend } from '../../models/habit.model';
+import { WeeklyTrend, MonthlyTrend, YearlyTrend } from '../../models/habit.model';
 
 @Component({
   selector: 'app-chart',
@@ -9,8 +9,8 @@ import { WeeklyTrend } from '../../models/habit.model';
   templateUrl: './chart.component.html',
   styleUrl: './chart.component.scss'
 })
-export class ChartComponent implements OnInit, AfterViewInit, OnDestroy {
-  @Input() data!: WeeklyTrend;
+export class ChartComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
+  @Input() data!: WeeklyTrend | MonthlyTrend | YearlyTrend;
   @ViewChild('chartCanvas', { static: true }) chartCanvas!: ElementRef<HTMLCanvasElement>;
 
   private chart: any;
@@ -23,6 +23,19 @@ export class ChartComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     if (this.chartInitialized && this.data) {
       this.updateChart();
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['data'] && this.data) {
+      if (this.chart) {
+        // Destroy existing chart to ensure proper reinitialization
+        this.chart.destroy();
+        this.chart = null;
+        this.chartInitialized = false;
+      }
+      // Initialize new chart with updated data
+      this.initializeChart();
     }
   }
 

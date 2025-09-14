@@ -2,7 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { HabitService } from '../../../shared/services/habit.service';
-import { ImportModalComponent, DuplicateAction } from '../../../shared/components/import-modal/import-modal.component';
+import { ImportService, DuplicateAction } from '../../../shared/components/import-modal/import.service';
+import { ImportModalComponent } from '../../../shared/components/import-modal/import-modal.component';
 
 @Component({
   selector: 'app-sidebar',
@@ -18,6 +19,7 @@ export class SidebarComponent {
 
   constructor(
     private habitService: HabitService,
+    private importService: ImportService,
     private router: Router
   ) {}
 
@@ -56,7 +58,7 @@ export class SidebarComponent {
   private handleImport(jsonData: string): void {
     try {
       // First, check for duplicates using the basic import method
-      const result = this.habitService.importHabits(jsonData);
+      const result = this.importService.importHabits(jsonData);
       
       if (!result.success) {
         alert(`❌ ${result.message}`);
@@ -89,7 +91,7 @@ export class SidebarComponent {
     if (!this.pendingImportData) return;
 
     try {
-      const result = this.habitService.importHabitsWithOptions(this.pendingImportData, action);
+      const result = this.importService.importHabitsWithOptions(this.pendingImportData, action);
       
       if (result.success) {
         alert(`✅ ${result.message}`);
@@ -102,6 +104,24 @@ export class SidebarComponent {
       alert('❌ Error importing habits. Please try again.');
     } finally {
       this.onImportModalClose();
+    }
+  }
+
+  protected loadSampleData(): void {
+    if (confirm('Load sample habits? This will add sample data to your current habits.')) {
+      this.habitService.loadSampleHabits();
+      alert('✅ Sample habits loaded! Check the Goals or Calendar page.');
+      this.router.navigate(['/goals']);
+    }
+  }
+
+  protected clearAllData(): void {
+    if (confirm('⚠️ This will delete ALL habits and data. Are you sure?')) {
+      if (confirm('This action cannot be undone. Delete everything?')) {
+        this.habitService.clearAllHabits();
+        alert('🗑️ All data cleared. The app will reload with sample data.');
+        this.router.navigate(['/goals']);
+      }
     }
   }
 }

@@ -1,9 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
-import { GoalsComponent } from './goals.component';
 import { HabitService, NotificationService } from '../../../../shared';
-import { Habit } from '../../../../shared/models/habit.model';
+import { GoalsComponent } from './goals.component';
 
 describe('GoalsComponent', () => {
   let component: GoalsComponent;

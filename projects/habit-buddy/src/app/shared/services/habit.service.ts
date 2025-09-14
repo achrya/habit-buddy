@@ -1,6 +1,6 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Habit, HabitStats, Reminder, WeeklyTrend } from '../models/habit.model';
+import { Habit, HabitStats, Reminder, WeeklyTrend, MonthlyTrend, YearlyTrend } from '../models/habit.model';
 
 @Injectable({
   providedIn: 'root'
@@ -56,11 +56,72 @@ export class HabitService {
     return { labels, data };
   });
 
+  public monthlyTrend = computed((): MonthlyTrend => {
+    const labels: string[] = [];
+    const data: number[] = [];
+    
+    // Get current month
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    
+    // Get days in current month
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(currentYear, currentMonth, day);
+      const dateStr = date.toISOString().slice(0, 10);
+      labels.push(day.toString());
+      
+      // Calculate total check-ins for this day
+      const dayTotal = this.habits().reduce((sum, habit) => 
+        sum + ((habit.checkIns && habit.checkIns[dateStr]) ? 1 : 0), 0
+      );
+      data.push(dayTotal);
+    }
+    
+    return { labels, data };
+  });
+
+  public yearlyTrend = computed((): YearlyTrend => {
+    const labels: string[] = [];
+    const data: number[] = [];
+    
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - i);
+      labels.push(d.toLocaleDateString(undefined, { month: 'short', year: '2-digit' }));
+      
+      // Calculate total check-ins for this month
+      const monthStart = new Date(d.getFullYear(), d.getMonth(), 1);
+      const monthEnd = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+      
+      let monthTotal = 0;
+      for (const habit of this.habits()) {
+        if (habit.checkIns) {
+          for (const [dateStr, _] of Object.entries(habit.checkIns)) {
+            const checkInDate = new Date(dateStr);
+            if (checkInDate >= monthStart && checkInDate <= monthEnd) {
+              monthTotal++;
+            }
+          }
+        }
+      }
+      
+      data.push(monthTotal);
+    }
+    
+    return { labels, data };
+  });
+
   constructor() {
     this.habits$.subscribe(habits => {
       this.habits.set(habits);
       this.saveHabits(habits);
     });
+
+    // Initialize with sample data if no habits exist
+    this.initializeWithSampleDataIfEmpty();
   }
 
   private loadHabits(): Habit[] {
@@ -232,169 +293,116 @@ export class HabitService {
     return JSON.stringify(this.habits(), null, 2);
   }
 
-  importHabits(jsonData: string): { success: boolean; duplicates?: string[]; message?: string } {
-    try {
-      const data = JSON.parse(jsonData);
-      if (!Array.isArray(data)) {
-        return { success: false, message: 'Invalid JSON format. Expected an array of habits.' };
-      }
-
-      // Validate that each item has required Habit properties
-      const isValidHabitData = data.every(habit => 
-        habit && 
-        typeof habit.id === 'string' && 
-        typeof habit.title === 'string' &&
-        typeof habit.daysTarget === 'number' &&
-        typeof habit.categoryId === 'string' &&
-        typeof habit.color === 'string' &&
-        typeof habit.createdAt === 'string' &&
-        typeof habit.checkIns === 'object'
-      );
-      
-      if (!isValidHabitData) {
-        return { success: false, message: 'Invalid habit data structure. Please check the JSON format.' };
-      }
-
-      const existingHabits = this.habits();
-      const duplicateTitles: string[] = [];
-      const newHabits: Habit[] = [];
-
-      // Check for duplicates and prepare new habits
-      for (const importedHabit of data) {
-        const existingHabit = existingHabits.find(h => h.title.toLowerCase() === importedHabit.title.toLowerCase());
-        
-        if (existingHabit) {
-          duplicateTitles.push(importedHabit.title);
-        } else {
-          // Generate new ID to avoid conflicts
-          importedHabit.id = this.generateId();
-          newHabits.push(importedHabit);
-        }
-      }
-
-      // Merge existing habits with new habits
-      const mergedHabits = [...existingHabits, ...newHabits];
-      
-      this.habitsSubject.next(mergedHabits);
-      this.saveHabits(mergedHabits);
-
-      return { 
-        success: true, 
-        duplicates: duplicateTitles.length > 0 ? duplicateTitles : undefined,
-        message: duplicateTitles.length > 0 
-          ? `Imported ${newHabits.length} new habits. ${duplicateTitles.length} duplicates found and skipped.`
-          : `Successfully imported ${newHabits.length} habits.`
-      };
-    } catch (error) {
-      console.error('Import error:', error);
-      return { success: false, message: 'Failed to parse JSON file. Please check the file format.' };
-    }
-  }
-
-  importHabitsWithOptions(jsonData: string, duplicateAction: 'skip' | 'replace' | 'keep-both' = 'skip'): { success: boolean; duplicates?: string[]; message?: string } {
-    try {
-      const data = JSON.parse(jsonData);
-      if (!Array.isArray(data)) {
-        return { success: false, message: 'Invalid JSON format. Expected an array of habits.' };
-      }
-
-      // Validate that each item has required Habit properties
-      const isValidHabitData = data.every(habit => 
-        habit && 
-        typeof habit.id === 'string' && 
-        typeof habit.title === 'string' &&
-        typeof habit.daysTarget === 'number' &&
-        typeof habit.categoryId === 'string' &&
-        typeof habit.color === 'string' &&
-        typeof habit.createdAt === 'string' &&
-        typeof habit.checkIns === 'object'
-      );
-      
-      if (!isValidHabitData) {
-        return { success: false, message: 'Invalid habit data structure. Please check the JSON format.' };
-      }
-
-      const existingHabits = this.habits();
-      const duplicateTitles: string[] = [];
-      const newHabits: Habit[] = [];
-      let replacedCount = 0;
-
-      // Check for duplicates and prepare new habits based on action
-      for (const importedHabit of data) {
-        const existingIndex = existingHabits.findIndex(h => h.title.toLowerCase() === importedHabit.title.toLowerCase());
-        
-        if (existingIndex !== -1) {
-          duplicateTitles.push(importedHabit.title);
-          
-          switch (duplicateAction) {
-            case 'replace':
-              // Replace existing habit with imported one
-              importedHabit.id = this.generateId(); // Generate new ID
-              newHabits.push(importedHabit);
-              replacedCount++;
-              break;
-            case 'keep-both':
-              // Keep both - add imported habit with modified title
-              importedHabit.id = this.generateId();
-              importedHabit.title = `${importedHabit.title} (Copy)`;
-              newHabits.push(importedHabit);
-              break;
-            case 'skip':
-            default:
-              // Skip duplicate (do nothing)
-              break;
-          }
-        } else {
-          // Generate new ID to avoid conflicts
-          importedHabit.id = this.generateId();
-          newHabits.push(importedHabit);
-        }
-      }
-
-      // Merge existing habits with new habits
-      let mergedHabits = [...existingHabits, ...newHabits];
-      
-      // If replacing, remove the original duplicates
-      if (duplicateAction === 'replace' && replacedCount > 0) {
-        mergedHabits = mergedHabits.filter(habit => 
-          !duplicateTitles.some(dupTitle => 
-            habit.title.toLowerCase() === dupTitle.toLowerCase() && 
-            !newHabits.some(newHabit => newHabit.id === habit.id)
-          )
-        );
-      }
-      
-      this.habitsSubject.next(mergedHabits);
-      this.saveHabits(mergedHabits);
-
-      let message = `Successfully imported ${newHabits.length} habits.`;
-      if (duplicateTitles.length > 0) {
-        switch (duplicateAction) {
-          case 'replace':
-            message = `Imported ${newHabits.length} habits. Replaced ${replacedCount} existing habits.`;
-            break;
-          case 'keep-both':
-            message = `Imported ${newHabits.length} habits. Added ${duplicateTitles.length} as copies.`;
-            break;
-          case 'skip':
-            message = `Imported ${newHabits.length - duplicateTitles.length} new habits. Skipped ${duplicateTitles.length} duplicates.`;
-            break;
-        }
-      }
-
-      return { 
-        success: true, 
-        duplicates: duplicateTitles.length > 0 ? duplicateTitles : undefined,
-        message
-      };
-    } catch (error) {
-      console.error('Import error:', error);
-      return { success: false, message: 'Failed to parse JSON file. Please check the file format.' };
-    }
-  }
 
   getHabitsWithReminders(): Habit[] {
     return this.habits().filter(habit => habit.reminder);
+  }
+
+  /**
+   * Update habits list (used by ImportService)
+   * @param habits Array of habits to set
+   */
+  updateHabitsList(habits: Habit[]): void {
+    this.habitsSubject.next(habits);
+  }
+
+  /**
+   * Initialize with sample data if no habits exist
+   */
+  private initializeWithSampleDataIfEmpty(): void {
+    const currentHabits = this.habits();
+    if (currentHabits.length === 0) {
+      const sampleHabits = this.createSampleHabits();
+      this.habitsSubject.next(sampleHabits);
+    }
+  }
+
+  /**
+   * Load sample habits (useful for testing or demo purposes)
+   */
+  loadSampleHabits(): void {
+    const sampleHabits = this.createSampleHabits();
+    this.habitsSubject.next(sampleHabits);
+  }
+
+  /**
+   * Clear all habits (useful for testing)
+   */
+  clearAllHabits(): void {
+    this.habitsSubject.next([]);
+  }
+
+  /**
+   * Create sample habits for first-time users
+   */
+  private createSampleHabits(): Habit[] {
+    const today = new Date().toISOString().slice(0, 10);
+    const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+
+    return [
+      {
+        id: this.generateId(),
+        title: 'Morning Meditation',
+        daysTarget: 30,
+        categoryId: '30',
+        color: this.COLORS[0],
+        createdAt: today,
+        checkIns: {
+          [today]: 'sample-hash-1',
+          [yesterday]: 'sample-hash-2'
+        },
+        reminder: null
+      },
+      {
+        id: this.generateId(),
+        title: 'Drink 8 Glasses of Water',
+        daysTarget: 21,
+        categoryId: '21',
+        color: this.COLORS[1],
+        createdAt: today,
+        checkIns: {
+          [today]: 'sample-hash-3',
+          [yesterday]: 'sample-hash-4',
+          [twoDaysAgo]: 'sample-hash-5'
+        },
+        reminder: null
+      },
+      {
+        id: this.generateId(),
+        title: 'Exercise for 30 Minutes',
+        daysTarget: 30,
+        categoryId: '30',
+        color: this.COLORS[2],
+        createdAt: today,
+        checkIns: {
+          [today]: 'sample-hash-6'
+        },
+        reminder: null
+      },
+      {
+        id: this.generateId(),
+        title: 'Read for 20 Minutes',
+        daysTarget: 50,
+        categoryId: '50',
+        color: this.COLORS[3],
+        createdAt: today,
+        checkIns: {
+          [yesterday]: 'sample-hash-7'
+        },
+        reminder: null
+      },
+      {
+        id: this.generateId(),
+        title: 'Practice Gratitude',
+        daysTarget: 21,
+        categoryId: '21',
+        color: this.COLORS[4],
+        createdAt: today,
+        checkIns: {},
+        reminder: null
+      }
+    ];
   }
 
   // Utility methods
