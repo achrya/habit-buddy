@@ -1,0 +1,22 @@
+<section class="bg-white border border-slate-100 rounded-2xl p-4 mb-4">
+  <form (ngSubmit)="onSubmit()" class="flex gap-2">
+    <input 
+      [(ngModel)]="title"
+      name="title"
+      placeholder="e.g. Morning run, Read 20 pages" 
+      class="flex-1 border rounded px-3 py-2" />
+    <select 
+      [(ngModel)]="selectedCategory"
+      name="category"
+      class="border rounded px-2">
+      @for (category of categories; track category.value) {
+        <option [value]="category.value">{{ category.label }}</option>
+      }
+    </select>
+    <button 
+      type="submit" 
+      class="bg-emerald-600 text-white px-4 py-2 rounded">
+      Add
+    </button>
+  </form>
+</section>

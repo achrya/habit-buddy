@@ -1,0 +1,107 @@
+---
+alwaysApply: true
+---
+You are an expert in UI Design System, TypeScript, Angular, SCSS and scalable web application development. You write maintainable, performant, and accessible code following Angular and TypeScript best practices. Divide moderate tasks if required. Reverify errors once done skip if it small changes.
+
+## TypeScript Best Practices
+
+- Use strict type checking
+- Prefer type inference when the type is obvious
+- Avoid the `any` type; use `unknown` when type is uncertain
+
+## Angular Best Practices
+
+- Always use standalone components over NgModules
+- Must NOT set `standalone: true` inside Angular decorators. It's the default.
+- Implement lazy loading for feature routes
+- Do NOT use the `@HostBinding` and `@HostListener` decorators. Put host bindings inside the `host` object of the `@Component` or `@Directive` decorator instead
+- Use `NgOptimizedImage` for all static images.
+  - `NgOptimizedImage` does not work for inline base64 images.
+
+## Components
+
+- Keep components small and focused on a single responsibility
+- Avoid complex logic prefer simple logics.
+- Use `input()` and `output()` functions instead of decorators
+- Use `computed()` for derived state
+- Prefer Reactive forms instead of Template-driven ones
+- Do NOT use `ngClass`, use `class` bindings instead
+- Do NOT use `ngStyle`, use `style` bindings instead
+- Avoid using inline function expressions or direct function assignments to [attribute]
+
+## State Management
+
+- Use signals for local component state
+- Use `computed()` for derived state
+- Keep state transformations pure and predictable
+- Do NOT use `mutate` on signals, use `update` or `set` instead
+
+## Templates
+
+- Keep templates simple and avoid complex logic
+- Use native control flow (`@if`, `@for`, `@switch`) instead of `*ngIf`, `*ngFor`, `*ngSwitch`
+- Use the async pipe to handle observables
+
+## Style & CSS
+
+- Do not add unnecessary css or variable
+- Always prefer bootstrap utility classes and SCSS variables over customization.
+- Use customization only if there is strong need but use predefined set of SCSS variable.
+- Prefer updating bootstrap scss variable instead of creating own variable.
+- Avoid use of --var css variables
+
+## Services
+
+- Design services around a single responsibility
+- Use the `providedIn: 'root'` option for singleton services
+- Use the `inject()` function instead of constructor injection
+
+## Feature Naming style
+
+- If its big feature then create separate type folders like component, service, constants, interface.
+- Use type folder only if file is used more the one component otherwise put it in same component folder.
+
+Example 1: small and simple component.
+/user (component)
+├─ user.ts # User - Domain class
+├─ user.html # html file
+├─ user.scss # scss file
+├─ user-dto.ts # UserDto - API/DB data shape
+├─ user-api.ts # UserApi, UserUtil - Service for API calls ()
+├─ user-store.ts # UserStore - State management
+├─ user-card.ts # UI component
+
+Example 2: Feature and moderate or big components
+/task
+├─ components/ # UI parts
+│ ├─ task-list/  
+ │ │ ├─ task-list.ts # List page/component
+│ │ ├─ task-list.html # Template
+│ │ └─ task-list.scss # Styles
+│ │
+│ ├─ task-create/
+│ │ ├─ task-create.ts # Create form page/component
+│ │ ├─ task-create.html
+│ │ └─ task-create.scss
+│ │
+│ ├─ task-view/
+│ │ ├─ task-view.ts # View details
+│ │ ├─ task-view.html
+│ │ └─ task-view.scss
+│ │
+│ └─ task-edit/
+│ ├─ task-edit.ts # Edit form
+│ ├─ task-edit.html
+│ └─ task-edit.scss
+│
+├─ services/
+│ └─ task-api.ts # API client service (used across components)
+│
+├─ models/
+│ └─ task-dto.ts # Interface/DTO for Task data
+│
+└─ task-route.ts # (optional) Routed container page for /task
+
+## Finally
+
+- Cross check newly added code & remove unnecessary code.

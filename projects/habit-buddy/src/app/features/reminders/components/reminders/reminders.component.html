@@ -1,0 +1,40 @@
+<div class="view max-w-5xl mx-auto">
+  <!-- Header -->
+  <div class="bg-white border border-slate-100 rounded-2xl p-3 mb-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <div class="text-sm font-semibold">Upcoming Reminders</div>
+        <div class="text-xs text-slate-400">Reminders scheduled across your habits</div>
+      </div>
+      <div class="text-xs text-slate-500">{{ habitsWithReminders().length }}</div>
+    </div>
+  </div>
+
+  <!-- Reminders List -->
+  <div class="space-y-3">
+    @if (habitsWithReminders().length === 0) {
+      <div class="p-4 text-slate-400 bg-white border border-slate-100 rounded">
+        No reminders set.
+      </div>
+    } @else {
+      @for (habit of habitsWithReminders(); track habit.id) {
+        <div class="bg-white border rounded p-3 flex items-center justify-between">
+          <div>
+            <div class="font-semibold">{{ habit.title }}</div>
+            <div class="text-xs text-slate-400">
+              {{ habit.reminder!.time }} • 
+              {{ getDaysText(habit.reminder!.days) }}
+            </div>
+          </div>
+          <div>
+            <button 
+              (click)="editReminder(habit.id)"
+              class="px-3 py-1 rounded bg-slate-900 text-white text-sm">
+              Edit
+            </button>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</div>

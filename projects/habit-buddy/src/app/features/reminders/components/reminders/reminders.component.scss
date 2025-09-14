@@ -1,0 +1,37 @@
+// Reminders component specific styles
+.view {
+  .bg-white {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+}
+
+// Reminder items
+.space-y-3 > div {
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+}
+
+// Edit button
+button {
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: #1e293b !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Empty state
+.p-4.text-slate-400 {
+  border-color: #e2e8f0;
+  background-color: #f8fafc;
+}

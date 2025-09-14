@@ -1,0 +1,47 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+
+import { HabitFormComponent } from './habit-form.component';
+import { HabitCategory } from '../models/habit.model';
+
+describe('HabitFormComponent', () => {
+  let component: HabitFormComponent;
+  let fixture: ComponentFixture<HabitFormComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [HabitFormComponent, FormsModule]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(HabitFormComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should emit habitAdded event when form is submitted', () => {
+    spyOn(component.habitAdded, 'emit');
+    
+    component.title.set('Test Habit');
+    component.selectedCategory.set('21');
+    component.onSubmit();
+    
+    expect(component.habitAdded.emit).toHaveBeenCalledWith({
+      title: 'Test Habit',
+      categoryId: '21'
+    });
+  });
+
+  it('should reset form after submission', () => {
+    component.title.set('Test Habit');
+    component.selectedCategory.set('21');
+    component.onSubmit();
+    
+    expect(component.title()).toBe('');
+    expect(component.selectedCategory()).toBe('21');
+  });
+});

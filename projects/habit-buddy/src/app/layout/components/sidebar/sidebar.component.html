@@ -1,0 +1,47 @@
+<aside class="bg-white border-r p-4 flex flex-col">
+  <div class="mb-6">
+    <h1 class="text-2xl font-semibold">HabitBuddy</h1>
+    <div class="text-xs text-slate-500 mt-1">Reminders • Anti-cheat • Cross-device ready</div>
+  </div>
+
+  <nav class="flex-1 flex flex-col space-y-2">
+    <a 
+      routerLink="/goals" 
+      routerLinkActive="bg-slate-100"
+      class="nav-btn w-full text-left px-3 py-2 rounded hover:bg-slate-100">
+      🏠 Goals
+    </a>
+    <a 
+      routerLink="/calendar" 
+      routerLinkActive="bg-slate-100"
+      class="nav-btn w-full text-left px-3 py-2 rounded hover:bg-slate-100">
+      📅 Calendar
+    </a>
+    <a 
+      routerLink="/stats" 
+      routerLinkActive="bg-slate-100"
+      class="nav-btn w-full text-left px-3 py-2 rounded hover:bg-slate-100">
+      📊 Stats
+    </a>
+    <a 
+      routerLink="/reminders" 
+      routerLinkActive="bg-slate-100"
+      class="nav-btn w-full text-left px-3 py-2 rounded hover:bg-slate-100">
+      ⏰ Reminders
+    </a>
+    <div class="mt-4 text-xs text-slate-400">Local-first • No account required</div>
+  </nav>
+
+  <div class="mt-4">
+    <button 
+      (click)="exportData()"
+      class="w-full bg-slate-900 text-white px-3 py-2 rounded">
+      Export JSON
+    </button>
+    <button 
+      (click)="importData()"
+      class="w-full mt-2 border px-3 py-2 rounded">
+      Import JSON
+    </button>
+  </div>
+</aside>

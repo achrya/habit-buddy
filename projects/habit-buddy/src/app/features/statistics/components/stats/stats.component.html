@@ -1,0 +1,39 @@
+<div class="view max-w-5xl mx-auto">
+  <!-- Overview Stats -->
+  <div class="bg-white border border-slate-100 rounded-2xl p-3 mb-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <div class="text-sm font-semibold">Overview</div>
+        <div class="text-xs text-slate-400">Quick metrics across all habits</div>
+      </div>
+      <div class="text-xs text-slate-500">{{ habits().length }} habits</div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 text-xs mt-3">
+      <div class="p-3 bg-slate-50 rounded-lg text-center">
+        <div class="text-2xl font-semibold">{{ habitService.totalCompleted() }}</div>
+        <div class="text-slate-400">Total checks</div>
+      </div>
+      <div class="p-3 bg-slate-50 rounded-lg text-center">
+        <div class="text-2xl font-semibold">{{ habitService.averageCompletion() }}%</div>
+        <div class="text-slate-400">Avg completion</div>
+      </div>
+      <div class="p-3 bg-slate-50 rounded-lg text-center">
+        <div class="text-2xl font-semibold">{{ habitService.bestCurrentStreak() }}</div>
+        <div class="text-slate-400">Best current streak</div>
+      </div>
+      <div class="p-3 bg-slate-50 rounded-lg text-center">
+        <div class="text-2xl font-semibold">{{ habitService.bestLongestStreak() }}</div>
+        <div class="text-slate-400">Longest streak</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly Trend Chart -->
+  <div class="bg-white border border-slate-100 rounded-2xl p-3">
+    <div class="text-sm font-semibold mb-2">Weekly trend</div>
+    <div style="height:160px;">
+      <app-chart [data]="habitService.weeklyTrend()" />
+    </div>
+  </div>
+</div>

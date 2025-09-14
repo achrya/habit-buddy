@@ -1,0 +1,98 @@
+{
+    "habits": [
+      {
+        "title": "Morning Jog",
+        "targetDays": 21,
+        "daysCompleted": [
+          {"date": "2025-09-01"},
+          {"date": "2025-09-02"},
+          {"date": "2025-09-03"}
+        ],
+        "lastCheckin": "2025-09-03",
+        "reminder": {"time": "07:00", "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]}
+      },
+      {
+        "title": "Read 10 Pages",
+        "targetDays": 40,
+        "daysCompleted": [
+          {"date": "2025-09-01"},
+          {"date": "2025-09-04"}
+        ],
+        "lastCheckin": "2025-09-04",
+        "reminder": {"time": "20:00", "days": ["Mon", "Wed", "Fri", "Sun"]}
+      },
+      {
+        "title": "Meditation",
+        "targetDays": 100,
+        "daysCompleted": [
+          {"date": "2025-09-02"},
+          {"date": "2025-09-03"},
+          {"date": "2025-09-04"},
+          {"date": "2025-09-05"}
+        ],
+        "lastCheckin": "2025-09-05",
+        "reminder": {"time": "06:30", "days": ["Daily"]}
+      },
+      {
+        "title": "Drink 2L Water",
+        "targetDays": 30,
+        "daysCompleted": [
+          {"date": "2025-09-01"}
+        ],
+        "lastCheckin": "2025-09-01",
+        "reminder": {"time": "09:00", "days": ["Daily"]}
+      },
+      {
+        "title": "No Sugar",
+        "targetDays": 21,
+        "daysCompleted": [],
+        "lastCheckin": null,
+        "reminder": {"time": "08:00", "days": ["Daily"]}
+      },
+      {
+        "title": "Gratitude Journal",
+        "targetDays": 50,
+        "daysCompleted": [
+          {"date": "2025-09-02"}
+        ],
+        "lastCheckin": "2025-09-02",
+        "reminder": {"time": "21:00", "days": ["Daily"]}
+      },
+      {
+        "title": "Sleep by 11 PM",
+        "targetDays": 40,
+        "daysCompleted": [
+          {"date": "2025-09-03"}
+        ],
+        "lastCheckin": "2025-09-03",
+        "reminder": {"time": "23:00", "days": ["Daily"]}
+      },
+      {
+        "title": "Practice Coding",
+        "targetDays": 60,
+        "daysCompleted": [
+          {"date": "2025-09-01"},
+          {"date": "2025-09-02"}
+        ],
+        "lastCheckin": "2025-09-02",
+        "reminder": {"time": "18:00", "days": ["Mon", "Tue", "Thu", "Sat"]}
+      },
+      {
+        "title": "Healthy Breakfast",
+        "targetDays": 30,
+        "daysCompleted": [],
+        "lastCheckin": null,
+        "reminder": {"time": "08:30", "days": ["Daily"]}
+      },
+      {
+        "title": "No Social Media Before 10 AM",
+        "targetDays": 21,
+        "daysCompleted": [
+          {"date": "2025-09-04"}
+        ],
+        "lastCheckin": "2025-09-04",
+        "reminder": {"time": "10:00", "days": ["Daily"]}
+      }
+    ]
+  }
+  

@@ -1,0 +1,46 @@
+<article class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
+  <div class="flex items-start gap-3">
+    <div 
+      [style]="'width:10px;height:10px;background:' + habit.color + ';border-radius:4px;margin-top:6px'">
+    </div>
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm font-semibold truncate">{{ habit.title }}</h3>
+        <div class="text-xs text-slate-500">
+          {{ completedCount }}/{{ habit.daysTarget }}
+        </div>
+      </div>
+      <p class="text-xs text-slate-400 mt-1">
+        Current streak: {{ stats.current }} • Target: {{ habit.daysTarget }} days
+      </p>
+      @if (habit.reminder) {
+        <div class="text-xs text-slate-400 mt-1">
+          Reminder: {{ habit.reminder.time }} • 
+          {{ getDaysText(habit.reminder.days) }}
+        </div>
+      }
+      <div class="mt-3 flex gap-2 flex-wrap">
+        <button 
+          (click)="onCheckin()"
+          [class]="'px-3 py-1 rounded-full text-sm ' + (isCheckedToday ? 'bg-emerald-600 text-white' : 'bg-slate-50 text-slate-700')">
+          {{ isCheckedToday ? 'Checked' : 'Check-in' }}
+        </button>
+        <button 
+          (click)="onEditReminder()"
+          class="px-3 py-1 rounded-full text-sm bg-yellow-50 text-yellow-700">
+          ⏰ Reminder
+        </button>
+        <button 
+          (click)="onViewCalendar()"
+          class="px-3 py-1 rounded-full text-sm bg-blue-50 text-blue-700">
+          View Calendar
+        </button>
+        <button 
+          (click)="onRemove()"
+          class="px-3 py-1 rounded-full text-sm text-slate-500 border border-slate-100">
+          Remove
+        </button>
+      </div>
+    </div>
+  </div>
+</article>

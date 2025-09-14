@@ -2,12 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>HabitBuddy</title>
+  <title>HabitBuddy - Responsive Desktop & Mobile</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  
+  <!-- External dependencies -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  
+  <!-- Confetti canvas overlay -->
+  <canvas id="confetti-canvas" class="pointer-events-none fixed inset-0 z-50"></canvas>
 </head>
-<body>
+<body class="bg-gray-50 text-slate-900 min-h-screen safe-area">
   <app-root></app-root>
 </body>
 </html>

@@ -1,0 +1,38 @@
+// Habit card specific styles
+article {
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+}
+
+// Action buttons
+button {
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Check-in button states
+.bg-emerald-600 {
+  background-color: #059669 !important;
+  
+  &:hover {
+    background-color: #047857 !important;
+  }
+}
+
+.bg-slate-50 {
+  &:hover {
+    background-color: #f1f5f9 !important;
+  }
+}

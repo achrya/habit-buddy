@@ -1,0 +1,25 @@
+<div class="view max-w-5xl mx-auto">
+  <!-- Add Habit Form -->
+  <app-habit-form 
+    (habitAdded)="onHabitAdded($event)"
+    [categories]="categories()" />
+  
+  <!-- Habits List -->
+  <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+    @if (habits().length === 0) {
+      <div class="col-span-full p-6 text-center text-slate-400 border border-dashed rounded">
+        No habits yet — add one above.
+      </div>
+    } @else {
+      @for (habit of habits(); track habit.id) {
+        <app-habit-card 
+          [habit]="habit"
+          [stats]="getHabitStats(habit)"
+          (checkin)="onCheckin(habit.id)"
+          (remove)="onRemoveHabit(habit.id)"
+          (editReminder)="onEditReminder(habit.id)"
+          (viewCalendar)="onViewCalendar(habit.id)" />
+      }
+    }
+  </section>
+</div>

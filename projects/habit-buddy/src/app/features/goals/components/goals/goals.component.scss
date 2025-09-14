@@ -1,0 +1,22 @@
+// Goals component specific styles
+.view {
+  .col-span-full {
+    border-color: #e2e8f0;
+    border-style: dashed;
+  }
+}
+
+// Habit grid responsiveness
+.grid {
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+  
+  @media (min-width: 641px) and (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @media (min-width: 1025px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

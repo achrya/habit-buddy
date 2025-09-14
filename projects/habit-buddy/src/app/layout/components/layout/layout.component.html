@@ -1,0 +1,21 @@
+<div class="h-screen flex flex-col md:flex-row">
+  <!-- Sidebar (desktop only) -->
+  <app-sidebar class="hidden md:flex md:flex-col w-72 md:h-full" />
+  
+  <!-- Main content -->
+  <main class="flex-1 p-4 md:p-6 overflow-y-auto md:h-full">
+    <!-- Header (mobile) -->
+    <app-header class="md:hidden mb-4" />
+    
+    <router-outlet />
+  </main>
+</div>
+
+<!-- Bottom nav (mobile) -->
+<app-bottom-nav class="md:hidden fixed left-0 right-0 bottom-0" />
+
+<!-- Modals area -->
+<div id="modals"></div>
+
+<!-- Audio for notifications -->
+<audio id="ding" src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg"></audio>

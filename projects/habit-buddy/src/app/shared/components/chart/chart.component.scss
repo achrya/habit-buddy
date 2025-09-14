@@ -1,0 +1,13 @@
+// Chart component specific styles
+canvas {
+  border-radius: 8px;
+  max-width: 100%;
+  height: auto;
+}
+
+// Responsive chart
+@media (max-width: 768px) {
+  canvas {
+    height: 120px !important;
+  }
+}

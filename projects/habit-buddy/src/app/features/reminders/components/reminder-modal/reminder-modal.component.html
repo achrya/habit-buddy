@@ -1,0 +1,58 @@
+@if (isOpen()) {
+  <div class="fixed inset-0 z-60 flex items-end md:items-center justify-center">
+    <div class="absolute inset-0 bg-black opacity-30" (click)="close()"></div>
+    <div class="relative w-full md:w-2/3 bg-white rounded-t-2xl md:rounded-2xl p-4 max-h-[80vh] overflow-auto">
+      <div class="flex items-center justify-between mb-3">
+        <div class="text-lg font-semibold">Reminder - {{ habitTitle() }}</div>
+        <button (click)="close()" class="text-slate-500">Close</button>
+      </div>
+      
+      <div class="mb-3">
+        <label class="block text-xs text-slate-500 mb-1">Time</label>
+        <input 
+          [(ngModel)]="reminderForm.time"
+          name="time"
+          type="time" 
+          class="w-full border rounded p-2 text-sm" />
+      </div>
+      
+      <div class="mb-3">
+        <label class="block text-xs text-slate-500 mb-1">Days</label>
+        <div class="flex flex-wrap gap-2">
+          @for (day of weekdayNames; track $index) {
+            <button 
+              (click)="toggleDay($index)"
+              [class]="'px-2 py-1 rounded-full border text-xs ' + (isDaySelected($index) ? 'bg-slate-900 text-white' : 'bg-white')">
+              {{ day }}
+            </button>
+          }
+        </div>
+      </div>
+      
+      <div class="mb-3">
+        <label class="block text-xs text-slate-500 mb-1">Window (minutes)</label>
+        <input 
+          [(ngModel)]="reminderForm.window"
+          name="window"
+          type="number" 
+          min="5" 
+          max="1440" 
+          step="5" 
+          class="w-full border rounded p-2 text-sm" />
+      </div>
+      
+      <div class="flex gap-2">
+        <button 
+          (click)="save()"
+          class="bg-emerald-600 text-white px-3 py-2 rounded text-sm">
+          Save
+        </button>
+        <button 
+          (click)="remove()"
+          class="bg-red-50 text-red-600 px-3 py-2 rounded text-sm">
+          {{ hasExistingReminder() ? 'Remove Reminder' : 'Cancel' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
