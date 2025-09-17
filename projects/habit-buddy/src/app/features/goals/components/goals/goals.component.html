@@ -2,7 +2,7 @@
   <!-- Add Habit Form -->
   <app-habit-form 
     (habitAdded)="onHabitAdded($event)"
-    [categories]="categories()" />
+    (openReminderModal)="onOpenReminderModal()" />
   
   <!-- Habits List -->
   <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
@@ -23,12 +23,21 @@
     }
   </section>
 
-  <!-- Reminder Modal -->
+  <!-- Reminder Modal for existing habits -->
   <app-reminder-modal
     [habitTitle]="selectedHabitTitle"
     [habitId]="selectedHabitId"
     [existingReminder]="selectedHabitReminder()"
     (saveReminder)="onSaveReminder($event)"
     (closeModal)="onCloseReminderModal()">
+  </app-reminder-modal>
+
+  <!-- Reminder Modal for new habit form -->
+  <app-reminder-modal
+    [habitTitle]="formHabitTitle"
+    [habitId]="formHabitId"
+    [existingReminder]="null"
+    (saveReminder)="onSaveFormReminder($event)"
+    (closeModal)="onCloseFormReminderModal()">
   </app-reminder-modal>
 </div>

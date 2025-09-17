@@ -38,14 +38,14 @@ describe('GoalsComponent', () => {
   });
 
   it('should add a habit when habitAdded event is triggered', () => {
-    const mockHabit = { title: 'Test Habit', categoryId: '21' };
-    const mockCreatedHabit = { id: '1', title: 'Test Habit', daysTarget: 21, categoryId: '21', color: '#ff6b6b', createdAt: '2023-01-01', checkIns: {}, reminder: null };
+    const mockHabit = { title: 'Test Habit' };
+    const mockCreatedHabit = { id: '1', title: 'Test Habit', daysTarget: 30, color: '#ff6b6b', createdAt: '2023-01-01', checkIns: {}, reminder: null, badge: null };
     
     habitService.addHabit.and.returnValue(mockCreatedHabit);
     
     (component as any).onHabitAdded(mockHabit);
     
-    expect(habitService.addHabit).toHaveBeenCalledWith('Test Habit', 21, '21');
+    expect(habitService.addHabit).toHaveBeenCalledWith('Test Habit');
     expect(notificationService.playBell).toHaveBeenCalled();
     expect(notificationService.triggerConfetti).toHaveBeenCalled();
   });

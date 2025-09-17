@@ -1,22 +1,46 @@
-<section class="bg-white border border-slate-100 rounded-2xl p-4 mb-4">
+<section class="bg-white border border-slate-100 rounded-2xl p-4 mb-4 relative">
   <form (ngSubmit)="onSubmit()" class="flex gap-2">
-    <input 
-      [(ngModel)]="title"
-      name="title"
-      placeholder="e.g. Morning run, Read 20 pages" 
-      class="flex-1 border rounded px-3 py-2" />
-    <select 
-      [(ngModel)]="selectedCategory"
-      name="category"
-      class="border rounded px-2">
-      @for (category of categories; track category.value) {
-        <option [value]="category.value">{{ category.label }}</option>
-      }
-    </select>
-    <button 
-      type="submit" 
-      class="bg-emerald-600 text-white px-4 py-2 rounded">
-      Add
+    <div class="relative flex-1">
+      <input
+        [(ngModel)]="title"
+        name="title"
+        placeholder="e.g. Morning run, Read 20 pages, Drink water"
+        class="w-full border rounded-lg px-4 py-3 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+      />
+      <button
+        type="button"
+        (click)="hasInputContent && onOpenReminderModal()"
+        [disabled]="!hasInputContent"
+        [class]="
+          'absolute right-1 top-1/2 -translate-y-1/2 p-2 bg-transparent border-none rounded cursor-pointer flex items-center justify-center ' +
+          (!hasInputContent
+            ? 'text-slate-300 cursor-not-allowed opacity-50'
+            : hasReminder
+              ? 'text-blue-600 hover:text-blue-700 hover:bg-black/5'
+              : 'text-slate-400 hover:text-slate-600 hover:bg-black/5')
+        "
+        [title]="!hasInputContent ? 'Enter habit title first' : hasReminder ? 'Edit reminder' : 'Set reminder'"
+      >
+        ⏰
+      </button>
+    </div>
+    <button
+      type="submit"
+      [disabled]="!hasInputContent"
+      [class]="
+        'px-6 py-3 rounded-lg font-medium ' +
+        (!hasInputContent
+          ? 'bg-slate-300 text-slate-500 cursor-not-allowed'
+          : 'bg-emerald-600 hover:bg-emerald-700 text-white transition-colors')
+      "
+    >
+      ✨ Add Habit
     </button>
   </form>
+
+  <!-- Reminder icon absolutely positioned inside input visual area -->
+
+  <div class="text-xs text-slate-400 mt-3 text-center">
+    Categories and badges will be assigned automatically as you progress! 🎯
+  </div>
 </section>

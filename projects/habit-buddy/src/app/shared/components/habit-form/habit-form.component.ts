@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
+import { Component, EventEmitter, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HabitCategory } from '../../models/habit.model';
+import { Reminder } from '../../models/habit.model';
 
 @Component({
   selector: 'app-habit-form',
@@ -11,11 +11,23 @@ import { HabitCategory } from '../../models/habit.model';
   styleUrl: './habit-form.component.scss'
 })
 export class HabitFormComponent {
-  @Input() categories: HabitCategory[] = [];
-  @Output() habitAdded = new EventEmitter<{ title: string; categoryId: string }>();
+  @Output() habitAdded = new EventEmitter<{ title: string; reminder?: Reminder | null }>();
+  @Output() openReminderModal = new EventEmitter<void>();
 
   protected title = signal('');
-  protected selectedCategory = signal('21'); // Default to Beginner
+  protected reminder = signal<Reminder | null>(null);
+
+  protected get hasReminder(): boolean {
+    return this.reminder() !== null;
+  }
+
+  protected get hasInputContent(): boolean {
+    return this.title().trim().length > 0;
+  }
+
+  protected onOpenReminderModal(): void {
+    this.openReminderModal.emit();
+  }
 
   protected onSubmit(): void {
     const title = this.title().trim();
@@ -23,11 +35,16 @@ export class HabitFormComponent {
 
     this.habitAdded.emit({
       title,
-      categoryId: this.selectedCategory()
+      reminder: this.reminder()
     });
 
     // Reset form
     this.title.set('');
-    this.selectedCategory.set('21');
+    this.reminder.set(null);
+  }
+
+  // Method to be called from parent when reminder is set
+  setReminder(reminder: Reminder | null): void {
+    this.reminder.set(reminder);
   }
 }

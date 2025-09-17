@@ -1,44 +1,118 @@
-<article class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
+<article class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
   <div class="flex items-start gap-3">
     <div 
-      [style]="'width:10px;height:10px;background:' + habit.color + ';border-radius:4px;margin-top:6px'">
+      [style]="'width:12px;height:12px;background:' + habit.color + ';border-radius:6px;margin-top:6px'">
     </div>
     <div class="flex-1 min-w-0">
-      <div class="flex items-center justify-between">
+      <!-- Header with title and progress -->
+      <div class="flex items-center justify-between mb-2">
         <h3 class="text-sm font-semibold truncate">{{ habit.title }}</h3>
-        <div class="text-xs text-slate-500">
+        <div class="text-xs font-medium text-slate-600">
           {{ completedCount }}/{{ habit.daysTarget }}
         </div>
       </div>
-      <p class="text-xs text-slate-400 mt-1">
-        Current streak: {{ stats.current }} • Target: {{ habit.daysTarget }} days
-      </p>
+
+      <!-- Progress visualization -->
+      <div class="flex items-center gap-2 mb-3">
+        <!-- Progress dots -->
+        <div class="flex gap-1">
+          @for (dot of getProgressDots(); track $index) {
+            <div 
+              class="w-2 h-2 rounded-full transition-all duration-300"
+              [class]="dot.completed ? 'opacity-100' : 'opacity-30'"
+              [style]="'background: ' + (dot.completed ? habit.color : '#e2e8f0')">
+            </div>
+          }
+        </div>
+        <!-- Completion circle -->
+        <div class="relative w-8 h-8 ml-2">
+          <svg class="w-8 h-8 transform -rotate-90" viewBox="0 0 36 36">
+            <!-- Background circle -->
+            <path
+              d="M18 2.0845
+                a 15.9155 15.9155 0 0 1 0 31.831
+                a 15.9155 15.9155 0 0 1 0 -31.831"
+              fill="none"
+              stroke="#e2e8f0"
+              stroke-width="2"/>
+            <!-- Progress circle -->
+            <path
+              d="M18 2.0845
+                a 15.9155 15.9155 0 0 1 0 31.831
+                a 15.9155 15.9155 0 0 1 0 -31.831"
+              fill="none"
+              [attr.stroke]="habit.color"
+              stroke-width="2"
+              [attr.stroke-dasharray]="completionPercentage + ', 100'"
+              class="transition-all duration-500 ease-in-out"/>
+          </svg>
+          <!-- Percentage text in center -->
+          <div class="absolute inset-0 flex items-center justify-center">
+            <span class="text-xs font-bold" [style]="'color: ' + habit.color">
+              {{ completionPercentage }}%
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Badge and milestone status -->
+      <div class="flex items-center gap-2 mb-2">
+        @if (habit.badge) {
+          <div class="flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200">
+            <span>{{ habit.badge.icon }}</span>
+            <span class="text-blue-700">{{ habit.badge.name }}</span>
+          </div>
+        }
+        <div class="text-xs font-medium" [class]="completionPercentage >= 100 ? 'text-green-600' : completionPercentage >= 75 ? 'text-orange-500' : 'text-blue-600'">
+          {{ milestoneStatus }}
+        </div>
+      </div>
+
+      <!-- Streak and stats -->
+      <div class="flex items-center justify-between mb-2">
+        <div class="text-xs font-medium" [class]="stats.current >= 7 ? 'text-red-500' : stats.current >= 3 ? 'text-orange-500' : 'text-slate-500'">
+          {{ streakStatus }}
+        </div>
+        @if (daysRemaining > 0) {
+          <div class="text-xs text-slate-500">
+            {{ daysRemaining }} days left
+          </div>
+        }
+      </div>
+
+      <!-- Reminder info -->
       @if (habit.reminder) {
-        <div class="text-xs text-slate-400 mt-1">
-          Reminder: {{ habit.reminder.time }} • 
-          {{ getDaysText(habit.reminder.days) }}
+        <div class="text-xs text-slate-400 mb-3 flex items-center gap-1">
+          <span>⏰</span>
+          <span>{{ habit.reminder.time }} • {{ getDaysText(habit.reminder.days) }}</span>
         </div>
       }
-      <div class="mt-3 flex gap-2 flex-wrap">
+
+      <!-- Action buttons with icons -->
+      <div class="flex gap-1">
         <button 
           (click)="onCheckin()"
-          [class]="'px-3 py-1 rounded-full text-sm ' + (isCheckedToday ? 'bg-emerald-600 text-white' : 'bg-slate-50 text-slate-700')">
-          {{ isCheckedToday ? 'Checked' : 'Check-in' }}
+          [class]="'p-2 rounded-full text-sm transition-all ' + (isCheckedToday ? 'bg-emerald-600 text-white shadow-md' : 'bg-slate-50 text-slate-700 hover:bg-slate-100')"
+          [title]="isCheckedToday ? 'Already checked today' : 'Check-in for today'">
+          {{ isCheckedToday ? '✅' : '⭕' }}
         </button>
         <button 
           (click)="onEditReminder()"
-          class="px-3 py-1 rounded-full text-sm bg-yellow-50 text-yellow-700">
-          ⏰ Reminder
+          class="p-2 rounded-full text-sm bg-yellow-50 text-yellow-700 hover:bg-yellow-100 transition-all"
+          title="Edit reminder">
+          ⏰
         </button>
         <button 
           (click)="onViewCalendar()"
-          class="px-3 py-1 rounded-full text-sm bg-blue-50 text-blue-700">
-          View Calendar
+          class="p-2 rounded-full text-sm bg-blue-50 text-blue-700 hover:bg-blue-100 transition-all"
+          title="View calendar">
+          📅
         </button>
         <button 
           (click)="onRemove()"
-          class="px-3 py-1 rounded-full text-sm text-slate-500 border border-slate-100">
-          Remove
+          class="p-2 rounded-full text-sm text-slate-500 hover:bg-red-50 hover:text-red-600 transition-all"
+          title="Remove habit">
+          🗑️
         </button>
       </div>
     </div>

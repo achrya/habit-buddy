@@ -1,6 +1,6 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Habit, HabitStats, Reminder, WeeklyTrend, MonthlyTrend, YearlyTrend } from '../models/habit.model';
+import { Habit, HabitStats, Reminder, WeeklyTrend, MonthlyTrend, YearlyTrend, HabitBadge, BadgeLevel } from '../models/habit.model';
 
 @Injectable({
   providedIn: 'root'
@@ -139,21 +139,90 @@ export class HabitService {
     localStorage.setItem(this.LS_KEY, JSON.stringify(habits));
   }
 
-  addHabit(title: string, daysTarget: number, categoryId: string): Habit {
+  addHabit(title: string, reminder?: Reminder | null): Habit {
     const habit: Habit = {
       id: this.generateId(),
       title: title.trim(),
-      daysTarget,
-      categoryId,
+      daysTarget: 30, // Default 30 days - will be updated based on progress
       color: this.pickColor(this.habits().length),
       createdAt: new Date().toISOString().slice(0, 10),
       checkIns: {},
-      reminder: null
+      reminder: reminder || null,
+      badge: null // Will be assigned as user progresses
     };
 
     const updatedHabits = [habit, ...this.habits()];
     this.habitsSubject.next(updatedHabits);
     return habit;
+  }
+
+  private getBadgeForProgress(completedDays: number): HabitBadge | null {
+    if (completedDays >= 100) {
+      return {
+        level: BadgeLevel.MASTER,
+        name: 'Master',
+        description: '100+ days completed!',
+        icon: '👑',
+        daysRequired: 100,
+        achievedAt: new Date().toISOString()
+      };
+    } else if (completedDays >= 50) {
+      return {
+        level: BadgeLevel.EXPERT,
+        name: 'Expert',
+        description: '50+ days completed!',
+        icon: '🏆',
+        daysRequired: 50,
+        achievedAt: new Date().toISOString()
+      };
+    } else if (completedDays >= 21) {
+      return {
+        level: BadgeLevel.ADVANCED,
+        name: 'Advanced',
+        description: '21+ days completed!',
+        icon: '⭐',
+        daysRequired: 21,
+        achievedAt: new Date().toISOString()
+      };
+    } else if (completedDays >= 7) {
+      return {
+        level: BadgeLevel.INTERMEDIATE,
+        name: 'Intermediate',
+        description: '7+ days completed!',
+        icon: '🎯',
+        daysRequired: 7,
+        achievedAt: new Date().toISOString()
+      };
+    } else if (completedDays >= 3) {
+      return {
+        level: BadgeLevel.BEGINNER,
+        name: 'Beginner',
+        description: '3+ days completed!',
+        icon: '🌱',
+        daysRequired: 3,
+        achievedAt: new Date().toISOString()
+      };
+    }
+    return null;
+  }
+
+  private updateHabitBadge(habit: Habit): Habit {
+    const completedDays = Object.keys(habit.checkIns || {}).length;
+    const newBadge = this.getBadgeForProgress(completedDays);
+    
+    // Update daysTarget based on current badge level
+    let newDaysTarget = habit.daysTarget;
+    if (completedDays >= 100) newDaysTarget = 100;
+    else if (completedDays >= 50) newDaysTarget = 50;
+    else if (completedDays >= 21) newDaysTarget = 21;
+    else if (completedDays >= 7) newDaysTarget = 7;
+    else newDaysTarget = 3;
+
+    return {
+      ...habit,
+      badge: newBadge,
+      daysTarget: newDaysTarget
+    };
   }
 
   removeHabit(id: string): void {
@@ -188,11 +257,13 @@ export class HabitService {
     const success = await this.addCheckin(habitId, today);
     if (success) {
       const hash = await this.generateCheckinHash(habitId, today);
-      const updatedHabits = this.habits().map(h => 
-        h.id === habitId 
-          ? { ...h, checkIns: { ...h.checkIns, [today]: hash } }
-          : h
-      );
+      const updatedHabits = this.habits().map(h => {
+        if (h.id === habitId) {
+          const updatedHabit = { ...h, checkIns: { ...h.checkIns, [today]: hash } };
+          return this.updateHabitBadge(updatedHabit);
+        }
+        return h;
+      });
       this.habitsSubject.next(updatedHabits);
     }
 

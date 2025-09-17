@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HabitCardComponent, HabitFormComponent } from '../../../../shared';
-import { Habit, HabitCategory, Reminder } from '../../../../shared/models/habit.model';
+import { Habit, Reminder } from '../../../../shared/models/habit.model';
 import { HabitService, NotificationService } from '../../../../shared';
 import { ReminderModalComponent } from '../../../reminders/components/reminder-modal/reminder-modal.component';
 
@@ -15,6 +15,7 @@ import { ReminderModalComponent } from '../../../reminders/components/reminder-m
 })
 export class GoalsComponent implements OnInit {
   @ViewChild(ReminderModalComponent) reminderModal!: ReminderModalComponent;
+  @ViewChild(HabitFormComponent) habitForm!: HabitFormComponent;
   
   protected readonly habits = signal<Habit[]>([]);
   
@@ -23,13 +24,10 @@ export class GoalsComponent implements OnInit {
   protected readonly selectedHabitTitle = signal('');
   protected readonly selectedHabitReminder = signal<Reminder | null>(null);
   
-  protected readonly categories = signal<HabitCategory[]>([
-    { value: '7', label: 'Micro (7d)', days: 7 },
-    { value: '21', label: 'Beginner (21d)', days: 21 },
-    { value: '30', label: 'Starter (30d)', days: 30 },
-    { value: '50', label: 'Intermediate (50d)', days: 50 },
-    { value: '100', label: 'Pro (100d)', days: 100 }
-  ]);
+  // Form reminder modal state
+  protected readonly isFormReminderModalOpen = signal(false);
+  protected readonly formHabitTitle = signal('New Habit');
+  protected readonly formHabitId = signal('form-reminder');
 
   constructor(
     private habitService: HabitService,
@@ -51,13 +49,10 @@ export class GoalsComponent implements OnInit {
     this.checkReminders();
   }
 
-  protected onHabitAdded(habit: { title: string; categoryId: string }): void {
-    const category = this.categories().find(c => c.value === habit.categoryId);
-    if (category) {
-      const newHabit = this.habitService.addHabit(habit.title, category.days, habit.categoryId);
-      this.notificationService.playBell();
-      this.notificationService.triggerConfetti();
-    }
+  protected onHabitAdded(habit: { title: string; reminder?: Reminder | null }): void {
+    const newHabit = this.habitService.addHabit(habit.title, habit.reminder);
+    this.notificationService.playBell();
+    this.notificationService.triggerConfetti();
   }
 
   protected async onCheckin(habitId: string): Promise<void> {
@@ -101,6 +96,21 @@ export class GoalsComponent implements OnInit {
     this.selectedHabitId.set('');
     this.selectedHabitTitle.set('');
     this.selectedHabitReminder.set(null);
+  }
+
+  protected onOpenReminderModal(): void {
+    this.isFormReminderModalOpen.set(true);
+    this.reminderModal.open();
+  }
+
+  protected onSaveFormReminder(event: { habitId: string; reminder: Reminder | null }): void {
+    // Set the reminder in the habit form
+    this.habitForm.setReminder(event.reminder);
+    this.onCloseFormReminderModal();
+  }
+
+  protected onCloseFormReminderModal(): void {
+    this.isFormReminderModalOpen.set(false);
   }
 
   protected getHabitStats(habit: Habit) {

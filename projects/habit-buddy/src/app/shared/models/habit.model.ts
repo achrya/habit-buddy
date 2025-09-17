@@ -2,11 +2,29 @@ export interface Habit {
   id: string;
   title: string;
   daysTarget: number;
-  categoryId: string;
+  categoryId?: string; // Optional - will be assigned automatically
+  badge?: HabitBadge | null; // Current badge level
   color: string;
   createdAt: string;
   checkIns: Record<string, string>;
   reminder?: Reminder | null;
+}
+
+export interface HabitBadge {
+  level: BadgeLevel;
+  name: string;
+  description: string;
+  icon: string;
+  daysRequired: number;
+  achievedAt?: string;
+}
+
+export enum BadgeLevel {
+  BEGINNER = 'beginner',
+  INTERMEDIATE = 'intermediate',
+  ADVANCED = 'advanced',
+  EXPERT = 'expert',
+  MASTER = 'master'
 }
 
 export interface Reminder {
