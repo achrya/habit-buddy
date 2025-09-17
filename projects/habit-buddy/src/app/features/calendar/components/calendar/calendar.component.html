@@ -6,15 +6,25 @@
       <div class="text-xs text-slate-400">
         Toggle per-habit mode to edit/check today only.
         @if (habits().length === 0) {
-          <span class="text-orange-500 ml-2">⚠️ No habits found. Create habits in Goals page first.</span>
+          <span class="text-orange-500 ml-2 flex items-center gap-1">
+            <lucide-icon [img]="AlertTriangleIcon" size="14"></lucide-icon>
+            No habits found. Create habits in Goals page first.
+          </span>
         } @else {
-          <span class="text-green-600 ml-2">✅ {{ habits().length }} habits loaded</span>
+          <span class="text-green-600 ml-2 flex items-center gap-1">
+            <lucide-icon [img]="CheckCircleIcon" size="14"></lucide-icon>
+            {{ habits().length }} habits loaded
+          </span>
         }
       </div>
     </div>
     <div class="flex gap-2">
-      <button (click)="previousMonth()" class="px-2 py-1 rounded bg-slate-50">◀</button>
-      <button (click)="nextMonth()" class="px-2 py-1 rounded bg-slate-50">▶</button>
+      <button (click)="previousMonth()" class="px-2 py-1 rounded bg-slate-50 flex items-center justify-center">
+        <lucide-icon [img]="ChevronLeftIcon" size="16"></lucide-icon>
+      </button>
+      <button (click)="nextMonth()" class="px-2 py-1 rounded bg-slate-50 flex items-center justify-center">
+        <lucide-icon [img]="ChevronRightIcon" size="16"></lucide-icon>
+      </button>
     </div>
   </div>
 

@@ -4,11 +4,12 @@ import { Router, RouterModule } from '@angular/router';
 import { HabitService } from '../../../shared/services/habit.service';
 import { ImportService, DuplicateAction } from '../../../shared/components/import-modal/import.service';
 import { ImportModalComponent } from '../../../shared/components/import-modal/import-modal.component';
+import { LucideAngularModule, Home, Calendar, BarChart3, Clock, Download, Upload, Database, Trash2 } from 'lucide-angular';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterModule, ImportModalComponent],
+  imports: [CommonModule, RouterModule, ImportModalComponent, LucideAngularModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
 })
@@ -16,6 +17,16 @@ export class SidebarComponent {
   protected isImportModalOpen = signal(false);
   protected pendingImportData: string | null = null;
   protected duplicateHabits: string[] = [];
+
+  // Lucide icons
+  protected readonly HomeIcon = Home;
+  protected readonly CalendarIcon = Calendar;
+  protected readonly BarChart3Icon = BarChart3;
+  protected readonly ClockIcon = Clock;
+  protected readonly DownloadIcon = Download;
+  protected readonly UploadIcon = Upload;
+  protected readonly DatabaseIcon = Database;
+  protected readonly Trash2Icon = Trash2;
 
   constructor(
     private habitService: HabitService,

@@ -63,14 +63,16 @@
             <span class="text-blue-700">{{ habit.badge.name }}</span>
           </div>
         }
-        <div class="text-xs font-medium" [class]="completionPercentage >= 100 ? 'text-green-600' : completionPercentage >= 75 ? 'text-orange-500' : 'text-blue-600'">
+        <div class="text-xs font-medium flex items-center gap-1" [class]="completionPercentage >= 100 ? 'text-green-600' : completionPercentage >= 75 ? 'text-orange-500' : 'text-blue-600'">
+          <lucide-icon [img]="milestoneIcon" size="12"></lucide-icon>
           {{ milestoneStatus }}
         </div>
       </div>
 
       <!-- Streak and stats -->
       <div class="flex items-center justify-between mb-2">
-        <div class="text-xs font-medium" [class]="stats.current >= 7 ? 'text-red-500' : stats.current >= 3 ? 'text-orange-500' : 'text-slate-500'">
+        <div class="text-xs font-medium flex items-center gap-1" [class]="stats.current >= 7 ? 'text-red-500' : stats.current >= 3 ? 'text-orange-500' : 'text-slate-500'">
+          <lucide-icon [img]="streakIcon" size="12"></lucide-icon>
           {{ streakStatus }}
         </div>
         @if (daysRemaining > 0) {
@@ -80,39 +82,32 @@
         }
       </div>
 
-      <!-- Reminder info -->
-      @if (habit.reminder) {
-        <div class="text-xs text-slate-400 mb-3 flex items-center gap-1">
-          <span>⏰</span>
-          <span>{{ habit.reminder.time }} • {{ getDaysText(habit.reminder.days) }}</span>
-        </div>
-      }
 
       <!-- Action buttons with icons -->
-      <div class="flex gap-1">
+      <div class="flex justify-center gap-3">
         <button 
           (click)="onCheckin()"
           [class]="'p-2 rounded-full text-sm transition-all ' + (isCheckedToday ? 'bg-emerald-600 text-white shadow-md' : 'bg-slate-50 text-slate-700 hover:bg-slate-100')"
           [title]="isCheckedToday ? 'Already checked today' : 'Check-in for today'">
-          {{ isCheckedToday ? '✅' : '⭕' }}
+          <lucide-icon [img]="CheckIcon" size="14"></lucide-icon>
         </button>
         <button 
           (click)="onEditReminder()"
           class="p-2 rounded-full text-sm bg-yellow-50 text-yellow-700 hover:bg-yellow-100 transition-all"
           title="Edit reminder">
-          ⏰
+          <lucide-icon [img]="ClockIcon" size="14"></lucide-icon>
         </button>
         <button 
           (click)="onViewCalendar()"
           class="p-2 rounded-full text-sm bg-blue-50 text-blue-700 hover:bg-blue-100 transition-all"
           title="View calendar">
-          📅
+          <lucide-icon [img]="CalendarIcon" size="14"></lucide-icon>
         </button>
         <button 
           (click)="onRemove()"
           class="p-2 rounded-full text-sm text-slate-500 hover:bg-red-50 hover:text-red-600 transition-all"
           title="Remove habit">
-          🗑️
+          <lucide-icon [img]="Trash2Icon" size="14"></lucide-icon>
         </button>
       </div>
     </div>

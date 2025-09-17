@@ -2,11 +2,12 @@ import { Component, EventEmitter, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Reminder } from '../../models/habit.model';
+import { LucideAngularModule, Clock, Sparkles, Target } from 'lucide-angular';
 
 @Component({
   selector: 'app-habit-form',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './habit-form.component.html',
   styleUrl: './habit-form.component.scss'
 })
@@ -24,6 +25,11 @@ export class HabitFormComponent {
   protected get hasInputContent(): boolean {
     return this.title().trim().length > 0;
   }
+
+  // Lucide icons
+  protected readonly ClockIcon = Clock;
+  protected readonly SparklesIcon = Sparkles;
+  protected readonly TargetIcon = Target;
 
   protected onOpenReminderModal(): void {
     this.openReminderModal.emit();

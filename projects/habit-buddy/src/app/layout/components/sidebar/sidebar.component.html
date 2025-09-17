@@ -16,26 +16,30 @@
     <a 
       routerLink="/goals" 
       routerLinkActive="bg-slate-100"
-      class="nav-btn w-full text-left px-3 py-2 rounded hover:bg-slate-100">
-      🏠 Goals
+      class="nav-btn w-full text-left px-3 py-2 rounded hover:bg-slate-100 flex items-center gap-2">
+      <lucide-icon [img]="HomeIcon" size="16"></lucide-icon>
+      Goals
     </a>
     <a 
       routerLink="/calendar" 
       routerLinkActive="bg-slate-100"
-      class="nav-btn w-full text-left px-3 py-2 rounded hover:bg-slate-100">
-      📅 Calendar
+      class="nav-btn w-full text-left px-3 py-2 rounded hover:bg-slate-100 flex items-center gap-2">
+      <lucide-icon [img]="CalendarIcon" size="16"></lucide-icon>
+      Calendar
     </a>
     <a 
       routerLink="/stats" 
       routerLinkActive="bg-slate-100"
-      class="nav-btn w-full text-left px-3 py-2 rounded hover:bg-slate-100">
-      📊 Statistics
+      class="nav-btn w-full text-left px-3 py-2 rounded hover:bg-slate-100 flex items-center gap-2">
+      <lucide-icon [img]="BarChart3Icon" size="16"></lucide-icon>
+      Statistics
     </a>
     <a 
       routerLink="/reminders" 
       routerLinkActive="bg-slate-100"
-      class="nav-btn w-full text-left px-3 py-2 rounded hover:bg-slate-100">
-      ⏰ Reminders
+      class="nav-btn w-full text-left px-3 py-2 rounded hover:bg-slate-100 flex items-center gap-2">
+      <lucide-icon [img]="ClockIcon" size="16"></lucide-icon>
+      Reminders
     </a>
     <div class="mt-4 text-xs text-slate-400">Local-first • No account required</div>
   </nav>
@@ -43,12 +47,14 @@
   <div class="mt-4">
     <button 
       (click)="exportData()"
-      class="w-full bg-slate-900 text-white px-3 py-2 rounded">
+      class="w-full bg-slate-900 text-white px-3 py-2 rounded flex items-center justify-center gap-2">
+      <lucide-icon [img]="DownloadIcon" size="16"></lucide-icon>
       Export JSON
     </button>
     <button 
       (click)="importData()"
-      class="w-full mt-2 border px-3 py-2 rounded">
+      class="w-full mt-2 border px-3 py-2 rounded flex items-center justify-center gap-2">
+      <lucide-icon [img]="UploadIcon" size="16"></lucide-icon>
       Import JSON
     </button>
     
@@ -57,12 +63,14 @@
       <div class="text-xs text-slate-500 mb-2">Dev Tools</div>
       <button 
         (click)="loadSampleData()"
-        class="w-full bg-green-600 text-white px-3 py-2 rounded text-xs">
+        class="w-full bg-green-600 text-white px-3 py-2 rounded text-xs flex items-center justify-center gap-2">
+        <lucide-icon [img]="DatabaseIcon" size="14"></lucide-icon>
         Load Sample Data
       </button>
       <button 
         (click)="clearAllData()"
-        class="w-full mt-2 bg-red-600 text-white px-3 py-2 rounded text-xs">
+        class="w-full mt-2 bg-red-600 text-white px-3 py-2 rounded text-xs flex items-center justify-center gap-2">
+        <lucide-icon [img]="Trash2Icon" size="14"></lucide-icon>
         Clear All Data
       </button>
     </div>

@@ -2,11 +2,12 @@ import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HabitService, NotificationService } from '../../../../shared';
 import { Habit } from '../../../../shared/models/habit.model';
+import { LucideAngularModule, ChevronLeft, ChevronRight, AlertTriangle, CheckCircle } from 'lucide-angular';
 
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LucideAngularModule],
   templateUrl: './calendar.component.html',
   styleUrl: './calendar.component.scss'
 })
@@ -135,4 +136,10 @@ export class CalendarComponent implements OnInit {
   private checkReminders(): void {
     this.notificationService.checkReminders(this.habits());
   }
+
+  // Lucide icons
+  protected readonly ChevronLeftIcon = ChevronLeft;
+  protected readonly ChevronRightIcon = ChevronRight;
+  protected readonly AlertTriangleIcon = AlertTriangle;
+  protected readonly CheckCircleIcon = CheckCircle;
 }

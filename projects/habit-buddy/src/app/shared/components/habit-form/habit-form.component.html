@@ -21,26 +21,30 @@
         "
         [title]="!hasInputContent ? 'Enter habit title first' : hasReminder ? 'Edit reminder' : 'Set reminder'"
       >
-        ⏰
+        <lucide-icon [img]="ClockIcon" size="16"></lucide-icon>
       </button>
     </div>
     <button
       type="submit"
       [disabled]="!hasInputContent"
       [class]="
-        'px-6 py-3 rounded-lg font-medium ' +
+        'px-6 py-3 rounded-lg font-medium flex items-center gap-2 ' +
         (!hasInputContent
           ? 'bg-slate-300 text-slate-500 cursor-not-allowed'
           : 'bg-emerald-600 hover:bg-emerald-700 text-white transition-colors')
       "
     >
-      ✨ Add Habit
+      <lucide-icon [img]="SparklesIcon" size="16"></lucide-icon>
+      Add Habit
     </button>
   </form>
 
   <!-- Reminder icon absolutely positioned inside input visual area -->
 
   <div class="text-xs text-slate-400 mt-3 text-center">
-    Categories and badges will be assigned automatically as you progress! 🎯
+    <span class="flex items-center gap-1 justify-center">
+      <lucide-icon [img]="TargetIcon" size="12"></lucide-icon>
+      Categories and badges will be assigned automatically as you progress!
+    </span>
   </div>
 </section>
