@@ -1,12 +1,13 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Habit, HabitStats } from '../../models/habit.model';
 import { LucideAngularModule, Clock, Calendar, Trash2, Check, Trophy, Flame, Zap, Star, Rocket, Moon } from 'lucide-angular';
+import { DialogComponent, DialogButton } from '../dialog/dialog.component';
 
 @Component({
   selector: 'app-habit-card',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, DialogComponent],
   templateUrl: './habit-card.component.html',
   styleUrl: './habit-card.component.scss'
 })
@@ -17,6 +18,13 @@ export class HabitCardComponent {
   @Output() remove = new EventEmitter<void>();
   @Output() editReminder = new EventEmitter<void>();
   @Output() viewCalendar = new EventEmitter<void>();
+
+  // Dialog state
+  protected showDeleteDialog = signal(false);
+  protected deleteDialogButtons: DialogButton[] = [
+    { label: 'Cancel', action: 'cancel', variant: 'secondary' },
+    { label: 'Delete', action: 'confirm', variant: 'danger' }
+  ];
 
   protected get completedCount(): number {
     return Object.keys(this.habit.checkIns || {}).length;
@@ -95,7 +103,22 @@ export class HabitCardComponent {
   }
 
   protected onRemove(): void {
-    this.remove.emit();
+    this.showDeleteDialog.set(true);
+  }
+
+  protected onDeleteDialogClose(): void {
+    this.showDeleteDialog.set(false);
+  }
+
+  protected onDeleteDialogAction(action: string): void {
+    if (action === 'confirm') {
+      this.remove.emit();
+    }
+    this.showDeleteDialog.set(false);
+  }
+
+  protected getDeleteMessage(): string {
+    return `Are you sure you want to delete "${this.habit.title}"? This action cannot be undone and will remove all progress data.`;
   }
 
   protected onEditReminder(): void {

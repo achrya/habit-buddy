@@ -25,8 +25,9 @@
 
   <!-- Reminder Modal for existing habits -->
   <app-reminder-modal
-    [habitTitle]="selectedHabitTitle"
-    [habitId]="selectedHabitId"
+    #reminderModal
+    [habitTitle]="selectedHabitTitle()"
+    [habitId]="selectedHabitId()"
     [existingReminder]="selectedHabitReminder()"
     (saveReminder)="onSaveReminder($event)"
     (closeModal)="onCloseReminderModal()">
@@ -34,8 +35,8 @@
 
   <!-- Reminder Modal for new habit form -->
   <app-reminder-modal
-    [habitTitle]="formHabitTitle"
-    [habitId]="formHabitId"
+    [habitTitle]="formHabitTitleValue"
+    [habitId]="formHabitIdValue"
     [existingReminder]="null"
     (saveReminder)="onSaveFormReminder($event)"
     (closeModal)="onCloseFormReminderModal()">

@@ -1,0 +1,60 @@
+// Dialog specific styles
+.dialog-overlay {
+  backdrop-filter: blur(4px);
+}
+
+// Mobile-first responsive design
+@media (max-width: 640px) {
+  .dialog-content {
+    margin: 1rem;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+  }
+  
+  .dialog-buttons {
+    flex-direction: column;
+    gap: 0.75rem;
+    
+    button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
+// Desktop styles
+@media (min-width: 641px) {
+  .dialog-buttons {
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    
+    button {
+      flex: none;
+      min-width: 6rem;
+    }
+  }
+}
+
+// Animation classes
+.dialog-enter {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.dialog-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 200ms ease-out, transform 200ms ease-out;
+}
+
+.dialog-leave {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.dialog-leave-active {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 150ms ease-in, transform 150ms ease-in;
+}

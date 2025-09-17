@@ -19,3 +19,14 @@
 
 <!-- Audio for notifications -->
 <audio id="ding" src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg"></audio>
+
+<!-- Global Dialog -->
+<app-dialog
+  [isOpen]="dialogService.isOpen()"
+  [title]="dialogService.config().title"
+  [message]="dialogService.config().message"
+  [type]="dialogService.config().type"
+  [buttons]="dialogService.config().buttons || []"
+  (close)="dialogService.close()"
+  (buttonClick)="onGlobalDialogAction($event)">
+</app-dialog>

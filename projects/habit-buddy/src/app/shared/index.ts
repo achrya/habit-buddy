@@ -4,10 +4,12 @@ export * from './components/habit-card/habit-card.component';
 export * from './components/chart/chart.component';
 export * from './components/bottom-nav/bottom-nav.component';
 export * from './components/import-modal/import-modal.component';
+export * from './components/dialog/dialog.component';
 
 // Export all shared services
 export * from './services/habit.service';
 export * from './services/notification.service';
+export * from './services/dialog.service';
 export * from './components/import-modal/import.service';
 
 // Export all shared models

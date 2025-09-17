@@ -83,4 +83,26 @@
     (close)="onImportModalClose()"
     (importWithAction)="onImportWithAction($event)">
   </app-import-modal>
+
+  <!-- Load Sample Data Confirmation Dialog -->
+  <app-dialog
+    [isOpen]="showLoadSampleDialog()"
+    title="Load Sample Data"
+    message="This will add sample habits to your current habits. Your existing data will be preserved. Continue?"
+    type="info"
+    [buttons]="loadSampleDialogButtons"
+    (close)="onLoadSampleDialogClose()"
+    (buttonClick)="onLoadSampleDialogAction($event)">
+  </app-dialog>
+
+  <!-- Clear All Data Confirmation Dialog -->
+  <app-dialog
+    [isOpen]="showClearDataDialog()"
+    title="Delete All Data"
+    message="This will permanently delete ALL habits and progress data. This action cannot be undone. Are you absolutely sure?"
+    type="danger"
+    [buttons]="clearDataDialogButtons"
+    (close)="onClearDataDialogClose()"
+    (buttonClick)="onClearDataDialogAction($event)">
+  </app-dialog>
 </aside>

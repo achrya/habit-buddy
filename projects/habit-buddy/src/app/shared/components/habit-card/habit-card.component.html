@@ -113,3 +113,14 @@
     </div>
   </div>
 </article>
+
+<!-- Delete Confirmation Dialog -->
+<app-dialog
+  [isOpen]="showDeleteDialog()"
+  title="Delete Habit"
+  [message]="getDeleteMessage()"
+  type="danger"
+  [buttons]="deleteDialogButtons"
+  (close)="onDeleteDialogClose()"
+  (buttonClick)="onDeleteDialogAction($event)">
+</app-dialog>

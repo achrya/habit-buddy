@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, OnInit, signal, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { HabitCardComponent, HabitFormComponent } from '../../../../shared';
+import { DialogService } from '../../../../shared/services/dialog.service';
 import { Habit, Reminder } from '../../../../shared/models/habit.model';
 import { HabitService, NotificationService } from '../../../../shared';
 import { ReminderModalComponent } from '../../../reminders/components/reminder-modal/reminder-modal.component';
@@ -14,7 +16,7 @@ import { ReminderModalComponent } from '../../../reminders/components/reminder-m
   styleUrl: './goals.component.scss'
 })
 export class GoalsComponent implements OnInit {
-  @ViewChild(ReminderModalComponent) reminderModal!: ReminderModalComponent;
+  @ViewChild('reminderModal') reminderModal!: ReminderModalComponent;
   @ViewChild(HabitFormComponent) habitForm!: HabitFormComponent;
   
   protected readonly habits = signal<Habit[]>([]);
@@ -29,10 +31,12 @@ export class GoalsComponent implements OnInit {
   protected readonly formHabitTitle = signal('New Habit');
   protected readonly formHabitId = signal('form-reminder');
 
-  constructor(
-    private habitService: HabitService,
-    private notificationService: NotificationService
-  ) {
+  private habitService = inject(HabitService);
+  private notificationService = inject(NotificationService);
+  private router = inject(Router);
+  private dialogService = inject(DialogService);
+
+  constructor() {
     // Subscribe to habits changes
     this.habitService.habits$.subscribe(habits => {
       this.habits.set(habits);
@@ -61,14 +65,13 @@ export class GoalsComponent implements OnInit {
       this.notificationService.playBell();
       this.notificationService.triggerConfetti();
     } else if (result.message) {
-      alert(result.message);
+      this.dialogService.showError(result.message);
     }
   }
 
   protected onRemoveHabit(habitId: string): void {
-    if (confirm('Remove habit?')) {
-      this.habitService.removeHabit(habitId);
-    }
+    // This is handled by the habit card's dialog component
+    this.habitService.removeHabit(habitId);
   }
 
   protected onEditReminder(habitId: string): void {
@@ -83,7 +86,9 @@ export class GoalsComponent implements OnInit {
 
   protected onViewCalendar(habitId: string): void {
     // Navigate to calendar view with specific habit filter
-    console.log('View calendar for habit:', habitId);
+    this.router.navigate(['/calendar'], { 
+      queryParams: { habitId: habitId }
+    });
   }
 
   protected onSaveReminder(event: { habitId: string; reminder: Reminder | null }): void {
@@ -115,6 +120,14 @@ export class GoalsComponent implements OnInit {
 
   protected getHabitStats(habit: Habit) {
     return this.habitService.calcStreaksForHabit(habit);
+  }
+
+  protected get formHabitTitleValue(): string {
+    return this.formHabitTitle();
+  }
+
+  protected get formHabitIdValue(): string {
+    return this.formHabitId();
   }
 
   private checkReminders(): void {

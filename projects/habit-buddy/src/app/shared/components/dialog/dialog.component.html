@@ -1,0 +1,53 @@
+<!-- Dialog Overlay -->
+@if (isOpen) {
+  <div 
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+    (click)="onBackdropClick($event)">
+    
+    <!-- Dialog Content -->
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md transform transition-all duration-200 scale-100">
+      
+      <!-- Header -->
+      <div class="flex items-center justify-between p-6 border-b border-slate-100">
+        <div class="flex items-center gap-3">
+          @if (type === 'warning' || type === 'danger') {
+            <div class="p-2 rounded-full" 
+                 [class]="type === 'danger' ? 'bg-red-100 text-red-600' : 'bg-yellow-100 text-yellow-600'">
+              <lucide-icon [img]="AlertTriangleIcon" size="20"></lucide-icon>
+            </div>
+          }
+          <h2 class="text-lg font-semibold text-slate-900">{{ title }}</h2>
+        </div>
+        
+        @if (showCloseButton) {
+          <button 
+            (click)="onClose()"
+            class="p-1 rounded-full hover:bg-slate-100 transition-colors"
+            aria-label="Close dialog">
+            <lucide-icon [img]="XIcon" size="20" class="text-slate-500"></lucide-icon>
+          </button>
+        }
+      </div>
+
+      <!-- Body -->
+      <div class="p-6">
+        <p class="text-slate-600 leading-relaxed">{{ message }}</p>
+      </div>
+
+      <!-- Footer -->
+      @if (buttons.length > 0) {
+        <div class="p-6 pt-0">
+          <div class="flex flex-col sm:flex-row gap-3 sm:justify-end">
+            @for (button of buttons; track button.action) {
+              <button 
+                (click)="onButtonClick(button.action)"
+                [class]="getButtonClasses(button.variant)">
+                {{ button.label }}
+              </button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}

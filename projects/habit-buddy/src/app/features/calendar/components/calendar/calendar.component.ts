@@ -1,6 +1,8 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { HabitService, NotificationService } from '../../../../shared';
+import { DialogService } from '../../../../shared/services/dialog.service';
 import { Habit } from '../../../../shared/models/habit.model';
 import { LucideAngularModule, ChevronLeft, ChevronRight, AlertTriangle, CheckCircle } from 'lucide-angular';
 
@@ -51,10 +53,12 @@ export class CalendarComponent implements OnInit {
     return days;
   });
 
-  constructor(
-    private habitService: HabitService,
-    private notificationService: NotificationService
-  ) {
+  private habitService = inject(HabitService);
+  private notificationService = inject(NotificationService);
+  private route = inject(ActivatedRoute);
+  private dialogService = inject(DialogService);
+
+  constructor() {
     // Subscribe to habits changes
     this.habitService.habits$.subscribe(habits => {
       this.habits.set(habits);
@@ -62,6 +66,18 @@ export class CalendarComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Check for habitId query parameter and set calendar mode
+    this.route.queryParams.subscribe(params => {
+      const habitId = params['habitId'];
+      if (habitId) {
+        // Find the habit and set calendar mode to that habit
+        const habit = this.habits().find(h => h.id === habitId);
+        if (habit) {
+          this.setCalendarMode(habitId);
+        }
+      }
+    });
+
     // Check reminders every 30 seconds
     setInterval(() => {
       this.checkReminders();
@@ -117,7 +133,7 @@ export class CalendarComponent implements OnInit {
   protected async onDayClick(dateStr: string): Promise<void> {
     const today = new Date().toISOString().slice(0, 10);
     if (dateStr !== today) {
-      alert('Only today can be toggled (no backfill).');
+      this.dialogService.showWarning('Only today can be toggled (no backfill).');
       return;
     }
 
@@ -129,7 +145,7 @@ export class CalendarComponent implements OnInit {
       this.notificationService.playBell();
       this.notificationService.triggerConfetti();
     } else if (result.message) {
-      alert(result.message);
+      this.dialogService.showError(result.message);
     }
   }
 
