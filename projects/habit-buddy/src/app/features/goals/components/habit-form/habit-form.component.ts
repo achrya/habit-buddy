@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Reminder } from '../../models/habit.model';
+import { Reminder } from '../../../../shared/models/habit.model';
 import { LucideAngularModule, Clock, Sparkles, Target } from 'lucide-angular';
 
 @Component({

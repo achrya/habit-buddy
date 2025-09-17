@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Habit, HabitStats } from '../../models/habit.model';
+import { Habit, HabitStats } from '../../../../shared/models/habit.model';
 import { LucideAngularModule, Clock, Calendar, Trash2, Check, Trophy, Flame, Zap, Star, Rocket, Moon } from 'lucide-angular';
-import { DialogComponent, DialogButton } from '../dialog/dialog.component';
+import { DialogComponent, DialogButton } from '../../../../shared/components/dialog/dialog.component';
 
 @Component({
   selector: 'app-habit-card',

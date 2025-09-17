@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 
 import { HabitFormComponent } from './habit-form.component';
-import { HabitCategory } from '../models/habit.model';
 
 describe('HabitFormComponent', () => {
   let component: HabitFormComponent;
@@ -27,21 +26,29 @@ describe('HabitFormComponent', () => {
     spyOn(component.habitAdded, 'emit');
     
     component.title.set('Test Habit');
-    component.selectedCategory.set('21');
     component.onSubmit();
     
     expect(component.habitAdded.emit).toHaveBeenCalledWith({
       title: 'Test Habit',
-      categoryId: '21'
+      reminder: null
     });
   });
 
   it('should reset form after submission', () => {
     component.title.set('Test Habit');
-    component.selectedCategory.set('21');
     component.onSubmit();
     
     expect(component.title()).toBe('');
-    expect(component.selectedCategory()).toBe('21');
+    expect(component.reminder()).toBe(null);
+  });
+
+  it('should disable buttons when input is empty', () => {
+    component.title.set('');
+    expect(component.hasInputContent).toBe(false);
+  });
+
+  it('should enable buttons when input has content', () => {
+    component.title.set('Test Habit');
+    expect(component.hasInputContent).toBe(true);
   });
 });
