@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, signal } from '@angular/core';
+import { Component, EventEmitter, Output, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Reminder } from '../../../../shared/models/habit.model';
@@ -18,13 +18,10 @@ export class HabitFormComponent {
   protected title = signal('');
   protected reminder = signal<Reminder | null>(null);
 
-  protected get hasReminder(): boolean {
-    return this.reminder() !== null;
-  }
-
-  protected get hasInputContent(): boolean {
-    return this.title().trim().length > 0;
-  }
+  // Computed signals for better performance
+  protected readonly hasReminder = computed(() => this.reminder() !== null);
+  protected readonly hasInputContent = computed(() => this.title().trim().length > 0);
+  protected readonly isFormValid = computed(() => this.hasInputContent());
 
   // Lucide icons
   protected readonly ClockIcon = Clock;
@@ -36,15 +33,18 @@ export class HabitFormComponent {
   }
 
   protected onSubmit(): void {
-    const title = this.title().trim();
-    if (!title) return;
+    if (!this.isFormValid()) return;
 
+    const title = this.title().trim();
     this.habitAdded.emit({
       title,
       reminder: this.reminder()
     });
 
-    // Reset form
+    this.resetForm();
+  }
+
+  private resetForm(): void {
     this.title.set('');
     this.reminder.set(null);
   }

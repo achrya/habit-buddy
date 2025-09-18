@@ -6,6 +6,132 @@
   }
 }
 
+// Filter sections styling
+.filter-sections {
+  h3 {
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    padding-left: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+  }
+}
+
+// Base filter button styling
+.filter-button {
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  &:hover::before {
+    left: 100%;
+  }
+  
+  .count-badge {
+    transition: all 0.2s ease;
+    font-weight: 600;
+    min-width: 20px;
+  }
+}
+
+// Batch filters (Badge Levels) - Blue theme
+.batch-filters {
+  .batch-filter {
+    &.active {
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      transform: translateY(-1px);
+    }
+    
+    &:hover:not(.active) {
+      border-color: #93c5fd;
+      background-color: #eff6ff;
+    }
+  }
+}
+
+// Other filters (Status & Features) - Green theme
+.other-filters {
+  .other-filter {
+    &.active {
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+      transform: translateY(-1px);
+    }
+    
+    &:hover:not(.active) {
+      border-color: #86efac;
+      background-color: #f0fdf4;
+    }
+  }
+}
+
+// Mobile filter content visibility
+.mobile-filter-content {
+  // Hidden by default on mobile
+  @media (max-width: 639px) {
+    display: none;
+    
+    &.show {
+      display: block;
+      animation: slideDown 0.3s ease-out;
+    }
+  }
+  
+  // Always visible on desktop
+  @media (min-width: 640px) {
+    display: block;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive filter sections
+@media (max-width: 640px) {
+  .filter-sections {
+    h3 {
+      font-size: 0.75rem;
+      text-align: center;
+    }
+    
+    .filter-button {
+      font-size: 0.8rem;
+      padding: 0.5rem 0.75rem;
+      
+      .count-badge {
+        width: 18px;
+        height: 18px;
+        font-size: 0.7rem;
+      }
+    }
+
+    // Mobile-specific filter layout
+    .batch-filters,
+    .other-filters {
+      justify-content: center;
+    }
+  }
+}
+
 // Habit grid responsiveness
 .grid {
   @media (max-width: 640px) {
@@ -18,5 +144,21 @@
   
   @media (min-width: 1025px) {
     grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+// Animation for habit cards when filtering
+.habit-card-enter {
+  animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

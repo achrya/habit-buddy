@@ -1,7 +1,7 @@
-import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Habit, HabitStats } from '../../../../shared/models/habit.model';
-import { LucideAngularModule, Clock, Calendar, Trash2, Check, Trophy, Flame, Zap, Star, Rocket, Moon } from 'lucide-angular';
+import { Habit, HabitStats, BadgeLevel } from '../../../../shared/models/habit.model';
+import { LucideAngularModule, Clock, Calendar, Trash2, Check, Crown, Trophy, Star, Target, Sprout, Sparkles } from 'lucide-angular';
 import { DialogComponent, DialogButton } from '../../../../shared/components/dialog/dialog.component';
 
 @Component({
@@ -26,71 +26,121 @@ export class HabitCardComponent {
     { label: 'Delete', action: 'confirm', variant: 'danger' }
   ];
 
-  protected get completedCount(): number {
-    return Object.keys(this.habit.checkIns || {}).length;
-  }
+  // Computed signals for better performance
+  protected readonly completedCount = computed(() => 
+    Object.keys(this.habit.checkIns || {}).length
+  );
 
-  protected get isCheckedToday(): boolean {
+  protected readonly isCheckedToday = computed(() => {
     const today = new Date().toISOString().slice(0, 10);
     return !!(this.habit.checkIns && this.habit.checkIns[today]);
-  }
+  });
 
-  protected get completionPercentage(): number {
-    return Math.round((this.completedCount / this.habit.daysTarget) * 100);
-  }
-
-  protected get daysRemaining(): number {
-    return Math.max(0, this.habit.daysTarget - this.completedCount);
-  }
-
-  protected get isOnTrack(): boolean {
-    const daysSinceStart = Math.ceil((Date.now() - new Date(this.habit.createdAt).getTime()) / (1000 * 60 * 60 * 24));
-    const expectedProgress = Math.min(daysSinceStart, this.habit.daysTarget);
-    return this.completedCount >= expectedProgress * 0.8; // 80% of expected progress
-  }
-
-  protected get milestoneStatus(): string {
-    const percentage = this.completionPercentage;
-    if (percentage >= 100) return 'Completed!';
-    if (percentage >= 75) return 'Almost there!';
-    if (percentage >= 50) return 'Halfway there!';
-    if (percentage >= 25) return 'Getting started!';
-    return 'Just beginning!';
-  }
-
-  protected get milestoneIcon(): any {
-    const percentage = this.completionPercentage;
-    if (percentage >= 100) return Trophy;
-    if (percentage >= 75) return Flame;
-    if (percentage >= 50) return Check;
-    if (percentage >= 25) return Star;
-    return Rocket;
-  }
-
-  protected get streakStatus(): string {
-    if (this.stats.current >= 7) return `${this.stats.current} day streak!`;
-    if (this.stats.current >= 3) return `${this.stats.current} day streak`;
-    if (this.stats.current > 0) return `${this.stats.current} day streak`;
-    return 'No streak yet';
-  }
-
-  protected get streakIcon(): any {
-    if (this.stats.current >= 7) return Flame;
-    if (this.stats.current >= 3) return Zap;
-    if (this.stats.current > 0) return Star;
-    return Moon;
-  }
-
-  protected getProgressDots(): { completed: boolean }[] {
-    const dots = [];
-    const maxDots = Math.min(this.habit.daysTarget, 10); // Max 10 dots for readability
-    const completedDots = Math.round((this.completedCount / this.habit.daysTarget) * maxDots);
-    
-    for (let i = 0; i < maxDots; i++) {
-      dots.push({ completed: i < completedDots });
+  // Badge styling methods
+  protected getBadgeClasses(): string {
+    // If habit has a badge, use its level for styling
+    if (this.habit.badge) {
+      switch (this.habit.badge.level) {
+        case BadgeLevel.BEGINNER:
+          return 'bg-green-100 text-green-700 border border-green-200';
+        case BadgeLevel.INTERMEDIATE:
+          return 'bg-blue-100 text-blue-700 border border-blue-200';
+        case BadgeLevel.ADVANCED:
+          return 'bg-purple-100 text-purple-700 border border-purple-200';
+        case BadgeLevel.EXPERT:
+          return 'bg-orange-100 text-orange-700 border border-orange-200';
+        case BadgeLevel.MASTER:
+          return 'bg-yellow-100 text-yellow-700 border border-yellow-200';
+        default:
+          return 'bg-gray-100 text-gray-600';
+      }
     }
     
-    return dots;
+    // If no badge, determine styling based on current progress
+    const completedDays = this.completedCount();
+    
+    if (completedDays >= 100) {
+      return 'bg-yellow-100 text-yellow-700 border border-yellow-200'; // Master
+    } else if (completedDays >= 50) {
+      return 'bg-orange-100 text-orange-700 border border-orange-200'; // Expert
+    } else if (completedDays >= 21) {
+      return 'bg-purple-100 text-purple-700 border border-purple-200'; // Advanced
+    } else if (completedDays >= 7) {
+      return 'bg-blue-100 text-blue-700 border border-blue-200'; // Intermediate
+    } else if (completedDays >= 3) {
+      return 'bg-green-100 text-green-700 border border-green-200'; // Beginner
+    } else {
+      return 'bg-gray-100 text-gray-600'; // New habit
+    }
+  }
+
+  // Status message and styling
+  protected getStatusMessage(): string {
+    if (this.isCheckedToday()) {
+      const messages = [
+        "✅ Completed today!",
+        "🎉 Well done today!",
+        "⭐ Great job today!",
+        "💪 Nailed it today!",
+        "🔥 On fire today!"
+      ];
+      const index = this.habit.id.charCodeAt(0) % messages.length;
+      return messages[index];
+    } else {
+      if (this.stats.current >= 7) {
+        return "🔥 Keep the streak alive!";
+      } else if (this.stats.current >= 3) {
+        return "⚡ Building momentum!";
+      } else {
+        return "🚀 Ready to check in?";
+      }
+    }
+  }
+
+  protected getStatusClasses(): string {
+    if (this.isCheckedToday()) {
+      return 'bg-green-50 text-green-700 border border-green-200';
+    } else {
+      if (this.stats.current >= 7) {
+        return 'bg-red-50 text-red-700 border border-red-200';
+      } else if (this.stats.current >= 3) {
+        return 'bg-orange-50 text-orange-700 border border-orange-200';
+      } else {
+        return 'bg-blue-50 text-blue-700 border border-blue-200';
+      }
+    }
+  }
+
+  protected getBadgeIcon(): any {
+    const iconMap: { [key: string]: any } = {
+      'Crown': Crown,
+      'Trophy': Trophy,
+      'Star': Star,
+      'Target': Target,
+      'Sprout': Sprout
+    };
+    
+    // If habit has a badge, use its icon
+    if (this.habit.badge && this.habit.badge.icon) {
+      return iconMap[this.habit.badge.icon] || Sprout;
+    }
+    
+    // If no badge, determine icon based on current progress
+    const completedDays = this.completedCount();
+    
+    if (completedDays >= 100) {
+      return Crown; // Master level
+    } else if (completedDays >= 50) {
+      return Trophy; // Expert level
+    } else if (completedDays >= 21) {
+      return Star; // Advanced level
+    } else if (completedDays >= 7) {
+      return Target; // Intermediate level
+    } else if (completedDays >= 3) {
+      return Sprout; // Beginner level
+    } else {
+      return Sparkles; // New habit (less than 3 days)
+    }
   }
 
   protected getDaysText(days: number[]): string {

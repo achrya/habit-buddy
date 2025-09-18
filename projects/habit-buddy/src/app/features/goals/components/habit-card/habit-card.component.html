@@ -1,113 +1,77 @@
-<article class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
+<article class="habit-card bg-white border border-slate-100 rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow relative">
+  <!-- Badge Display (Top Right) -->
+  <div class="absolute top-3 right-3">
+    @if (habit.badge) {
+      <div class="badge-container flex items-center justify-center w-10 h-10 rounded-full shadow-sm"
+           [class]="getBadgeClasses()"
+           [title]="habit.badge.name + ' - ' + habit.badge.description">
+        <lucide-icon [img]="getBadgeIcon()" size="20"></lucide-icon>
+      </div>
+    } @else {
+      <div class="badge-container flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 text-gray-500"
+           title="New Habit - Start building your streak!">
+        <lucide-icon [img]="getBadgeIcon()" size="20"></lucide-icon>
+      </div>
+    }
+  </div>
+
+  <!-- Color Indicator -->
   <div class="flex items-start gap-3">
-    <div 
-      [style]="'width:12px;height:12px;background:' + habit.color + ';border-radius:6px;margin-top:6px'">
-    </div>
-    <div class="flex-1 min-w-0">
-      <!-- Header with title and progress -->
-      <div class="flex items-center justify-between mb-2">
-        <h3 class="text-sm font-semibold truncate">{{ habit.title }}</h3>
-        <div class="text-xs font-medium text-slate-600">
-          {{ completedCount }}/{{ habit.daysTarget }}
-        </div>
+    <div [style]="'width:4px;height:60px;background:' + habit.color + ';border-radius:2px;margin-top:2px'"></div>
+    
+    <div class="flex-1 min-w-0 card-content">
+      <!-- Title -->
+      <div class="mb-4">
+        <h3 class="text-lg font-bold text-slate-800 line-clamp-2 ">{{ habit.title }}</h3>
       </div>
 
-      <!-- Progress visualization -->
-      <div class="flex items-center gap-2 mb-3">
-        <!-- Progress dots -->
-        <div class="flex gap-1">
-          @for (dot of getProgressDots(); track $index) {
-            <div 
-              class="w-2 h-2 rounded-full transition-all duration-300"
-              [class]="dot.completed ? 'opacity-100' : 'opacity-30'"
-              [style]="'background: ' + (dot.completed ? habit.color : '#e2e8f0')">
+      <!-- Stats Section -->
+      <div class="stats-section mb-4 p-3 bg-slate-50 rounded-lg">
+        <div class="grid grid-cols-2 gap-3 text-center">
+          <div>
+            <div class="text-2xl font-bold" [style]="'color: ' + habit.color">{{ completedCount() }}</div>
+            <div class="text-xs text-slate-500 font-medium">Days Done</div>
+          </div>
+          <div>
+            <div class="text-2xl font-bold" 
+                 [class]="stats.current >= 7 ? 'text-red-500' : stats.current >= 3 ? 'text-orange-500' : 'text-slate-600'">
+              {{ stats.current }}
             </div>
-          }
-        </div>
-        <!-- Completion circle -->
-        <div class="relative w-8 h-8 ml-2">
-          <svg class="w-8 h-8 transform -rotate-90" viewBox="0 0 36 36">
-            <!-- Background circle -->
-            <path
-              d="M18 2.0845
-                a 15.9155 15.9155 0 0 1 0 31.831
-                a 15.9155 15.9155 0 0 1 0 -31.831"
-              fill="none"
-              stroke="#e2e8f0"
-              stroke-width="2"/>
-            <!-- Progress circle -->
-            <path
-              d="M18 2.0845
-                a 15.9155 15.9155 0 0 1 0 31.831
-                a 15.9155 15.9155 0 0 1 0 -31.831"
-              fill="none"
-              [attr.stroke]="habit.color"
-              stroke-width="2"
-              [attr.stroke-dasharray]="completionPercentage + ', 100'"
-              class="transition-all duration-500 ease-in-out"/>
-          </svg>
-          <!-- Percentage text in center -->
-          <div class="absolute inset-0 flex items-center justify-center">
-            <span class="text-xs font-bold" [style]="'color: ' + habit.color">
-              {{ completionPercentage }}%
-            </span>
+            <div class="text-xs text-slate-500 font-medium">Current Streak</div>
           </div>
         </div>
       </div>
 
-      <!-- Badge and milestone status -->
-      <div class="flex items-center gap-2 mb-2">
-        @if (habit.badge) {
-          <div class="flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200">
-            <span>{{ habit.badge.icon }}</span>
-            <span class="text-blue-700">{{ habit.badge.name }}</span>
-          </div>
-        }
-        <div class="text-xs font-medium flex items-center gap-1" [class]="completionPercentage >= 100 ? 'text-green-600' : completionPercentage >= 75 ? 'text-orange-500' : 'text-blue-600'">
-          <lucide-icon [img]="milestoneIcon" size="12"></lucide-icon>
-          {{ milestoneStatus }}
-        </div>
+      <!-- Status Message -->
+      <div class="status-message mb-4 p-2 rounded-lg text-center" [class]="getStatusClasses()">
+        <p class="text-sm font-medium">{{ getStatusMessage() }}</p>
       </div>
 
-      <!-- Streak and stats -->
-      <div class="flex items-center justify-between mb-2">
-        <div class="text-xs font-medium flex items-center gap-1" [class]="stats.current >= 7 ? 'text-red-500' : stats.current >= 3 ? 'text-orange-500' : 'text-slate-500'">
-          <lucide-icon [img]="streakIcon" size="12"></lucide-icon>
-          {{ streakStatus }}
-        </div>
-        @if (daysRemaining > 0) {
-          <div class="text-xs text-slate-500">
-            {{ daysRemaining }} days left
-          </div>
-        }
-      </div>
-
-
-      <!-- Action buttons with icons -->
-      <div class="flex justify-center gap-3">
+      <!-- Action Buttons -->
+      <div class="flex justify-center gap-2">
         <button 
           (click)="onCheckin()"
-          [class]="'p-2 rounded-full text-sm transition-all ' + (isCheckedToday ? 'bg-emerald-600 text-white shadow-md' : 'bg-slate-50 text-slate-700 hover:bg-slate-100')"
-          [title]="isCheckedToday ? 'Already checked today' : 'Check-in for today'">
-          <lucide-icon [img]="CheckIcon" size="14"></lucide-icon>
+          [class]="'p-2 rounded-full text-sm transition-all flex-1 max-w-[40px] ' + (isCheckedToday() ? 'bg-emerald-600 text-white shadow-md' : 'bg-slate-50 text-slate-700 hover:bg-slate-100')"
+          [title]="isCheckedToday() ? 'Already checked in today!' : 'Check in for today'">
+          <lucide-icon [img]="CheckIcon" size="14" class="mx-auto"></lucide-icon>
         </button>
         <button 
           (click)="onEditReminder()"
-          class="p-2 rounded-full text-sm bg-yellow-50 text-yellow-700 hover:bg-yellow-100 transition-all"
+          class="p-2 rounded-full text-sm bg-yellow-50 text-yellow-700 hover:bg-yellow-100 transition-all flex-1 max-w-[40px]"
           title="Edit reminder">
-          <lucide-icon [img]="ClockIcon" size="14"></lucide-icon>
+          <lucide-icon [img]="ClockIcon" size="14" class="mx-auto"></lucide-icon>
         </button>
         <button 
           (click)="onViewCalendar()"
-          class="p-2 rounded-full text-sm bg-blue-50 text-blue-700 hover:bg-blue-100 transition-all"
+          class="p-2 rounded-full text-sm bg-blue-50 text-blue-700 hover:bg-blue-100 transition-all flex-1 max-w-[40px]"
           title="View calendar">
-          <lucide-icon [img]="CalendarIcon" size="14"></lucide-icon>
+          <lucide-icon [img]="CalendarIcon" size="14" class="mx-auto"></lucide-icon>
         </button>
         <button 
           (click)="onRemove()"
-          class="p-2 rounded-full text-sm text-slate-500 hover:bg-red-50 hover:text-red-600 transition-all"
+          class="p-2 rounded-full text-sm text-slate-500 hover:bg-red-50 hover:text-red-600 transition-all flex-1 max-w-[40px]"
           title="Remove habit">
-          <lucide-icon [img]="Trash2Icon" size="14"></lucide-icon>
+          <lucide-icon [img]="Trash2Icon" size="14" class="mx-auto"></lucide-icon>
         </button>
       </div>
     </div>

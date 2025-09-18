@@ -162,7 +162,7 @@ export class HabitService {
         level: BadgeLevel.MASTER,
         name: 'Master',
         description: '100+ days completed!',
-        icon: '👑',
+        icon: 'Crown',
         daysRequired: 100,
         achievedAt: new Date().toISOString()
       };
@@ -171,7 +171,7 @@ export class HabitService {
         level: BadgeLevel.EXPERT,
         name: 'Expert',
         description: '50+ days completed!',
-        icon: '🏆',
+        icon: 'Trophy',
         daysRequired: 50,
         achievedAt: new Date().toISOString()
       };
@@ -180,7 +180,7 @@ export class HabitService {
         level: BadgeLevel.ADVANCED,
         name: 'Advanced',
         description: '21+ days completed!',
-        icon: '⭐',
+        icon: 'Star',
         daysRequired: 21,
         achievedAt: new Date().toISOString()
       };
@@ -189,7 +189,7 @@ export class HabitService {
         level: BadgeLevel.INTERMEDIATE,
         name: 'Intermediate',
         description: '7+ days completed!',
-        icon: '🎯',
+        icon: 'Target',
         daysRequired: 7,
         achievedAt: new Date().toISOString()
       };
@@ -198,7 +198,7 @@ export class HabitService {
         level: BadgeLevel.BEGINNER,
         name: 'Beginner',
         description: '3+ days completed!',
-        icon: '🌱',
+        icon: 'Sprout',
         daysRequired: 3,
         achievedAt: new Date().toISOString()
       };

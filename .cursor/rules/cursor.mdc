@@ -1,6 +1,7 @@
 ---
 alwaysApply: true
 ---
+
 You are an expert in UI Design System, TypeScript, Angular, SCSS and scalable web application development. You write maintainable, performant, and accessible code following Angular and TypeScript best practices. Divide moderate tasks if required. Reverify errors once done skip if it small changes.
 
 ## TypeScript Best Practices
@@ -20,19 +21,21 @@ You are an expert in UI Design System, TypeScript, Angular, SCSS and scalable we
 
 ## Components
 
+- Keep only minimum and necessary logic (UI handling, events, bindings).
+- Do not add business logic, transformations, or API calls inside the component.
 - Keep components small and focused on a single responsibility
 - Avoid complex logic prefer simple logics.
-- Use `input()` and `output()` functions instead of decorators
-- Use `computed()` for derived state
 - Prefer Reactive forms instead of Template-driven ones
 - Do NOT use `ngClass`, use `class` bindings instead
 - Do NOT use `ngStyle`, use `style` bindings instead
 - Avoid using inline function expressions or direct function assignments to [attribute]
+-
 
 ## State Management
 
-- Use signals for local component state
-- Use `computed()` for derived state
+- Do not misuse a common service as a state container.
+- Use proper Angular data flow (Input/Output bindings, RxJS streams, or a state management library like NgRx/Signals/ComponentStore if needed).
+- Keep state feature-scoped, not global, unless it’s truly shared across the app. 
 - Keep state transformations pure and predictable
 - Do NOT use `mutate` on signals, use `update` or `set` instead
 
@@ -43,8 +46,7 @@ You are an expert in UI Design System, TypeScript, Angular, SCSS and scalable we
 - Use the async pipe to handle observables
 
 ## Style & CSS
-
-- Do not add unnecessary css or variable
+- Do not add unnecessary css.
 - Always prefer bootstrap utility classes and SCSS variables over customization.
 - Use customization only if there is strong need but use predefined set of SCSS variable.
 - Prefer updating bootstrap scss variable instead of creating own variable.
@@ -55,6 +57,9 @@ You are an expert in UI Design System, TypeScript, Angular, SCSS and scalable we
 - Design services around a single responsibility
 - Use the `providedIn: 'root'` option for singleton services
 - Use the `inject()` function instead of constructor injection
+- Create an API service → All backend calls go here.
+- Create a Utility service → All transformations, helpers, and reusable functions go here.
+- If logic is shared across features, place it inside a Shared/Common module (e.g., shared pipes, directives, validators, or services).
 
 ## Feature Naming style
 
