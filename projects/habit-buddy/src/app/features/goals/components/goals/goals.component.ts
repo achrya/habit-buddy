@@ -8,7 +8,7 @@ import { DialogService } from '../../../../shared/services/dialog.service';
 import { Habit, Reminder, BadgeLevel } from '../../../../shared/models/habit.model';
 import { HabitService, NotificationService } from '../../../../shared';
 import { ReminderModalComponent } from '../../../reminders/components/reminder-modal/reminder-modal.component';
-import { LucideAngularModule, Grid3X3, Sprout, Target, Star, Trophy, Crown, Flame, Bell, Sparkles, CheckCircle, ChevronDown, Filter } from 'lucide-angular';
+import { LucideAngularModule, Grid3X3, Sprout, Target, Star, Trophy, Crown, Flame, Bell, Sparkles, CheckCircle, ChevronDown, Filter, Info, ArrowRight } from 'lucide-angular';
 
 @Component({
   selector: 'app-goals',
@@ -26,6 +26,9 @@ export class GoalsComponent implements OnInit, OnDestroy {
   // Filter state
   protected readonly activeFilter = signal<string>('all');
   protected readonly showFilters = signal<boolean>(false);
+  
+  // Badge guide state
+  protected readonly showBadgeGuide = signal<boolean>(false);
   
   // Batch filter options (Badge levels)
   protected readonly batchFilterOptions = [
@@ -162,6 +165,43 @@ export class GoalsComponent implements OnInit, OnDestroy {
     const activeOption = allOptions.find(option => option.value === this.activeFilter());
     return activeOption?.label || 'Active';
   });
+
+  // Computed active filter count
+  protected readonly activeFilterCount = computed(() => {
+    const allOptions = [...this.batchFilterOptionsWithCounts(), ...this.otherFilterOptionsWithCounts()];
+    const activeOption = allOptions.find(option => option.value === this.activeFilter());
+    return activeOption?.count || 0;
+  });
+
+  // Badge system guide with progress tracking
+  protected readonly badgeSystemGuide = computed(() => {
+    const habits = this.habits();
+    
+    // Calculate best streak across all habits
+    const bestStreak = habits.length > 0 ? Math.max(...habits.map(habit => this.habitService.calcStreaksForHabit(habit).longest)) : 0;
+    
+    const badgeLevels = [
+      { level: 'beginner', name: 'Beginner', icon: 'Sprout', daysRequired: 7, description: 'Start your journey' },
+      { level: 'intermediate', name: 'Intermediate', icon: 'Target', daysRequired: 30, description: 'Building momentum' },
+      { level: 'advanced', name: 'Advanced', icon: 'Star', daysRequired: 90, description: 'Strong commitment' },
+      { level: 'expert', name: 'Expert', icon: 'Trophy', daysRequired: 180, description: 'Habit mastery' },
+      { level: 'master', name: 'Master', icon: 'Crown', daysRequired: 365, description: 'Ultimate achievement' }
+    ];
+
+    return badgeLevels.map(badge => {
+      const achieved = bestStreak >= badge.daysRequired;
+      const currentDays = Math.min(bestStreak, badge.daysRequired);
+      const progressPercentage = (currentDays / badge.daysRequired) * 100;
+
+      return {
+        ...badge,
+        achieved,
+        currentDays,
+        progressPercentage: Math.min(progressPercentage, 100)
+      };
+    });
+  });
+
   
   // Simplified reminder modal state
   protected readonly selectedHabit = signal<Habit | null>(null);
@@ -263,11 +303,17 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
   protected onFilterChange(filterValue: string): void {
     this.activeFilter.set(filterValue);
+    this.showFilters.set(false); // Close dropdown after selection
   }
 
   protected toggleFilters(): void {
     this.showFilters.set(!this.showFilters());
   }
+
+  protected toggleBadgeGuide(): void {
+    this.showBadgeGuide.set(!this.showBadgeGuide());
+  }
+
 
   protected getFilterIcon(iconName: string): any {
     const iconMap: { [key: string]: any } = {
@@ -288,6 +334,9 @@ export class GoalsComponent implements OnInit, OnDestroy {
   // Icon references
   protected readonly ChevronDownIcon = ChevronDown;
   protected readonly FilterIcon = Filter;
+  protected readonly TrophyIcon = Trophy;
+  protected readonly InfoIcon = Info;
+  protected readonly ArrowRightIcon = ArrowRight;
 
   private checkReminders(): void {
     this.notificationService.checkReminders(this.habits());

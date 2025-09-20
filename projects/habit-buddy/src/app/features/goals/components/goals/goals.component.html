@@ -1,102 +1,277 @@
 <div class="view max-w-5xl mx-auto">
+  <!-- Compact Badge Progress & Navigation -->
+  <section class="mb-4">
+    <div class="flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3 border border-blue-100">
+      <!-- Badge Progress Summary -->
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
+          <lucide-icon [img]="TrophyIcon" size="18" class="text-blue-600"></lucide-icon>
+          <span class="text-sm font-semibold text-slate-800">Progress</span>
+        </div>
+        
+        <!-- Badge Progression Path -->
+        <div class="badge-progression-container">
+          <!-- Desktop: Horizontal with arrows -->
+          <div class="hidden md:flex items-center gap-1">
+            @for (badge of badgeSystemGuide(); track badge.level; let i = $index) {
+              <div class="flex items-center gap-1">
+                <div class="flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-all duration-200"
+                     [class.bg-yellow-100]="badge.achieved"
+                     [class.text-yellow-700]="badge.achieved"
+                     [class.border-2]="badge.achieved"
+                     [class.border-yellow-400]="badge.achieved"
+                     [class.bg-slate-100]="!badge.achieved"
+                     [class.text-slate-600]="!badge.achieved"
+                     [class.border]="!badge.achieved"
+                     [class.border-slate-300]="!badge.achieved">
+                  <lucide-icon [img]="getFilterIcon(badge.icon)" size="12"></lucide-icon>
+                  <span>{{ badge.name }}</span>
+                  <span class="text-xs opacity-75">({{ badge.daysRequired }})</span>
+                </div>
+                
+                <!-- Connecting Arrow -->
+                @if (i < badgeSystemGuide().length - 1) {
+                  <div class="flex items-center">
+                    <lucide-icon [img]="ArrowRightIcon" size="14" class="text-slate-400"></lucide-icon>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+          
+          <!-- Mobile: Compact vertical stack -->
+          <div class="md:hidden flex flex-col gap-1">
+            <div class="flex items-center justify-center gap-2 flex-wrap">
+              @for (badge of badgeSystemGuide(); track badge.level; let i = $index) {
+                <div class="flex items-center gap-1">
+                  <div class="flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-all duration-200"
+                       [class.bg-yellow-100]="badge.achieved"
+                       [class.text-yellow-700]="badge.achieved"
+                       [class.border-2]="badge.achieved"
+                       [class.border-yellow-400]="badge.achieved"
+                       [class.bg-slate-100]="!badge.achieved"
+                       [class.text-slate-600]="!badge.achieved"
+                       [class.border]="!badge.achieved"
+                       [class.border-slate-300]="!badge.achieved">
+                    <lucide-icon [img]="getFilterIcon(badge.icon)" size="10"></lucide-icon>
+                    <span class="hidden sm:inline">{{ badge.name }}</span>
+                    <span class="text-xs opacity-75">({{ badge.daysRequired }})</span>
+                  </div>
+                  
+                  <!-- Mobile connecting dot -->
+                  @if (i < badgeSystemGuide().length - 1) {
+                    <div class="flex items-center">
+                      <div class="w-1 h-1 bg-slate-400 rounded-full"></div>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Badge Guide Toggle -->
+      <div class="flex items-center gap-2">
+        <button
+          type="button"
+          (click)="toggleBadgeGuide()"
+          class="flex items-center gap-1 px-3 py-1 text-xs font-medium text-blue-600 bg-blue-100 rounded-md hover:bg-blue-200 transition-colors">
+          <lucide-icon [img]="InfoIcon" size="12"></lucide-icon>
+          <span class="hidden sm:inline">Badge Guide</span>
+          <lucide-icon 
+            [img]="ChevronDownIcon" 
+            size="12" 
+            class="transition-transform duration-200"
+            [class.rotate-180]="showBadgeGuide()">
+          </lucide-icon>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Collapsible Badge Guide -->
+    @if (showBadgeGuide()) {
+      <div class="mt-2 bg-white rounded-lg border border-slate-200 p-3">
+        <!-- Badge Progression Path (Detailed) -->
+        <!-- Desktop: Horizontal layout -->
+        <div class="hidden md:flex items-center justify-center gap-2 mb-3">
+          @for (badge of badgeSystemGuide(); track badge.level; let i = $index) {
+            <div class="flex items-center gap-2">
+              <!-- Badge Card -->
+              <div class="badge-guide-card flex flex-col items-center p-3 bg-slate-50 rounded-lg border border-slate-200 hover:bg-slate-100 transition-all duration-200 min-w-[80px]"
+                   [class.bg-gradient-to-br]="badge.achieved"
+                   [class.from-yellow-50]="badge.achieved"
+                   [class.to-orange-50]="badge.achieved"
+                   [class.border-yellow-300]="badge.achieved">
+                
+                <!-- Badge Icon -->
+                <div class="badge-icon mb-2 p-2 rounded-full"
+                     [class.bg-blue-100]="!badge.achieved"
+                     [class.text-blue-600]="!badge.achieved"
+                     [class.bg-yellow-100]="badge.achieved"
+                     [class.text-yellow-600]="badge.achieved">
+                  <lucide-icon [img]="getFilterIcon(badge.icon)" size="20"></lucide-icon>
+                </div>
+                
+                <!-- Badge Info -->
+                <div class="text-center">
+                  <h4 class="text-xs font-semibold text-slate-800 mb-1">{{ badge.name }}</h4>
+                  <p class="text-xs text-slate-600 mb-2">{{ badge.daysRequired }} days</p>
+                  
+                  <!-- Progress Status -->
+                  <div class="text-xs">
+                    @if (badge.achieved) {
+                      <span class="text-green-600 font-medium">✓ Achieved</span>
+                    } @else {
+                      <span class="text-slate-500">{{ badge.currentDays }}/{{ badge.daysRequired }}</span>
+                    }
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Connecting Arrow -->
+              @if (i < badgeSystemGuide().length - 1) {
+                <div class="flex items-center">
+                  <lucide-icon [img]="ArrowRightIcon" size="16" class="text-slate-400"></lucide-icon>
+                </div>
+              }
+            </div>
+          }
+        </div>
+        
+        <!-- Mobile: Vertical stack -->
+        <div class="md:hidden space-y-2 mb-3">
+          @for (badge of badgeSystemGuide(); track badge.level; let i = $index) {
+            <div class="flex items-center gap-3">
+              <!-- Step Number -->
+              <div class="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
+                   [class.bg-yellow-100]="badge.achieved"
+                   [class.text-yellow-700]="badge.achieved"
+                   [class.bg-slate-100]="!badge.achieved"
+                   [class.text-slate-600]="!badge.achieved">
+                {{ i + 1 }}
+              </div>
+              
+              <!-- Badge Card -->
+              <div class="flex-1 flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200"
+                   [class.bg-gradient-to-r]="badge.achieved"
+                   [class.from-yellow-50]="badge.achieved"
+                   [class.to-orange-50]="badge.achieved"
+                   [class.border-yellow-300]="badge.achieved">
+                
+                <!-- Badge Icon -->
+                <div class="badge-icon p-2 rounded-full"
+                     [class.bg-blue-100]="!badge.achieved"
+                     [class.text-blue-600]="!badge.achieved"
+                     [class.bg-yellow-100]="badge.achieved"
+                     [class.text-yellow-600]="badge.achieved">
+                  <lucide-icon [img]="getFilterIcon(badge.icon)" size="16"></lucide-icon>
+                </div>
+                
+                <!-- Badge Info -->
+                <div class="flex-1">
+                  <h4 class="text-sm font-semibold text-slate-800">{{ badge.name }}</h4>
+                  <p class="text-xs text-slate-600">{{ badge.daysRequired }} days required</p>
+                </div>
+                
+                <!-- Progress Status -->
+                <div class="text-xs font-medium">
+                  @if (badge.achieved) {
+                    <span class="text-green-600">✓ Achieved</span>
+                  } @else {
+                    <span class="text-slate-500">{{ badge.currentDays }}/{{ badge.daysRequired }}</span>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+        
+        <div class="text-xs text-slate-600 text-center">
+          <p>💡 Complete habits consistently to unlock higher badge levels!</p>
+        </div>
+      </div>
+    }
+  </section>
+
   <!-- Add Habit Form -->
   <app-habit-form 
     (habitAdded)="onHabitAdded($event)"
     (openReminderModal)="onOpenReminderModal()" />
   
-  <!-- Filter Buttons -->
+  <!-- Compact Filter System -->
   @if (hasHabits()) {
-    <section class="mt-4 mb-2 filter-sections">
-      <!-- Mobile Filter Toggle Button -->
-      <div class="block sm:hidden mb-3">
-        <button
-          type="button"
-          (click)="toggleFilters()"
-          class="w-full flex items-center justify-between px-4 py-3 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-200 transition-colors">
-          <div class="flex items-center gap-2">
-            <lucide-icon [img]="FilterIcon" size="16" class="text-slate-600"></lucide-icon>
-            <span class="text-sm font-medium text-slate-700">Filter Goals</span>
-            @if (activeFilter() !== 'all') {
-              <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
-                {{ activeFilterLabel() }}
-              </span>
-            }
-          </div>
-          <lucide-icon 
-            [img]="ChevronDownIcon" 
-            size="16" 
-            class="text-slate-500 transition-transform duration-200"
-            [class.rotate-180]="showFilters()">
-          </lucide-icon>
-        </button>
-      </div>
-
-      <!-- Filter Sections (Always visible on desktop, toggleable on mobile) -->
-      <div class="mobile-filter-content" [class.show]="showFilters()">
-        <!-- Batch Filters (Badge Levels) -->
-        <div class="mb-3">
-          <h3 class="text-sm font-semibold text-gray-600 mb-2 px-1 hidden sm:block">Badge Levels</h3>
-        <div class="flex flex-wrap gap-2 justify-center sm:justify-start batch-filters">
-          @for (option of batchFilterOptionsWithCounts(); track option.value) {
-            <button 
-              type="button"
-              class="filter-button batch-filter inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg border transition-all duration-200 hover:shadow-md"
-              [class.bg-blue-600]="activeFilter() === option.value"
-              [class.text-white]="activeFilter() === option.value"
-              [class.border-blue-600]="activeFilter() === option.value"
-              [class.bg-white]="activeFilter() !== option.value"
-              [class.text-gray-700]="activeFilter() !== option.value"
-              [class.border-gray-300]="activeFilter() !== option.value"
-              [class.hover:bg-gray-50]="activeFilter() !== option.value"
-              [class.active]="activeFilter() === option.value"
-              (click)="onFilterChange(option.value)">
-              @if (option.icon) {
-                <lucide-icon [img]="getFilterIcon(option.icon)" size="16"></lucide-icon>
-              }
-              <span>{{ option.label }}</span>
-              <span class="count-badge inline-flex items-center justify-center w-5 h-5 text-xs font-medium rounded-full"
-                    [class.bg-white]="activeFilter() === option.value"
-                    [class.text-blue-600]="activeFilter() === option.value"
-                    [class.bg-gray-200]="activeFilter() !== option.value"
-                    [class.text-gray-600]="activeFilter() !== option.value">
-                {{ option.count }}
-              </span>
-            </button>
+    <section class="mt-4 mb-2 compact-filter-section">
+      <div class="flex justify-start">
+        <!-- Filter Dropdown -->
+        <div class="relative">
+          <button
+            type="button"
+            (click)="toggleFilters()"
+            class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 bg-white rounded-lg border border-slate-300 hover:bg-slate-50 transition-colors shadow-sm">
+            <lucide-icon [img]="FilterIcon" size="16"></lucide-icon>
+            <span>{{ activeFilterLabel() }}</span>
+            <span class="inline-flex items-center justify-center w-5 h-5 text-xs font-bold rounded-full bg-slate-200 text-slate-700">{{ activeFilterCount() }}</span>
+            <lucide-icon 
+              [img]="ChevronDownIcon" 
+              size="14" 
+              class="text-slate-500 transition-transform duration-200"
+              [class.rotate-180]="showFilters()">
+            </lucide-icon>
+          </button>
+          
+          <!-- Dropdown Menu -->
+          @if (showFilters()) {
+            <div class="absolute top-full left-0 mt-1 w-80 bg-white rounded-lg border border-slate-200 shadow-lg z-10">
+              <div class="p-3">
+                <!-- Badge Level Filters -->
+                <div class="mb-3">
+                  <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Badge Levels</h4>
+                  <div class="grid grid-cols-2 gap-1">
+                    @for (option of batchFilterOptionsWithCounts(); track option.value) {
+                      <button 
+                        type="button"
+                        class="filter-option flex items-center justify-between px-2 py-1.5 text-xs rounded hover:bg-slate-100 transition-colors"
+                        [class.bg-blue-100]="activeFilter() === option.value"
+                        [class.text-blue-700]="activeFilter() === option.value"
+                        (click)="onFilterChange(option.value)">
+                        <div class="flex items-center gap-1.5">
+                          @if (option.icon) {
+                            <lucide-icon [img]="getFilterIcon(option.icon)" size="12"></lucide-icon>
+                          }
+                          <span>{{ option.label }}</span>
+                        </div>
+                        <span class="text-xs font-medium">{{ option.count }}</span>
+                      </button>
+                    }
+                  </div>
+                </div>
+                
+                <!-- Status & Feature Filters -->
+                <div>
+                  <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Status & Features</h4>
+                  <div class="space-y-1">
+                    @for (option of otherFilterOptionsWithCounts(); track option.value) {
+                      <button 
+                        type="button"
+                        class="filter-option w-full flex items-center justify-between px-2 py-1.5 text-xs rounded hover:bg-slate-100 transition-colors"
+                        [class.bg-green-100]="activeFilter() === option.value"
+                        [class.text-green-700]="activeFilter() === option.value"
+                        (click)="onFilterChange(option.value)">
+                        <div class="flex items-center gap-1.5">
+                          @if (option.icon) {
+                            <lucide-icon [img]="getFilterIcon(option.icon)" size="12"></lucide-icon>
+                          }
+                          <span>{{ option.label }}</span>
+                        </div>
+                        <span class="text-xs font-medium">{{ option.count }}</span>
+                      </button>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
           }
-        </div>
-      </div>
-
-        <!-- Other Filters (Status & Features) -->
-        <div class="mb-2">
-          <h3 class="text-sm font-semibold text-gray-600 mb-2 px-1 hidden sm:block">Status & Features</h3>
-        <div class="flex flex-wrap gap-2 justify-center sm:justify-start other-filters">
-          @for (option of otherFilterOptionsWithCounts(); track option.value) {
-            <button 
-              type="button"
-              class="filter-button other-filter inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg border transition-all duration-200 hover:shadow-md"
-              [class.bg-green-600]="activeFilter() === option.value"
-              [class.text-white]="activeFilter() === option.value"
-              [class.border-green-600]="activeFilter() === option.value"
-              [class.bg-white]="activeFilter() !== option.value"
-              [class.text-gray-700]="activeFilter() !== option.value"
-              [class.border-gray-300]="activeFilter() !== option.value"
-              [class.hover:bg-gray-50]="activeFilter() !== option.value"
-              [class.active]="activeFilter() === option.value"
-              (click)="onFilterChange(option.value)">
-              @if (option.icon) {
-                <lucide-icon [img]="getFilterIcon(option.icon)" size="16"></lucide-icon>
-              }
-              <span>{{ option.label }}</span>
-              <span class="count-badge inline-flex items-center justify-center w-5 h-5 text-xs font-medium rounded-full"
-                    [class.bg-white]="activeFilter() === option.value"
-                    [class.text-green-600]="activeFilter() === option.value"
-                    [class.bg-gray-200]="activeFilter() !== option.value"
-                    [class.text-gray-600]="activeFilter() !== option.value">
-                {{ option.count }}
-              </span>
-            </button>
-          }
-        </div>
         </div>
       </div>
     </section>
