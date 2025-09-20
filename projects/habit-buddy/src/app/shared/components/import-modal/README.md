@@ -1,6 +1,6 @@
 # Import Service
 
-The `ImportService` is a dedicated service for handling habit import functionality with advanced duplicate detection and user options. It provides a clean separation of concerns from the main `HabitService`.
+The `ImportService` is a dedicated service for handling habit import functionality with advanced duplicate detection and user options. It provgides a clean separation of concerns from the main `HabitService`.
 
 ## Features
 

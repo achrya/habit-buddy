@@ -6,31 +6,6 @@
   }
 }
 
-// Badge system guide styling
-.badge-progression-container {
-  // Mobile responsiveness
-  @media (max-width: 767px) {
-    .flex-wrap {
-      justify-content: center;
-    }
-  }
-}
-
-.badge-guide-card {
-  transition: all 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-1px);
-  }
-  
-  .badge-icon {
-    transition: all 0.3s ease;
-  }
-  
-  .progress-fill {
-    transition: all 0.8s ease;
-  }
-}
 
 // Compact navigation styling
 .navigation-buttons {

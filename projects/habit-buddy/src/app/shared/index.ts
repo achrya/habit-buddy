@@ -3,6 +3,7 @@ export * from './components/chart/chart.component';
 export * from './components/bottom-nav/bottom-nav.component';
 export * from './components/import-modal/import-modal.component';
 export * from './components/dialog/dialog.component';
+export * from './components/help-overlay/help-overlay.component';
 
 // Export all shared services
 export * from './services/habit.service';

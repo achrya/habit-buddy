@@ -1,0 +1,28 @@
+// Help overlay styling
+.help-overlay {
+  .help-panel {
+    animation: slideInRight 0.3s ease-out;
+    
+    // Ensure badge progression fits well
+    .badge-guide-card {
+      flex-shrink: 0;
+    }
+    
+    // Better spacing for wider screens
+    @media (min-width: 1024px) {
+      .flex-wrap {
+        justify-content: space-between;
+        gap: 1rem;
+      }
+    }
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
