@@ -93,7 +93,8 @@ export class NotificationService {
         24 * 60 - Math.abs(minsNow - target)
       );
 
-      if (diff <= (habit.reminder.window || 120) / 2) {
+      const window = habit.reminder.window ?? 120;
+      if (diff <= window / 2) {
         this.notify(`Reminder: ${habit.title}`, `Time to ${habit.title}`);
         this.playBell();
         this.triggerConfetti();

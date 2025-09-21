@@ -244,7 +244,7 @@ export class HabitService {
       const now = new Date();
       const minsNow = now.getHours() * 60 + now.getMinutes();
       const target = this.hhmmToMins(habit.reminder.time);
-      const window = habit.reminder.window || this.DEFAULT_WINDOW_MIN;
+      const window = habit.reminder.window ?? this.DEFAULT_WINDOW_MIN;
       const weekday = now.getDay();
 
       if (!habit.reminder.days.includes(weekday)) {
@@ -257,7 +257,7 @@ export class HabitService {
       );
 
       if (diff > window / 2) {
-        return { ok: false, msg: `Check-in allowed only within ${Math.round(window / 60 * 100) / 100}h window around reminder.` };
+        return { ok: false, msg: `Check-in allowed only within ${Math.round((window / 60) * 100) / 100}h window around reminder.` };
       }
     }
 
