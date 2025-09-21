@@ -31,7 +31,7 @@ jobs:
         run: npm ci
         
       - name: Build Angular app
-        run: npx ng build --configuration production --base-href "/habit-buddy/"
+        run: npx ng build --configuration production --base-href "./"
         
       - name: Setup Pages
         uses: actions/configure-pages@v4
