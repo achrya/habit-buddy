@@ -12,7 +12,8 @@
       var l = window.location;
       if (l.search && l.search.indexOf('?/') === 0) {
         var path = l.search.slice(2).split('&')[0];
-        var newUrl = (l.pathname.replace(/index\.html$/, '')) + path + l.hash;
+        var basePath = l.pathname.replace(/index\.html$/, '');
+        var newUrl = (basePath === '/' ? '' : basePath) + '/' + path + l.hash;
         window.history.replaceState(null, '', newUrl);
       }
     })();
