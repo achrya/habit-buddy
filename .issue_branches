@@ -1,0 +1,15 @@
+19	issues/19-calendar-ux-logic
+18	issues/18-type-safety-improvements
+17	issues/17-memory-leak-intervals
+16	issues/16-time-validation-edge-cases
+15	issues/15-error-handling-import-service
+14	issues/14-performance-optimization-computed
+13	issues/13-id-generation-collision-risk
+12	issues/12-category-assignment-inconsistency
+11	issues/11-badge-award-logic-error
+10	issues/10-mixed-state-management
+9	issues/9-duplicate-reminder-intervals
+8	issues/8-reminder-window-validation-bug
+7	issues/7-clock-tampering-detection-error
+6	issues/6-streak-calculation-bug
+5	issues/5-badge-system-inconsistency

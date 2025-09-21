@@ -307,6 +307,10 @@ export class HabitService {
     // Calculate current streak
     let current = 0;
     let dt = new Date();
+    // If today is not checked in, start counting from yesterday
+    if (!checkinSet.has(dt.toISOString().slice(0, 10))) {
+      dt.setDate(dt.getDate() - 1);
+    }
     while (true) {
       const key = dt.toISOString().slice(0, 10);
       if (checkinSet.has(key)) {
