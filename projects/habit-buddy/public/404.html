@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Redirecting…</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="refresh" content="0; url=./">
+    <script>
+      /*
+       * SPA GitHub Pages 404 redirect
+       * Preserves path for client-side routers (Angular/React/Vue)
+       * Source concept: https://github.com/rafrex/spa-github-pages
+       */
+      (function(location) {
+        var path = location.pathname;
+        var search = location.search;
+        var hash = location.hash;
+
+        // Heuristic: keep first path segment for project pages (user.github.io/repo/...)
+        // If hosted at a user/organization page (no repo segment), this will still work.
+        var segments = path.replace(/^\/+|\/+$/g, '').split('/');
+        var keep = segments.length > 0 ? 1 : 0;
+        var newPath = (keep ? '/' + segments.slice(0, keep).join('/') : '') + '/?/' + segments.slice(keep).join('/');
+        var newUrl = newPath + (search ? (search.indexOf('?') === 0 ? '&' + search.slice(1) : search) : '') + hash;
+
+        location.replace(newUrl);
+      })(window.location);
+    </script>
+  </head>
+  <body>
+    Redirecting…
+  </body>
+  </html>
+
