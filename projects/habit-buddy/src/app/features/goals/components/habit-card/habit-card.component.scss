@@ -1,111 +1,629 @@
-// Fixed card dimensions for symmetry
 .habit-card {
-  // min-height: 280px;
-  // max-height: 280px;
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 18px;
+  color: #1e293b;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  transition: all 0.2s ease;
+  max-width: 400px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
   
   &:hover {
     transform: translateY(-2px);
+    border-color: #cbd5e1;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
 }
 
-// Card content layout
-.card-content {
+// Card header
+.card-header {
   display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: 220px;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
 }
 
-// Title with fixed height
-.card-content h3 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.4;
+.habit-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+  flex: 1;
+  line-height: 1.3;
 }
 
-// Badge positioning and styling
-.badge-container {
-  z-index: 10;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
-  
-  &:hover {
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.habit-status {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+
+  &.status-completed {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+  }
+
+  &.status-active {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
   }
 }
 
-// Stats section styling
-.stats-section {
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  border: 1px solid #e2e8f0;
+// Main content layout
+.card-content {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  align-items: flex-start;
 }
 
-// Status message styling
-.status-message {
-  flex-grow: 1;
+// Chart section - optimized spacing
+.chart-section {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 40px;
+  flex-shrink: 0;
+  cursor: help;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  padding: 4px;
+  position: relative;
+  
+  &:hover {
+    background: rgba(99, 102, 241, 0.1);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+  }
+  
+  &:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: -70px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e293b;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    white-space: normal;
+    max-width: 280px;
+    width: max-content;
+    text-align: center;
+    line-height: 1.4;
+    z-index: 1010; // Higher than check-in button
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: tooltipFadeIn 0.2s ease-out;
+  }
+  
+  &:hover::before {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 8px solid #1e293b;
+    z-index: 1011; // Higher than tooltip
+    animation: tooltipFadeIn 0.2s ease-out;
+  }
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.chart-icon {
+  margin-bottom: 2px;
+}
+
+
+// Stats section
+.stats-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.stat-item {
+  text-align: left;
+}
+
+// Stats row for side-by-side layout
+.stats-row {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.stats-row .stat-item {
+  flex: 1;
+  text-align: center;
+}
+
+// Connection indicator between streak and total days
+.stats-row::after {
+  content: '/';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: #cbd5e1;
+  font-size: 20px;
+  font-weight: 300;
+  z-index: 1;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 600;
+  color: #64748b;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.streak-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #6366f1;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+// Motivation section
+.motivation-section {
+  padding: 12px 16px;
+  border-radius: 12px;
+  text-align: left;
+
+  &.motivation-completed {
+    background: #dcfce7;
+    border: 1px solid #bbf7d0;
+  }
+
+  &.motivation-active {
+    background: #dcfce7;
+    border: 1px solid #bbf7d0;
+  }
+}
+
+.motivation-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #166534;
+  margin-bottom: 4px;
+}
+
+.motivation-message {
+  font-size: 12px;
+  color: #374151;
+  font-weight: 500;
+}
+
+// Completion stats
+.completion-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.completion-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.completion-label {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.completion-value {
+  font-weight: 600;
+
+  &.completed {
+    color: #16a34a;
+  }
+
+  &.missed {
+    color: #ea580c;
+  }
 }
 
 // Action buttons
-button {
+.action-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.icon-buttons-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.action-btn {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px;
+  color: #64748b;
+  cursor: pointer;
   transition: all 0.2s ease;
-  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   &:hover {
+    background: #f1f5f9;
+    color: #1e293b;
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
-  
+
   &:active {
     transform: translateY(0);
   }
 }
 
-// Check-in button states
-.bg-emerald-600 {
-  background-color: #059669 !important;
-  
-  &:hover {
-    background-color: #047857 !important;
-  }
-}
+.check-in-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-.bg-slate-50 {
   &:hover {
-    background-color: #f1f5f9 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &.checked-in {
+    background: #10b981;
+    color: white;
+
+    &:hover {
+      background: #059669;
+    }
+  }
+
+  &.not-checked-in {
+    background: #6366f1;
+    color: white;
+
+    &:hover {
+      background: #5856eb;
+    }
   }
 }
 
 // Responsive adjustments
 @media (max-width: 640px) {
-  // .habit-card {
-  //   min-height: 260px;
-  //   max-height: 260px;
-  // }
-  
-  .card-content {
-    min-height: 200px;
+  .habit-card {
+    padding: 16px;
+    max-width: 100%;
+    margin: 0 auto; // Center cards on mobile
   }
   
-  .badge-container {
-    width: 36px;
-    height: 36px;
+  .card-content {
+    flex-direction: row; // Keep horizontal layout on mobile for better UX
+    align-items: center;
+    gap: 12px;
+    justify-content: space-between;
+  }
+  
+  .chart-section {
+    flex-shrink: 0;
+    padding: 2px; // Reduced padding on mobile
+    // Reduce chart size on mobile for better balance
+    app-circular-progress {
+      transform: scale(0.85);
+    }
+  }
+  
+  .stats-section {
+    flex: 1;
+    align-items: flex-start;
+    text-align: left;
+    min-width: 0; // Prevent overflow
+  }
+  
+  .motivation-section {
+    padding: 10px 12px;
+    margin-bottom: 12px;
+  }
+  
+  .motivation-title {
+    font-size: 13px;
+  }
+  
+  .motivation-message {
+    font-size: 11px;
+  }
+  
+  .stats-row {
+    gap: 16px;
+    margin-top: 8px;
+  }
+  
+  .stats-row::after {
+    font-size: 16px; // Smaller separator on mobile
+  }
+  
+  .action-buttons {
+    justify-content: space-between;
+    gap: 8px;
+  }
+  
+  .icon-buttons-group {
+    gap: 6px;
+  }
+  
+  .habit-title {
+    font-size: 16px;
+    line-height: 1.2;
+  }
+  
+  .stat-value {
+    font-size: 20px;
+  }
+  
+  .streak-value {
+    font-size: 24px;
+  }
+  
+  // Disable tooltips on mobile for better UX
+  .chart-section {
+    &:hover::after,
+    &:hover::before {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .habit-card {
+    padding: 14px;
+  }
+  
+  .card-content {
+    gap: 8px;
+  }
+  
+  .chart-section {
+    padding: 1px; // Minimal padding on very small screens
+    app-circular-progress {
+      transform: scale(0.75); // Even smaller on very small screens
+    }
+  }
+  
+  .motivation-section {
+    padding: 8px 10px;
+    margin-bottom: 10px;
+  }
+  
+  .stats-row {
+    gap: 12px;
+  }
+
+  .action-buttons {
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  .action-btn {
+    padding: 8px; // Larger touch targets
+    min-width: 36px; // Minimum touch target size
+    min-height: 36px;
+  }
+
+  .check-in-btn {
+    padding: 10px 16px;
+    font-size: 13px;
+    min-height: 36px; // Consistent touch target
+  }
+  
+  .habit-title {
+    font-size: 15px;
+  }
+  
+  .stat-value {
+    font-size: 18px;
+  }
+  
+  .streak-value {
+    font-size: 22px;
+  }
+}
+
+// Streak Break Visualization
+.streak-breaks-section {
+  margin-top: 16px;
+  
+  .section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    margin-bottom: 8px;
+  }
+  
+  .activity-timeline {
+    display: flex;
+    gap: 3px;
+    justify-content: space-between;
     
-    span {
-      font-size: 1.125rem;
+    .activity-day {
+      flex: 1;
+      height: 20px;
+      border-radius: 3px;
+      position: relative;
+      cursor: help;
+      
+      .day-indicator {
+        width: 100%;
+        height: 100%;
+        border-radius: 3px;
+        transition: all 0.2s ease;
+      }
+      
+      // Custom tooltip
+      &::before {
+        content: attr(title);
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 6px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.2s ease;
+        z-index: 1000;
+        margin-bottom: 5px;
+        pointer-events: none;
+      }
+      
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 4px solid transparent;
+        border-top-color: rgba(0, 0, 0, 0.9);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.2s ease;
+        z-index: 1000;
+        margin-bottom: 1px;
+        pointer-events: none;
+      }
+      
+      &:hover::before,
+      &:hover::after {
+        opacity: 1;
+        visibility: visible;
+      }
+      
+      &.completed .day-indicator {
+        background: #22c55e;
+        border: 1px solid #16a34a;
+      }
+      
+      &.missed .day-indicator {
+        background: #e5e7eb;
+        border: 1px solid #d1d5db;
+      }
+      
+      &.break .day-indicator {
+        background: #f97316;
+        border: 1px solid #ea580c;
+        position: relative;
+        
+        &::after {
+          content: '!';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: white;
+          font-size: 10px;
+          font-weight: bold;
+        }
+      }
+      
+      // Special tooltip styling for streak breaks
+      &.break::before {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        border: 1px solid #ea580c;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+      }
+      
+      &.break::after {
+        border-top-color: #f97316;
+      }
+      
+      &.today .day-indicator {
+        background: #3b82f6;
+        border: 2px solid #1d4ed8;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+      }
+      
+      &:hover .day-indicator {
+        transform: scale(1.1);
+        z-index: 10;
+      }
+    }
+  }
+  
+  @media (max-width: 640px) {
+    margin-top: 12px;
+    
+    .activity-timeline {
+      gap: 2px;
+      
+      .activity-day {
+        height: 16px;
+        
+        .day-indicator {
+          border-radius: 2px;
+        }
+        
+        &.break .day-indicator::after {
+          font-size: 8px;
+        }
+        
+        // Disable custom tooltips on mobile (use native title)
+        &::before,
+        &::after {
+          display: none;
+        }
+      }
     }
   }
 }

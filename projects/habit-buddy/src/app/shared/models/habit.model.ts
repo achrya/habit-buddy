@@ -20,6 +20,7 @@ export interface HabitBadge {
 }
 
 export enum BadgeLevel {
+  NOVICE = 'novice',
   BEGINNER = 'beginner',
   INTERMEDIATE = 'intermediate',
   ADVANCED = 'advanced',

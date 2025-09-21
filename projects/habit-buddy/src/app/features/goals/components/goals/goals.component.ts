@@ -8,8 +8,9 @@ import { DialogService } from '../../../../shared/services/dialog.service';
 import { Habit, Reminder, BadgeLevel } from '../../../../shared/models/habit.model';
 import { HabitService, NotificationService } from '../../../../shared';
 import { ReminderModalComponent } from '../../../reminders/components/reminder-modal/reminder-modal.component';
-import { LucideAngularModule, Grid3X3, Sprout, Target, Star, Trophy, Crown, Flame, Bell, Sparkles, CheckCircle, ChevronDown, Filter, Info, ArrowRight, HelpCircle } from 'lucide-angular';
+import { LucideAngularModule, Grid3X3, Sprout, Target, Star, Trophy, Crown, Flame, Bell, Sparkles, CheckCircle, ChevronDown, Filter, Info, ArrowRight, HelpCircle, Plus } from 'lucide-angular';
 import { HelpOverlayComponent } from '../../../../shared/components/help-overlay/help-overlay.component';
+import { getBadgeFilterOptions, BADGE_LEVELS, getBadgeConfigForDays } from '../../../../shared/config/badge-levels.config';
 
 @Component({
   selector: 'app-goals',
@@ -31,15 +32,9 @@ export class GoalsComponent implements OnInit, OnDestroy {
   // Help overlay state
   protected readonly showHelpOverlay = signal<boolean>(false);
   
-  // Batch filter options (Badge levels)
-  protected readonly batchFilterOptions = [
-    { value: 'all', label: 'All Goals', count: 0, icon: 'Grid3X3' },
-    { value: 'beginner', label: 'Beginner', count: 0, icon: 'Sprout' },
-    { value: 'intermediate', label: 'Intermediate', count: 0, icon: 'Target' },
-    { value: 'advanced', label: 'Advanced', count: 0, icon: 'Star' },
-    { value: 'expert', label: 'Expert', count: 0, icon: 'Trophy' },
-    { value: 'master', label: 'Master', count: 0, icon: 'Crown' }
-  ];
+  // Mobile form dialog state
+  protected readonly showMobileFormDialog = signal<boolean>(false);
+  
 
   // Other filter options (Status, features, etc.)
   protected readonly otherFilterOptions = [
@@ -62,6 +57,8 @@ export class GoalsComponent implements OnInit, OnDestroy {
           const stats = this.getHabitStats(habit);
           return stats.current > 0;
         });
+      case 'novice':
+        return allHabits.filter(habit => habit.badge?.level === BadgeLevel.NOVICE);
       case 'beginner':
         return allHabits.filter(habit => habit.badge?.level === BadgeLevel.BEGINNER);
       case 'intermediate':
@@ -94,36 +91,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
   protected readonly hasFilteredHabits = computed(() => this.filteredHabits().length > 0);
   
   // Computed batch filter options with counts
-  protected readonly batchFilterOptionsWithCounts = computed(() => {
-    const allHabits = this.habits();
-    
-    return this.batchFilterOptions.map(option => {
-      let count = 0;
-      
-      switch (option.value) {
-        case 'all':
-          count = allHabits.length;
-          break;
-        case 'beginner':
-          count = allHabits.filter(habit => habit.badge?.level === BadgeLevel.BEGINNER).length;
-          break;
-        case 'intermediate':
-          count = allHabits.filter(habit => habit.badge?.level === BadgeLevel.INTERMEDIATE).length;
-          break;
-        case 'advanced':
-          count = allHabits.filter(habit => habit.badge?.level === BadgeLevel.ADVANCED).length;
-          break;
-        case 'expert':
-          count = allHabits.filter(habit => habit.badge?.level === BadgeLevel.EXPERT).length;
-          break;
-        case 'master':
-          count = allHabits.filter(habit => habit.badge?.level === BadgeLevel.MASTER).length;
-          break;
-      }
-      
-      return { ...option, count };
-    });
-  });
 
   // Computed other filter options with counts
   protected readonly otherFilterOptionsWithCounts = computed(() => {
@@ -162,16 +129,31 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
   // Computed active filter label
   protected readonly activeFilterLabel = computed(() => {
-    const allOptions = [...this.batchFilterOptionsWithCounts(), ...this.otherFilterOptionsWithCounts()];
-    const activeOption = allOptions.find(option => option.value === this.activeFilter());
-    return activeOption?.label || 'Active';
+    const currentFilter = this.activeFilter();
+    
+    // Check badge levels first
+    if (currentFilter === 'all') return 'All Goals';
+    const badge = this.badgeLevelsConfig.find(b => b.level === currentFilter);
+    if (badge) return badge.name;
+    
+    // Check other filter options
+    const otherOption = this.otherFilterOptionsWithCounts().find(option => option.value === currentFilter);
+    return otherOption?.label || 'Active';
   });
 
   // Computed active filter count
   protected readonly activeFilterCount = computed(() => {
-    const allOptions = [...this.batchFilterOptionsWithCounts(), ...this.otherFilterOptionsWithCounts()];
-    const activeOption = allOptions.find(option => option.value === this.activeFilter());
-    return activeOption?.count || 0;
+    const currentFilter = this.activeFilter();
+    
+    // Check badge levels first
+    if (currentFilter === 'all') return this.getTotalHabitsCount();
+    if (this.badgeLevelsConfig.find(b => b.level === currentFilter)) {
+      return this.getBadgeFilterCount(currentFilter);
+    }
+    
+    // Check other filter options
+    const otherOption = this.otherFilterOptionsWithCounts().find(option => option.value === currentFilter);
+    return otherOption?.count || 0;
   });
 
 
@@ -286,11 +268,26 @@ export class GoalsComponent implements OnInit, OnDestroy {
   protected toggleHelpOverlay(): void {
     this.showHelpOverlay.set(!this.showHelpOverlay());
   }
+  
+  // Mobile form dialog methods
+  protected openMobileFormDialog(): void {
+    this.showMobileFormDialog.set(true);
+  }
+  
+  protected closeMobileFormDialog(): void {
+    this.showMobileFormDialog.set(false);
+  }
+  
+  protected onMobileHabitAdded(habit: { title: string; reminder?: Reminder | null }): void {
+    this.onHabitAdded(habit);
+    this.closeMobileFormDialog();
+  }
 
 
   protected getFilterIcon(iconName: string): any {
     const iconMap: { [key: string]: any } = {
       'Grid3X3': Grid3X3,
+      'Sparkles': Sparkles,
       'Sprout': Sprout,
       'Target': Target,
       'Star': Star,
@@ -298,16 +295,46 @@ export class GoalsComponent implements OnInit, OnDestroy {
       'Crown': Crown,
       'Flame': Flame,
       'Bell': Bell,
-      'Sparkles': Sparkles,
-      'CheckCircle': CheckCircle
+      'CheckCircle': CheckCircle,
+      'target': Target  // Add lowercase version for compatibility
     };
-    return iconMap[iconName];
+    
+    const icon = iconMap[iconName];
+    if (!icon) {
+      console.warn(`Icon '${iconName}' not found in iconMap. Available icons:`, Object.keys(iconMap));
+      return Target; // Fallback to Target icon
+    }
+    return icon;
   }
+
+  // Create a tracking key that changes when checkIns change
+  protected getHabitTrackingKey(habit: Habit): string {
+    const checkInsHash = JSON.stringify(habit.checkIns || {});
+    return `${habit.id}-${checkInsHash.slice(0, 10)}`; // Include checkIns in tracking
+  }
+
 
   // Icon references
   protected readonly ChevronDownIcon = ChevronDown;
   protected readonly FilterIcon = Filter;
   protected readonly HelpCircleIcon = HelpCircle;
+  protected readonly PlusIcon = Plus;
+
+  // Badge levels configuration
+  protected readonly badgeLevelsConfig = BADGE_LEVELS;
+
+  // Helper methods for legend-filter section
+  protected getTotalHabitsCount(): number {
+    return this.habits().length;
+  }
+
+  protected getBadgeFilterCount(level: string): number {
+    return this.habits().filter(habit => {
+      const stats = this.habitService.calcStreaksForHabit(habit);
+      const badgeConfig = getBadgeConfigForDays(stats.current);
+      return badgeConfig.level === level;
+    }).length;
+  }
 
   private checkReminders(): void {
     this.notificationService.checkReminders(this.habits());

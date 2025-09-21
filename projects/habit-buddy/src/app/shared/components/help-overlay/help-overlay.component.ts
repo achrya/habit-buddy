@@ -1,15 +1,11 @@
 import { Component, Input, Output, EventEmitter, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, HelpCircle, X, Trophy, ArrowRight, Sprout, Target, Star, Crown } from 'lucide-angular';
+import { LucideAngularModule, HelpCircle, X, Trophy, ArrowRight, Sprout, Target, Star, Crown, Sparkles } from 'lucide-angular';
 import { HabitService } from '../../services/habit.service';
 import { Habit } from '../../models/habit.model';
+import { BADGE_LEVELS, BadgeConfig } from '../../config/badge-levels.config';
 
-interface BadgeLevel {
-  level: string;
-  name: string;
-  icon: string;
-  daysRequired: number;
-  description: string;
+interface BadgeLevel extends BadgeConfig {
   achieved: boolean;
   currentDays: number;
   progressPercentage: number;
@@ -65,18 +61,15 @@ interface BadgeLevel {
                            [class.border-yellow-300]="badge.achieved">
                         
                         <!-- Badge Icon -->
-                        <div class="badge-icon mb-1 p-1.5 rounded-full"
-                             [class.bg-blue-100]="!badge.achieved"
-                             [class.text-blue-600]="!badge.achieved"
-                             [class.bg-yellow-100]="badge.achieved"
-                             [class.text-yellow-600]="badge.achieved">
-                          <lucide-icon [img]="getFilterIcon(badge.icon)" size="16"></lucide-icon>
+                        <div class="badge-icon mb-2 p-2 rounded-full {{ badge.colors.background }}"
+                             [class]="badge.colors.text">
+                          <lucide-icon [img]="getFilterIcon(badge.icon)" size="18"></lucide-icon>
                         </div>
                         
                         <!-- Badge Info -->
                         <div class="text-center">
-                          <h4 class="text-xs font-semibold text-slate-800 mb-0.5 leading-tight">{{ badge.name }}</h4>
-                          <p class="text-xs text-slate-600 mb-1">{{ badge.daysRequired }}d</p>
+                          <h4 class="text-sm font-semibold text-slate-800 mb-1 leading-tight">{{ badge.name }}</h4>
+                          <p class="text-xs text-slate-600 mb-1">{{ badge.daysRequired === 0 ? '0-6' : badge.daysRequired + '+' }} days</p>
                           
                           <!-- Progress Status -->
                           <div class="text-xs">
@@ -116,18 +109,15 @@ interface BadgeLevel {
                            [class.border-yellow-300]="badge.achieved">
                         
                         <!-- Badge Icon -->
-                        <div class="badge-icon p-2 rounded-full flex-shrink-0"
-                             [class.bg-blue-100]="!badge.achieved"
-                             [class.text-blue-600]="!badge.achieved"
-                             [class.bg-yellow-100]="badge.achieved"
-                             [class.text-yellow-600]="badge.achieved">
+                        <div class="badge-icon p-2 rounded-full flex-shrink-0 {{ badge.colors.background }}"
+                             [class]="badge.colors.text">
                           <lucide-icon [img]="getFilterIcon(badge.icon)" size="20"></lucide-icon>
                         </div>
                         
                         <!-- Badge Info -->
                         <div class="flex-1">
                           <h4 class="text-sm font-semibold text-slate-800 mb-1">{{ badge.name }}</h4>
-                          <p class="text-xs text-slate-600 mb-1">{{ badge.daysRequired }} days</p>
+                          <p class="text-xs text-slate-600 mb-1">{{ badge.daysRequired === 0 ? '0-6' : badge.daysRequired + '+' }} days</p>
                           
                           <!-- Progress Status -->
                           <div class="text-xs">
@@ -199,28 +189,22 @@ export class HelpOverlayComponent {
   protected readonly TrophyIcon = Trophy;
   protected readonly ArrowRightIcon = ArrowRight;
 
-  // Badge system guide
+  // Badge system guide - using centralized config
   protected readonly badgeSystemGuide = computed((): BadgeLevel[] => {
     const habits = this.habitService.habits();
 
-    // Calculate best streak across all habits
-    const bestStreak = habits.length > 0 ? Math.max(...habits.map((habit: Habit) => this.habitService.calcStreaksForHabit(habit).longest)) : 0;
+    // Calculate best completed days across all habits
+    const bestCompletedDays = habits.length > 0 ? 
+      Math.max(...habits.map((habit: Habit) => Object.keys(habit.checkIns || {}).length)) : 0;
 
-    const badgeLevels = [
-      { level: 'beginner', name: 'Beginner', icon: 'Sprout', daysRequired: 7, description: 'Start your journey' },
-      { level: 'intermediate', name: 'Intermediate', icon: 'Target', daysRequired: 30, description: 'Building momentum' },
-      { level: 'advanced', name: 'Advanced', icon: 'Star', daysRequired: 90, description: 'Strong commitment' },
-      { level: 'expert', name: 'Expert', icon: 'Trophy', daysRequired: 180, description: 'Habit mastery' },
-      { level: 'master', name: 'Master', icon: 'Crown', daysRequired: 365, description: 'Ultimate achievement' }
-    ];
-
-    return badgeLevels.map(badge => {
-      const achieved = bestStreak >= badge.daysRequired;
-      const currentDays = Math.min(bestStreak, badge.daysRequired);
-      const progressPercentage = (currentDays / badge.daysRequired) * 100;
+    return BADGE_LEVELS.map(badgeConfig => {
+      const achieved = bestCompletedDays >= badgeConfig.daysRequired;
+      const currentDays = Math.min(bestCompletedDays, badgeConfig.daysRequired);
+      const progressPercentage = badgeConfig.daysRequired > 0 ? 
+        (currentDays / badgeConfig.daysRequired) * 100 : 100;
 
       return {
-        ...badge,
+        ...badgeConfig, // Spread all config properties
         achieved,
         currentDays,
         progressPercentage: Math.min(progressPercentage, 100)
@@ -234,6 +218,7 @@ export class HelpOverlayComponent {
 
   protected getFilterIcon(iconName: string): any {
     const iconMap: { [key: string]: any } = {
+      'Sparkles': Sparkles,
       'Sprout': Sprout,
       'Target': Target,
       'Star': Star,

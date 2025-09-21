@@ -21,6 +21,24 @@
 
 // Compact filter section styling
 .compact-filter-section {
+  // Filter dropdown container
+  position: relative;
+  
+  @media (max-width: 768px) {
+    position: static;
+    width: 100%;
+    overflow: visible;
+  }
+  
+  .relative {
+    position: relative;
+    
+    @media (max-width: 768px) {
+      position: static;
+      width: 100%;
+    }
+  }
+  
   // Filter dropdown styling
   .filter-option {
     transition: all 0.15s ease;
@@ -31,6 +49,26 @@
     
     &.active {
       font-weight: 600;
+    }
+  }
+  
+  // Simple dropdown positioning
+  .absolute.top-full {
+    @media (max-width: 768px) {
+      position: fixed !important;
+      top: auto !important;
+      left: 1rem !important;
+      right: 1rem !important;
+      width: auto !important;
+      min-width: auto !important;
+      max-width: none !important;
+      z-index: 1000 !important;
+      transform: none !important;
+    }
+    
+    @media (max-width: 480px) {
+      left: 0.5rem !important;
+      right: 0.5rem !important;
     }
   }
 }
@@ -47,25 +85,192 @@
   }
 }
 
-// Responsive adjustments
-@media (max-width: 640px) {
-  .compact-filter-section {
-    // Mobile-specific adjustments if needed
+// Badge legend styling
+.badge-legend {
+  // Smooth scroll for mobile
+  scroll-behavior: smooth;
+  
+  // Badge level items
+  .badge-item {
+    transition: all 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      
+      .badge-icon {
+        transform: scale(1.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+  
+  // Connection lines
+  .connection-line {
+    position: relative;
+    
+    &::after {
+      content: '→';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 8px;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: bold;
+    }
   }
 }
 
-// Habit grid responsiveness
+// Mobile responsiveness improvements
+@media (max-width: 640px) {
+  .view {
+    padding: 0 12px; // Add consistent side padding on mobile
+  }
+  
+  .compact-filter-section {
+    margin-top: 8px;
+  }
+  
+  // Optimize badge legend for mobile - UX focused
+  .badge-legend {
+    gap: 8px; // Better spacing for touch targets
+    padding: 0 12px; // More generous padding
+    
+    .badge-item {
+      min-width: 60px; // Larger for better readability
+      
+      .badge-icon {
+        width: 32px; // Larger icons for better visibility
+        height: 32px;
+      }
+      
+      span {
+        font-size: 12px; // Much larger, readable text
+        line-height: 1.2;
+        font-weight: 500; // Slightly bolder for mobile
+      }
+      
+      .text-xs {
+        font-size: 11px; // Readable secondary text
+        margin-top: 2px;
+      }
+    }
+    
+    .connection-line {
+      width: 12px; // Visible connection lines
+      height: 2px;
+    }
+  }
+  
+  // Compact horizontal layout for mobile - space efficient
+  @media (max-width: 480px) {
+    .badge-legend {
+      flex-wrap: wrap; // Allow wrapping to multiple rows
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 16px;
+      
+      .badge-item {
+        flex-direction: row; // Horizontal: icon + text side by side
+        align-items: center;
+        min-width: auto;
+        width: auto;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 20px; // Pill shape
+        padding: 6px 10px;
+        
+        > div {
+          flex-direction: row; // Icon and text horizontal
+          align-items: center;
+          gap: 6px;
+          text-align: left;
+          min-width: auto;
+        }
+        
+        .badge-icon {
+          width: 20px; // Compact icon size
+          height: 20px;
+          margin-bottom: 0; // Remove bottom margin
+        }
+        
+        span {
+          font-size: 11px; // Compact but readable
+          margin-bottom: 0;
+          
+          &:first-of-type {
+            font-weight: 600; // Bold level name
+          }
+          
+          &.text-xs {
+            display: none; // Hide day requirements to save space
+          }
+        }
+        
+        .connection-line {
+          display: none; // Remove all connection lines
+        }
+      }
+    }
+  }
+  
+  // Optimize help section for mobile
+  .bg-gradient-to-r {
+    padding: 12px 16px;
+    
+    // Keep header compact and horizontal on mobile
+    > div:first-child {
+      align-items: center;
+      gap: 8px;
+      
+      span {
+        font-size: 13px; // Slightly smaller title
+        font-weight: 600;
+      }
+    }
+    
+    button {
+      padding: 4px 8px;
+      font-size: 10px;
+      
+      span {
+        display: none; // Hide "More Help" text on mobile
+      }
+      
+      // Just show the help icon on mobile
+      lucide-icon {
+        margin: 0;
+      }
+    }
+  }
+  
+}
+
+// Enhanced mobile-first grid responsiveness
 .grid {
+  // Mobile: Single column with optimized spacing
   @media (max-width: 640px) {
     grid-template-columns: 1fr;
+    gap: 16px; // Smaller gap on mobile
+    padding: 0 4px; // Small side padding for better edge spacing
   }
   
+  // Tablet: Two columns
   @media (min-width: 641px) and (max-width: 1024px) {
     grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
   }
   
+  // Desktop: Three columns
   @media (min-width: 1025px) {
     grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  
+  // Large desktop: Limit max width and center
+  @media (min-width: 1440px) {
+    max-width: 1200px;
+    margin: 0 auto;
   }
 }
 
@@ -84,3 +289,97 @@
     transform: translateY(0);
   }
 }
+
+// Mobile dialog animations
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+// Floating Help Button styling
+.fixed.right-0.top-1\/2 {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  
+  // Subtle pulse animation to draw attention
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    background: linear-gradient(45deg, rgba(59, 130, 246, 0.3), rgba(99, 102, 241, 0.3));
+    z-index: -1;
+    animation: helpPulse 3s ease-in-out infinite;
+  }
+  
+  // Smooth hover expansion
+  &:hover {
+    transform: translateY(-50%) translateX(4px);
+    
+    &::after {
+      content: 'Help';
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #1e293b;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      white-space: nowrap;
+      margin-right: 8px;
+      animation: tooltipSlideIn 0.2s ease-out;
+    }
+  }
+}
+
+@keyframes helpPulse {
+  0%, 100% { opacity: 0; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes tooltipSlideIn {
+  from { opacity: 0; transform: translateY(-50%) translateX(8px); }
+  to { opacity: 1; transform: translateY(-50%) translateX(0); }
+}
+
+// FAB button styling enhancements
+@media (max-width: 768px) {
+  .fixed.bottom-20.right-6 {
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+    
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+  
+  // Ensure reminder modal appears above mobile dialog
+  :host ::ng-deep app-reminder-modal .fixed.inset-0 {
+    z-index: 70 !important;
+  }
+  
+  // Adjust floating help button for mobile
+  .fixed.right-0.top-1\/2 {
+    padding: 12px 8px;
+    
+    &::before {
+      display: none; // Remove pulse animation on mobile
+    }
+    
+    &:hover::after {
+      display: none; // Remove tooltip on mobile
+    }
+  }
+}
+

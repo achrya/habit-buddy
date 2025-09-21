@@ -1,6 +1,7 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Habit, HabitStats, Reminder, WeeklyTrend, MonthlyTrend, YearlyTrend, HabitBadge, BadgeLevel } from '../models/habit.model';
+import { BADGE_LEVELS, getBadgeConfigForDays, calculateProgressToNextLevel } from '../config/badge-levels.config';
 
 @Injectable({
   providedIn: 'root'
@@ -157,53 +158,16 @@ export class HabitService {
   }
 
   private getBadgeForProgress(completedDays: number): HabitBadge | null {
-    if (completedDays >= 100) {
-      return {
-        level: BadgeLevel.MASTER,
-        name: 'Master',
-        description: '100+ days completed!',
-        icon: 'Crown',
-        daysRequired: 100,
-        achievedAt: new Date().toISOString()
-      };
-    } else if (completedDays >= 50) {
-      return {
-        level: BadgeLevel.EXPERT,
-        name: 'Expert',
-        description: '50+ days completed!',
-        icon: 'Trophy',
-        daysRequired: 50,
-        achievedAt: new Date().toISOString()
-      };
-    } else if (completedDays >= 21) {
-      return {
-        level: BadgeLevel.ADVANCED,
-        name: 'Advanced',
-        description: '21+ days completed!',
-        icon: 'Star',
-        daysRequired: 21,
-        achievedAt: new Date().toISOString()
-      };
-    } else if (completedDays >= 7) {
-      return {
-        level: BadgeLevel.INTERMEDIATE,
-        name: 'Intermediate',
-        description: '7+ days completed!',
-        icon: 'Target',
-        daysRequired: 7,
-        achievedAt: new Date().toISOString()
-      };
-    } else if (completedDays >= 3) {
-      return {
-        level: BadgeLevel.BEGINNER,
-        name: 'Beginner',
-        description: '3+ days completed!',
-        icon: 'Sprout',
-        daysRequired: 3,
-        achievedAt: new Date().toISOString()
-      };
-    }
-    return null;
+    const badgeConfig = getBadgeConfigForDays(completedDays);
+    
+    return {
+      level: badgeConfig.level,
+      name: badgeConfig.name,
+      description: badgeConfig.description,
+      icon: badgeConfig.icon,
+      daysRequired: badgeConfig.daysRequired,
+      achievedAt: new Date().toISOString()
+    };
   }
 
   private updateHabitBadge(habit: Habit): Habit {
@@ -211,12 +175,8 @@ export class HabitService {
     const newBadge = this.getBadgeForProgress(completedDays);
     
     // Update daysTarget based on current badge level
-    let newDaysTarget = habit.daysTarget;
-    if (completedDays >= 100) newDaysTarget = 100;
-    else if (completedDays >= 50) newDaysTarget = 50;
-    else if (completedDays >= 21) newDaysTarget = 21;
-    else if (completedDays >= 7) newDaysTarget = 7;
-    else newDaysTarget = 3;
+    const currentBadgeConfig = getBadgeConfigForDays(completedDays);
+    const newDaysTarget = currentBadgeConfig.daysRequired || 3; // Default to 3 for novice
 
     return {
       ...habit,

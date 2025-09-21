@@ -1,80 +1,114 @@
-<article class="habit-card bg-white border border-slate-100 rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow relative">
-  <!-- Badge Display (Top Right) -->
-  <div class="absolute top-3 right-3">
-    @if (habit.badge) {
-      <div class="badge-container flex items-center justify-center w-10 h-10 rounded-full shadow-sm"
-           [class]="getBadgeClasses()"
-           [title]="habit.badge.name + ' - ' + habit.badge.description">
-        <lucide-icon [img]="getBadgeIcon()" size="20"></lucide-icon>
-      </div>
-    } @else {
-      <div class="badge-container flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 text-gray-500"
-           title="New Habit - Start building your streak!">
-        <lucide-icon [img]="getBadgeIcon()" size="20"></lucide-icon>
-      </div>
-    }
+<article class="habit-card">
+  <!-- Header with title and status -->
+  <div class="card-header">
+    <h3 class="habit-title">{{ habit().title }}</h3>
+    <div class="habit-status" [class]="isCheckedToday() ? 'status-completed' : 'status-active'">
+      {{ statusText() }}
+    </div>
   </div>
 
-  <!-- Color Indicator -->
-  <div class="flex items-start gap-3">
-    <div [style]="'width:4px;height:60px;background:' + habit.color + ';border-radius:2px;margin-top:2px'"></div>
-    
-    <div class="flex-1 min-w-0 card-content">
-      <!-- Title -->
-      <div class="mb-4">
-        <h3 class="text-lg font-bold text-slate-800 line-clamp-2 ">{{ habit.title }}</h3>
+  <!-- Main content area -->
+  <div class="card-content">
+    <!-- Left side: Circular progress chart -->
+    <div class="chart-section" [attr.data-tooltip]="chartTooltip()">
+      <app-circular-progress 
+        [percentage]="progressPercentage()"
+        [size]="120"
+        [strokeWidth]="8"
+        [label]="badgeLevelText()"
+        [primaryColor]="'#6366f1'"
+        [secondaryColor]="'#e5e7eb'"
+        [tertiaryColor]="'#f59e0b'"
+        [activityData]="getRecentActivityDays()">
+        <div slot="icon" class="chart-icon">
+          <lucide-icon [img]="getBadgeIcon()" size="20" class="text-yellow-500"></lucide-icon>
+        </div>
+      </app-circular-progress>
+    </div>
+
+    <!-- Right side: Stats and actions -->
+    <div class="stats-section">
+      <!-- Motivational message - moved to top -->
+      <div class="motivation-section" [class]="isCheckedToday() ? 'motivation-completed' : 'motivation-active'">
+        <div class="motivation-title">{{ statusText() }}</div>
+        <div class="motivation-message">{{ motivationalMessage() }}</div>
       </div>
 
-      <!-- Stats Section -->
-      <div class="stats-section mb-4 p-3 bg-slate-50 rounded-lg">
-        <div class="grid grid-cols-2 gap-3 text-center">
-          <div>
-            <div class="text-2xl font-bold" [style]="'color: ' + habit.color">{{ completedCount() }}</div>
-            <div class="text-xs text-slate-500 font-medium">Days Done</div>
-          </div>
-          <div>
-            <div class="text-2xl font-bold" 
-                 [class]="stats.current >= 7 ? 'text-red-500' : stats.current >= 3 ? 'text-orange-500' : 'text-slate-600'">
-              {{ stats.current }}
-            </div>
-            <div class="text-xs text-slate-500 font-medium">Current Streak</div>
-          </div>
+
+      <!-- Stats row - side by side -->
+      <div class="stats-row">
+        <!-- Total days stat - foundation info on left -->
+        <div class="stat-item">
+          <div class="stat-value">{{ completedCount() }}</div>
+          <div class="stat-label">Total Days</div>
+        </div>
+
+        <!-- Current streak stat - prominent achievement on right -->
+        <div class="stat-item">
+          <div class="stat-value streak-value">{{ stats().current }}</div>
+          <div class="stat-label">Day Streak</div>
         </div>
       </div>
 
-      <!-- Status Message -->
-      <div class="status-message mb-4 p-2 rounded-lg text-center" [class]="getStatusClasses()">
-        <p class="text-sm font-medium">{{ getStatusMessage() }}</p>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="flex justify-center gap-2">
-        <button 
-          (click)="onCheckin()"
-          [class]="'p-2 rounded-full text-sm transition-all flex-1 max-w-[40px] ' + (isCheckedToday() ? 'bg-emerald-600 text-white shadow-md' : 'bg-slate-50 text-slate-700 hover:bg-slate-100')"
-          [title]="isCheckedToday() ? 'Already checked in today!' : 'Check in for today'">
-          <lucide-icon [img]="CheckIcon" size="14" class="mx-auto"></lucide-icon>
-        </button>
-        <button 
-          (click)="onEditReminder()"
-          class="p-2 rounded-full text-sm bg-yellow-50 text-yellow-700 hover:bg-yellow-100 transition-all flex-1 max-w-[40px]"
-          title="Edit reminder">
-          <lucide-icon [img]="ClockIcon" size="14" class="mx-auto"></lucide-icon>
-        </button>
-        <button 
-          (click)="onViewCalendar()"
-          class="p-2 rounded-full text-sm bg-blue-50 text-blue-700 hover:bg-blue-100 transition-all flex-1 max-w-[40px]"
-          title="View calendar">
-          <lucide-icon [img]="CalendarIcon" size="14" class="mx-auto"></lucide-icon>
-        </button>
-        <button 
-          (click)="onRemove()"
-          class="p-2 rounded-full text-sm text-slate-500 hover:bg-red-50 hover:text-red-600 transition-all flex-1 max-w-[40px]"
-          title="Remove habit">
-          <lucide-icon [img]="Trash2Icon" size="14" class="mx-auto"></lucide-icon>
-        </button>
+      <!-- Streak Break Visualization -->
+      <div class="streak-breaks-section">
+        <h4 class="section-title">Last 14 Days</h4>
+        <div class="activity-timeline">
+          @for (day of getRecentActivityDays(); track day.date) {
+            <div class="activity-day" 
+                 [class]="day.status"
+                 [title]="day.tooltip">
+              <div class="day-indicator"></div>
+            </div>
+          }
+        </div>
       </div>
     </div>
+  </div>
+
+  <!-- Action buttons -->
+  <div class="action-buttons">
+    <!-- Left side: Icon buttons group -->
+    <div class="icon-buttons-group">
+      <button 
+        class="action-btn icon-btn"
+        (click)="onViewCalendar()"
+        title="View calendar">
+        <lucide-icon [img]="LinkIcon" size="16"></lucide-icon>
+      </button>
+      <button 
+        class="action-btn icon-btn"
+        (click)="onRemove()"
+        title="Remove habit">
+        <lucide-icon [img]="Trash2Icon" size="16"></lucide-icon>
+      </button>
+      <button 
+        class="action-btn icon-btn"
+        (click)="onEditReminder()"
+        title="Edit reminder">
+        <lucide-icon [img]="BellIcon" size="16"></lucide-icon>
+      </button>
+      <button 
+        class="action-btn icon-btn"
+        (click)="onViewCalendar()"
+        title="View calendar">
+        <lucide-icon [img]="CalendarIcon" size="16"></lucide-icon>
+      </button>
+    </div>
+
+    <!-- Right side: Check in button -->
+    <button 
+      class="check-in-btn"
+      (click)="onCheckin()"
+      [class]="isCheckedToday() ? 'checked-in' : 'not-checked-in'"
+      [title]="isCheckedToday() ? 'Already checked in today!' : 'Check in for today'">
+      @if (isCheckedToday()) {
+        <lucide-icon [img]="CheckIcon" size="16" class="mr-1"></lucide-icon>
+        <span>Done!</span>
+      } @else {
+        <span>Check In</span>
+      }
+    </button>
   </div>
 </article>
 

@@ -1,31 +1,12 @@
 <div class="view max-w-5xl mx-auto">
-  <!-- Help Button Section -->
-  <section class="mb-4">
-    <div class="flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3 border border-blue-100">
-      <!-- Progress Summary -->
-      <div class="flex items-center gap-3">
-        <div class="flex items-center gap-2">
-          <lucide-icon [img]="HelpCircleIcon" size="18" class="text-blue-600"></lucide-icon>
-          <span class="text-sm font-semibold text-slate-800">Need Help?</span>
-        </div>
-        <p class="text-sm text-slate-600">Learn about badges, filtering, and more</p>
-      </div>
-      
-      <!-- Help Button -->
-      <button 
-        type="button"
-        (click)="toggleHelpOverlay()"
-        class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg border border-blue-200 hover:bg-blue-100 transition-colors">
-        <lucide-icon [img]="HelpCircleIcon" size="16"></lucide-icon>
-        <span>Open Help</span>
-      </button>
-    </div>
-  </section>
 
-  <!-- Add Habit Form -->
-  <app-habit-form 
-    (habitAdded)="onHabitAdded($event)"
-    (openReminderModal)="onOpenReminderModal()" />
+  <!-- Add Habit Form - Hidden on mobile -->
+  <div class="hidden md:block">
+    <app-habit-form 
+      (habitAdded)="onHabitAdded($event)"
+      (openReminderModal)="onOpenReminderModal()" />
+  </div>
+
   
   <!-- Compact Filter System -->
   @if (hasHabits()) {
@@ -50,26 +31,39 @@
           
           <!-- Dropdown Menu -->
           @if (showFilters()) {
-            <div class="absolute top-full left-0 mt-1 w-80 bg-white rounded-lg border border-slate-200 shadow-lg z-10">
+            <div class="absolute top-full left-0 mt-1 min-w-72 bg-white rounded-lg border border-slate-200 shadow-lg z-50">
               <div class="p-3">
                 <!-- Badge Level Filters -->
                 <div class="mb-3">
                   <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Badge Levels</h4>
-                  <div class="grid grid-cols-2 gap-1">
-                    @for (option of batchFilterOptionsWithCounts(); track option.value) {
+                  <div class="grid grid-cols-1 gap-1">
+                    <!-- All Habits -->
+                    <button 
+                      type="button"
+                      class="flex items-center justify-between px-2 py-1.5 text-xs rounded hover:bg-slate-50 transition-colors"
+                      [class.bg-blue-100]="activeFilter() === 'all'"
+                      [class.text-blue-700]="activeFilter() === 'all'"
+                      (click)="onFilterChange('all')">
+                      <div class="flex items-center gap-1.5">
+                        <lucide-icon [img]="getFilterIcon('target')" size="12"></lucide-icon>
+                        <span class="font-medium">All</span>
+                      </div>
+                      <span class="text-xs font-medium">{{ getTotalHabitsCount() }}</span>
+                    </button>
+                    
+                    <!-- Badge Level Filters -->
+                    @for (badge of badgeLevelsConfig; track badge.level) {
                       <button 
                         type="button"
-                        class="filter-option flex items-center justify-between px-2 py-1.5 text-xs rounded hover:bg-slate-100 transition-colors"
-                        [class.bg-blue-100]="activeFilter() === option.value"
-                        [class.text-blue-700]="activeFilter() === option.value"
-                        (click)="onFilterChange(option.value)">
+                        class="flex items-center justify-between px-2 py-1.5 text-xs rounded hover:bg-slate-50 transition-colors"
+                        [class.bg-blue-100]="activeFilter() === badge.level"
+                        [class.text-blue-700]="activeFilter() === badge.level"
+                        (click)="onFilterChange(badge.level)">
                         <div class="flex items-center gap-1.5">
-                          @if (option.icon) {
-                            <lucide-icon [img]="getFilterIcon(option.icon)" size="12"></lucide-icon>
-                          }
-                          <span>{{ option.label }}</span>
+                          <lucide-icon [img]="getFilterIcon(badge.icon)" size="12"></lucide-icon>
+                          <span class="font-medium">{{ badge.name }}</span>
                         </div>
-                        <span class="text-xs font-medium">{{ option.count }}</span>
+                        <span class="text-xs font-medium ml-2">{{ getBadgeFilterCount(badge.level) }}</span>
                       </button>
                     }
                   </div>
@@ -77,12 +71,12 @@
                 
                 <!-- Status & Feature Filters -->
                 <div>
-                  <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Status & Features</h4>
+                  <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Additional</h4>
                   <div class="space-y-1">
                     @for (option of otherFilterOptionsWithCounts(); track option.value) {
                       <button 
                         type="button"
-                        class="filter-option w-full flex items-center justify-between px-2 py-1.5 text-xs rounded hover:bg-slate-100 transition-colors"
+                        class="w-full flex items-center justify-between px-2 py-1.5 text-xs rounded hover:bg-slate-50 transition-colors"
                         [class.bg-green-100]="activeFilter() === option.value"
                         [class.text-green-700]="activeFilter() === option.value"
                         (click)="onFilterChange(option.value)">
@@ -90,7 +84,7 @@
                           @if (option.icon) {
                             <lucide-icon [img]="getFilterIcon(option.icon)" size="12"></lucide-icon>
                           }
-                          <span>{{ option.label }}</span>
+                          <span class="font-medium">{{ option.label }}</span>
                         </div>
                         <span class="text-xs font-medium">{{ option.count }}</span>
                       </button>
@@ -134,7 +128,7 @@
         </button>
       </div>
     } @else {
-      @for (habit of filteredHabits(); track habit.id) {
+      @for (habit of filteredHabits(); track getHabitTrackingKey(habit)) {
         <div class="habit-card-enter">
           <app-habit-card 
             [habit]="habit"
@@ -158,9 +152,49 @@
     (closeModal)="selectedHabit.set(null)">
   </app-reminder-modal>
 
+  <!-- Floating Help Button -->
+  <button 
+    type="button"
+    (click)="toggleHelpOverlay()"
+    class="fixed right-0 top-1/2 -translate-y-1/2 bg-blue-600 text-white px-3 py-4 rounded-l-full shadow-lg hover:bg-blue-700 transition-all duration-200 hover:shadow-xl hover:px-4 z-40 flex items-center justify-center"
+    title="Open Help Center">
+    <lucide-icon [img]="HelpCircleIcon" size="20"></lucide-icon>
+  </button>
+
   <!-- Help Overlay -->
   <app-help-overlay 
     [isOpen]="showHelpOverlay()" 
     (close)="toggleHelpOverlay()">
   </app-help-overlay>
+
+  <!-- Mobile FAB Button -->
+  <button 
+    type="button"
+    (click)="openMobileFormDialog()"
+    class="md:hidden fixed bottom-20 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-all duration-200 hover:shadow-xl hover:scale-105 z-50 flex items-center justify-center">
+    <lucide-icon [img]="PlusIcon" size="24"></lucide-icon>
+  </button>
+
+  <!-- Mobile Form Dialog -->
+  @if (showMobileFormDialog()) {
+    <div class="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-end">
+      <div class="bg-white w-full rounded-t-3xl p-6 pb-8 max-h-[80vh] overflow-y-auto animate-slide-up">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-bold text-gray-900">Add New Goal</h2>
+          <button 
+            type="button"
+            (click)="closeMobileFormDialog()"
+            class="p-2 text-gray-400 hover:text-gray-600 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+        
+        <app-habit-form 
+          (habitAdded)="onMobileHabitAdded($event)"
+          (openReminderModal)="onOpenReminderModal()" />
+      </div>
+    </div>
+  }
 </div>
