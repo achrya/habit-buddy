@@ -205,7 +205,8 @@ export class CircularProgressComponent implements OnInit, OnDestroy {
       segment.append('title').text(day.tooltip);
       
       // Add animation
-      const pathLength = segment.node()?.getTotalLength() || 0;
+      const pathNode = segment.node() as SVGPathElement;
+      const pathLength = pathNode?.getTotalLength?.() || 0;
       segment
         .attr('stroke-dasharray', pathLength)
         .attr('stroke-dashoffset', pathLength)

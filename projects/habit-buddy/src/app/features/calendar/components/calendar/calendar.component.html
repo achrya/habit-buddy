@@ -39,7 +39,7 @@
       <button 
         (click)="setCalendarMode(habit.id)"
         [class]="'px-2 py-1 rounded-full text-xs border'"
-        [style.background]="calendarMode() === habit.id ? habit.color : '#fff'"
+        [style.background]="calendarMode() === habit.id ? (habit.color || '#6366f1') : '#fff'"
         [style.color]="calendarMode() === habit.id ? 'white' : '#111'"
         [title]="habit.title">
         {{ getShortTitle(habit.title) }}
@@ -74,7 +74,7 @@
             <div class="flex">
               @for (dot of getDayDots(day.date); track dot) {
                 <span 
-                  [style.background]="dot.color"
+                  [style.background]="dot.color || '#e5e7eb'"
                   class="inline-block w-2 h-2 rounded-full mr-0.5"></span>
               }
             </div>
