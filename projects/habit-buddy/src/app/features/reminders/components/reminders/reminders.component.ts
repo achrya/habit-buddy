@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, signal, ViewChild } from '@angular/core';
+import { Component, OnInit, computed, signal, ViewChild, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HabitService, NotificationService } from '../../../../shared';
 import { Habit, Reminder } from '../../../../shared/models/habit.model';
@@ -12,7 +12,7 @@ import { LucideAngularModule, Clock, Edit3, Calendar } from 'lucide-angular';
   templateUrl: './reminders.component.html',
   styleUrl: './reminders.component.scss'
 })
-export class RemindersComponent implements OnInit {
+export class RemindersComponent implements OnInit, OnDestroy {
   @ViewChild('reminderModal') reminderModal!: ReminderModalComponent;
   
   protected readonly habits = signal<Habit[]>([]);
@@ -39,13 +39,12 @@ export class RemindersComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Check reminders every 30 seconds
-    setInterval(() => {
-      this.checkReminders();
-    }, 30000);
-    
-    // Check immediately
+    // Periodic checks are now centralized in NotificationService
     this.checkReminders();
+  }
+
+  ngOnDestroy(): void {
+    // No local intervals to clean up
   }
 
   protected getDaysText(days: number[]): string {

@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { HabitService, NotificationService } from '../../../../shared';
@@ -13,7 +13,7 @@ import { LucideAngularModule, ChevronLeft, ChevronRight, AlertTriangle, CheckCir
   templateUrl: './calendar.component.html',
   styleUrl: './calendar.component.scss'
 })
-export class CalendarComponent implements OnInit {
+export class CalendarComponent implements OnInit, OnDestroy {
   protected readonly calendarMode = signal<'all' | string>('all');
   protected readonly calendarYear = signal(new Date().getFullYear());
   protected readonly calendarMonth = signal(new Date().getMonth());
@@ -78,14 +78,11 @@ export class CalendarComponent implements OnInit {
       }
     });
 
-    // Check reminders every 30 seconds
-    setInterval(() => {
-      this.checkReminders();
-    }, 30000);
-    
-    // Check immediately
+    // Periodic checks are centralized in NotificationService
     this.checkReminders();
   }
+
+  ngOnDestroy(): void {}
 
   protected previousMonth(): void {
     if (this.calendarMonth() === 0) {

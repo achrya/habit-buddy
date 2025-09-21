@@ -1,13 +1,35 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HabitService } from './habit.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
+  private habitService = inject(HabitService);
+  private reminderIntervalId?: number;
 
   constructor() {
     if (typeof window !== 'undefined') {
       this.requestNotificationPermission();
+      this.startReminderTicker();
+    }
+  }
+
+  startReminderTicker(): void {
+    if (typeof window === 'undefined') return;
+    if (this.reminderIntervalId != null) return; // already started
+    // Immediate check
+    this.checkReminders(this.habitService.habits());
+    // Periodic check every 30s
+    this.reminderIntervalId = window.setInterval(() => {
+      this.checkReminders(this.habitService.habits());
+    }, 30000);
+  }
+
+  stopReminderTicker(): void {
+    if (this.reminderIntervalId) {
+      clearInterval(this.reminderIntervalId);
+      this.reminderIntervalId = undefined;
     }
   }
 
