@@ -1,34 +1,40 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Redirecting…</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="refresh" content="0; url=./">
-    <script>
-      /*
-       * SPA GitHub Pages 404 redirect
-       * Preserves path for client-side routers (Angular/React/Vue)
-       * Source concept: https://github.com/rafrex/spa-github-pages
-       */
-      (function(location) {
-        var path = location.pathname;
-        var search = location.search;
-        var hash = location.hash;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>HabitBuddy - Page Not Found</title>
+  <script>
+    // Single Page Apps for GitHub Pages
+    // MIT License
+    // https://github.com/rafgraph/spa-github-pages
+    // This script takes the current url and converts the path and query
+    // string into just a query string, and then redirects the browser
+    // to the new url with only a query string and hash fragment,
+    // e.g. https://www.foo.tld/one/two?a=b&c=d#qwe becomes
+    // https://www.foo.tld/?/one/two&a=b&c=d#qwe
+    // Note: this 404.html file must be at least 512 bytes for it to work
+    // with Internet Explorer (it is currently > 512 bytes)
 
-        // Heuristic: keep first path segment for project pages (user.github.io/repo/...)
-        // If hosted at a user/organization page (no repo segment), this will still work.
-        var segments = path.replace(/^\/+|\/+$/g, '').split('/');
-        var keep = segments.length > 0 ? 1 : 0;
-        var newPath = (keep ? '/' + segments.slice(0, keep).join('/') : '') + '/?/' + segments.slice(keep).join('/');
-        var newUrl = newPath + (search ? (search.indexOf('?') === 0 ? '&' + search.slice(1) : search) : '') + hash;
+    // If you're creating a Project Pages site and NOT using a custom domain,
+    // then set pathSegmentsToKeep to 1 (enterprise users may need to set it to > 1).
+    // This way the code will only replace the route part of the path, and not
+    // the real directory in which the app resides, for example:
+    // https://username.github.io/repo-name/one/two?a=b&c=d#qwe becomes
+    // https://username.github.io/repo-name/?/one/two&a=b&c=d#qwe
+    // Otherwise, leave pathSegmentsToKeep as 0.
+    var pathSegmentsToKeep = 0;
 
-        location.replace(newUrl);
-      })(window.location);
-    </script>
-  </head>
-  <body>
-    Redirecting…
-  </body>
-  </html>
-
+    var l = window.location;
+    l.replace(
+      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+      l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+      l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+      (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+      l.hash
+    );
+  </script>
+</head>
+<body>
+  <p>Redirecting to the app...</p>
+</body>
+</html>
