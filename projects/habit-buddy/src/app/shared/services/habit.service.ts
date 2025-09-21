@@ -501,7 +501,12 @@ export class HabitService {
       const last = JSON.parse(localStorage.getItem(this.LAST_TS_KEY) || '0');
       if (!last) return false;
       const now = Date.now();
-      return now + 2000 < last - 120000;
+      // Consider clock tampering if the system time moved backwards
+      // significantly compared to the last stored timestamp.
+      const driftToleranceMs = 2000; // allow small drift
+      const maxBackwardSkewMs = 2 * 60 * 1000; // 2 minutes
+      const backwardDelta = last - now;
+      return backwardDelta > (maxBackwardSkewMs + driftToleranceMs);
     } catch {
       return false;
     }
