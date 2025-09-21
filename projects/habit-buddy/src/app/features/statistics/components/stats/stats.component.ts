@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, OnDestroy } from '@angular/core';
 import { ChartComponent } from '../../../../shared';
 import { Habit, WeeklyTrend, MonthlyTrend, YearlyTrend } from '../../../../shared/models/habit.model';
 import { HabitService, NotificationService } from '../../../../shared';
@@ -13,7 +13,7 @@ export type ViewType = 'weekly' | 'monthly' | 'yearly';
   templateUrl: './stats.component.html',
   styleUrl: './stats.component.scss'
 })
-export class StatsComponent implements OnInit {
+export class StatsComponent implements OnInit, OnDestroy {
   protected readonly habits = signal<Habit[]>([]);
   protected readonly currentView = signal<ViewType>('weekly');
 
@@ -45,14 +45,11 @@ export class StatsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Check reminders every 30 seconds
-    setInterval(() => {
-      this.checkReminders();
-    }, 30000);
-    
-    // Check immediately
+    // Periodic checks are centralized in NotificationService
     this.checkReminders();
   }
+
+  ngOnDestroy(): void {}
 
   private checkReminders(): void {
     this.notificationService.checkReminders(this.habits());
