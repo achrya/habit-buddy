@@ -29,11 +29,7 @@
             "styles": [
               "projects/habit-buddy/src/styles.scss"
             ],
-            "server": "projects/habit-buddy/src/main.server.ts",
-            "outputMode": "server",
-            "ssr": {
-              "entry": "projects/habit-buddy/src/server.ts"
-            }
+            "outputMode": "static"
           },
           "configurations": {
             "production": {
