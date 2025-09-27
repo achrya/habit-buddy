@@ -371,24 +371,29 @@ export class HabitService {
    * Create sample habits for first-time users
    */
   private createSampleHabits(): Habit[] {
-    const today = new Date().toISOString().slice(0, 10);
-    const currentMonth = new Date().getMonth();
-    const currentYear = new Date().getFullYear();
+    // Generate random creation dates spread across the last 2 months
+    const today = new Date();
+    const twoMonthsAgo = new Date();
+    twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
     
-    // Generate check-ins for current month (random but realistic pattern)
-    const generateCurrentMonthCheckIns = (habitIndex: number): Record<string, string> => {
+    // Generate check-ins for each habit from its creation date to today
+    const generateCheckInsFromCreation = (habitIndex: number, creationDate: string): Record<string, string> => {
       const checkIns: Record<string, string> = {};
-      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      const today = new Date();
+      const startDate = new Date(creationDate);
       
-      // Each habit has different patterns:
+      // Calculate total days from creation date to today
+      const totalDays = Math.floor((today.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000));
+      
+      // Each habit has different patterns over the 2-month period:
       // Habit 0: Daily habit (80% completion)
       // Habit 1: Weekdays only (70% completion)
       // Habit 2: Every other day (60% completion)
       // Habit 3: Weekends only (50% completion)
       // Habit 4: Random pattern (40% completion)
       
-      for (let day = 1; day <= daysInMonth; day++) {
-        const date = new Date(currentYear, currentMonth, day);
+      for (let dayOffset = 0; dayOffset <= totalDays; dayOffset++) {
+        const date = new Date(startDate.getTime() + dayOffset * 24 * 60 * 60 * 1000);
         const dateStr = date.toISOString().slice(0, 10);
         const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, etc.
         
@@ -402,7 +407,7 @@ export class HabitService {
             shouldCheckIn = dayOfWeek >= 1 && dayOfWeek <= 5 && Math.random() < 0.7;
             break;
           case 2: // Every other day (60% completion)
-            shouldCheckIn = day % 2 === 0 && Math.random() < 0.6;
+            shouldCheckIn = dayOffset % 2 === 0 && Math.random() < 0.6;
             break;
           case 3: // Weekends only (50% completion)
             shouldCheckIn = (dayOfWeek === 0 || dayOfWeek === 6) && Math.random() < 0.5;
@@ -413,65 +418,38 @@ export class HabitService {
         }
         
         if (shouldCheckIn) {
-          checkIns[dateStr] = `sample-hash-${habitIndex}-${day}`;
+          checkIns[dateStr] = `sample-hash-${habitIndex}-${dayOffset}`;
         }
       }
       
       return checkIns;
     };
 
-    return [
-      {
-        id: this.generateId(),
-        title: 'Morning Meditation',
-        daysTarget: 30,
-        categoryId: '30',
-        color: this.COLORS[0],
-        createdAt: today,
-        checkIns: generateCurrentMonthCheckIns(0),
-        reminder: null
-      },
-      {
-        id: this.generateId(),
-        title: 'Drink 8 Glasses of Water',
-        daysTarget: 21,
-        categoryId: '21',
-        color: this.COLORS[1],
-        createdAt: today,
-        checkIns: generateCurrentMonthCheckIns(1),
-        reminder: null
-      },
-      {
-        id: this.generateId(),
-        title: 'Exercise for 30 Minutes',
-        daysTarget: 30,
-        categoryId: '30',
-        color: this.COLORS[2],
-        createdAt: today,
-        checkIns: generateCurrentMonthCheckIns(2),
-        reminder: null
-      },
-      {
-        id: this.generateId(),
-        title: 'Read for 20 Minutes',
-        daysTarget: 50,
-        categoryId: '50',
-        color: this.COLORS[3],
-        createdAt: today,
-        checkIns: generateCurrentMonthCheckIns(3),
-        reminder: null
-      },
-      {
-        id: this.generateId(),
-        title: 'Practice Gratitude',
-        daysTarget: 21,
-        categoryId: '21',
-        color: this.COLORS[4],
-        createdAt: today,
-        checkIns: generateCurrentMonthCheckIns(4),
-        reminder: null
-      }
+    // Generate habits with random creation dates
+    const habits = [
+      { title: 'Morning Meditation', daysTarget: 30, categoryId: '30', color: this.COLORS[0] },
+      { title: 'Drink 8 Glasses of Water', daysTarget: 21, categoryId: '21', color: this.COLORS[1] },
+      { title: 'Exercise for 30 Minutes', daysTarget: 30, categoryId: '30', color: this.COLORS[2] },
+      { title: 'Read for 20 Minutes', daysTarget: 50, categoryId: '50', color: this.COLORS[3] },
+      { title: 'Practice Gratitude', daysTarget: 21, categoryId: '21', color: this.COLORS[4] }
     ];
+
+    return habits.map((habit, index) => {
+      // Generate a unique random creation date for each habit
+      const randomTime = twoMonthsAgo.getTime() + Math.random() * (today.getTime() - twoMonthsAgo.getTime());
+      const creationDate = new Date(randomTime).toISOString().slice(0, 10);
+      
+      return {
+        id: this.generateId(),
+        title: habit.title,
+        daysTarget: habit.daysTarget,
+        categoryId: habit.categoryId,
+        color: habit.color,
+        createdAt: creationDate,
+        checkIns: generateCheckInsFromCreation(index, creationDate),
+        reminder: null
+      };
+    });
   }
 
   // Utility methods

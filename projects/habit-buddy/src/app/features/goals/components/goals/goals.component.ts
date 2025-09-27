@@ -8,14 +8,13 @@ import { DialogService } from '../../../../shared/services/dialog.service';
 import { Habit, Reminder, BadgeLevel } from '../../../../shared/models/habit.model';
 import { HabitService, NotificationService } from '../../../../shared';
 import { ReminderModalComponent } from '../../../reminders/components/reminder-modal/reminder-modal.component';
-import { LucideAngularModule, Grid3X3, Sprout, Target, Star, Trophy, Crown, Flame, Bell, Sparkles, CheckCircle, ChevronDown, Filter, Info, ArrowRight, HelpCircle, Plus } from 'lucide-angular';
-import { HelpOverlayComponent } from '../../../../shared/components/help-overlay/help-overlay.component';
+import { LucideAngularModule, Grid3X3, Sprout, Target, Star, Trophy, Crown, Flame, Bell, Sparkles, CheckCircle, ChevronDown, Filter, Info, ArrowRight, Plus } from 'lucide-angular';
 import { getBadgeFilterOptions, BADGE_LEVELS, getBadgeConfigForDays } from '../../../../shared/config/badge-levels.config';
 
 @Component({
   selector: 'app-goals',
   standalone: true,
-  imports: [CommonModule, FormsModule, HabitCardComponent, HabitFormComponent, ReminderModalComponent, LucideAngularModule, HelpOverlayComponent],
+  imports: [CommonModule, FormsModule, HabitCardComponent, HabitFormComponent, ReminderModalComponent, LucideAngularModule],
   templateUrl: './goals.component.html',
   styleUrl: './goals.component.scss'
 })
@@ -29,8 +28,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
   protected readonly activeFilter = signal<string>('all');
   protected readonly showFilters = signal<boolean>(false);
   
-  // Help overlay state
-  protected readonly showHelpOverlay = signal<boolean>(false);
   
   // Mobile form dialog state
   protected readonly showMobileFormDialog = signal<boolean>(false);
@@ -265,9 +262,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
     this.showFilters.set(!this.showFilters());
   }
 
-  protected toggleHelpOverlay(): void {
-    this.showHelpOverlay.set(!this.showHelpOverlay());
-  }
   
   // Mobile form dialog methods
   protected openMobileFormDialog(): void {
@@ -317,7 +311,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
   // Icon references
   protected readonly ChevronDownIcon = ChevronDown;
   protected readonly FilterIcon = Filter;
-  protected readonly HelpCircleIcon = HelpCircle;
   protected readonly PlusIcon = Plus;
 
   // Badge levels configuration

@@ -1,10 +1,13 @@
 <article class="habit-card">
   <!-- Header with title and status -->
   <div class="card-header">
-    <h3 class="habit-title">{{ habit().title }}</h3>
-    <div class="habit-status" [class]="isCheckedToday() ? 'status-completed' : 'status-active'">
-      {{ statusText() }}
+    <div class="title-section">
+      <h3 class="habit-title">{{ habit().title }}</h3>
+      <div class="start-date">Created {{ getFormattedCreatedDate() }}</div>
     </div>
+    <!-- <div class="habit-status" [class]="isCheckedToday() ? 'status-completed' : 'status-active'">
+      {{ statusText() }}
+    </div> -->
   </div>
 
   <!-- Main content area -->
@@ -50,19 +53,21 @@
         </div>
       </div>
 
-      <!-- Streak Break Visualization -->
-      <div class="streak-breaks-section">
-        <h4 class="section-title">Last 14 Days</h4>
-        <div class="activity-timeline">
-          @for (day of getRecentActivityDays(); track day.date) {
-            <div class="activity-day" 
-                 [class]="day.status"
-                 [title]="day.tooltip">
-              <div class="day-indicator"></div>
-            </div>
-          }
+    </div>
+  </div>
+
+  <!-- Streak Break Visualization - Full Row -->
+  <div class="streak-breaks-section">
+    <h4 class="section-title">{{ getActivitySectionTitle() }}</h4>
+    <div class="activity-timeline">
+      @for (day of getRecentActivityDays(); track day.date) {
+        <div class="activity-day" 
+             [class]="day.status"
+             [attr.data-tooltip]="day.tooltip"
+             [attr.data-mobile-tooltip]="day.tooltip">
+          <div class="day-indicator"></div>
         </div>
-      </div>
+      }
     </div>
   </div>
 

@@ -33,7 +33,17 @@ export class HabitCardComponent {
   // Modern computed signals - automatically reactive to signal inputs
   protected readonly completedCount = computed(() => {
     const habit = this.habit();
-    return Object.keys(habit?.checkIns || {}).length;
+    
+    if (!habit?.createdAt) {
+      return Object.keys(habit?.checkIns || {}).length; // Fallback to check-ins count if no creation date
+    }
+    
+    const creationDate = new Date(habit.createdAt);
+    const today = new Date();
+    
+    // Total days from creation date to today (regardless of check-ins)
+    const daysSinceCreation = Math.floor((today.getTime() - creationDate.getTime()) / (24 * 60 * 60 * 1000));
+    return daysSinceCreation + 1; // +1 to include today
   });
 
   protected readonly isCheckedToday = computed(() => {
@@ -41,6 +51,30 @@ export class HabitCardComponent {
     const today = new Date().toISOString().slice(0, 10);
     return !!(habit?.checkIns && habit.checkIns[today]);
   });
+
+  // Get the goal created date
+  protected readonly goalCreatedDate = computed(() => {
+    const habit = this.habit();
+    if (!habit?.createdAt) {
+      return null;
+    }
+    
+    return new Date(habit.createdAt);
+  });
+
+  // Format created date for display
+  protected getFormattedCreatedDate(): string {
+    const createdDate = this.goalCreatedDate();
+    if (!createdDate) {
+      return 'Unknown';
+    }
+    
+    return createdDate.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: 'numeric' 
+    });
+  }
 
   // Progress calculation for the circular chart
   protected readonly progressPercentage = computed(() => {
@@ -172,13 +206,27 @@ export class HabitCardComponent {
     return false;
   }
 
-  // Generate recent activity data for visualization
+  // Generate recent activity data for visualization - only from goal creation date onwards
   protected getRecentActivityDays(): Array<{date: string, status: string, tooltip: string}> {
     const habit = this.habit();
     const checkIns = habit.checkIns || {};
     const days = [];
     
-    for (let i = 13; i >= 0; i--) {
+    if (!habit?.createdAt) {
+      return []; // No creation date, return empty
+    }
+    
+    const creationDate = new Date(habit.createdAt);
+    const today = new Date();
+    
+    // Calculate days from creation date to today
+    const daysSinceCreation = Math.floor((today.getTime() - creationDate.getTime()) / (24 * 60 * 60 * 1000));
+    
+    // Show available history: if less than 21 days, show all available; if more, show last 21 days
+    const daysToShow = Math.min(daysSinceCreation + 1, 21); // +1 to include today
+    
+    // Generate days from creation date onwards
+    for (let i = daysToShow - 1; i >= 0; i--) {
       const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
       const dateStr = date.toISOString().slice(0, 10);
       const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
@@ -208,6 +256,28 @@ export class HabitCardComponent {
     }
     
     return days;
+  }
+
+  // Generate dynamic title for activity section
+  protected getActivitySectionTitle(): string {
+    const habit = this.habit();
+    
+    if (!habit?.createdAt) {
+      return 'No Activity Yet';
+    }
+    
+    const creationDate = new Date(habit.createdAt);
+    const today = new Date();
+    const daysSinceCreation = Math.floor((today.getTime() - creationDate.getTime()) / (24 * 60 * 60 * 1000));
+    
+    // Show available history: if less than 21 days, show all available; if more, show last 21 days
+    const actualDays = Math.min(daysSinceCreation + 1, 21); // +1 to include today
+    
+    if (actualDays === 1) {
+      return 'Today';
+    } else {
+      return `Last ${actualDays} Days`;
+    }
   }
 
   protected getStatusMessage(): string {

@@ -1,0 +1,220 @@
+<div class="view max-w-5xl mx-auto">
+  <!-- Settings Header -->
+  <div class="bg-white border border-slate-100 rounded-2xl p-6 mb-6">
+    <div class="flex items-center gap-4">
+      <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+        <lucide-icon [img]="SettingsIcon" size="24"></lucide-icon>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">Settings</h1>
+        <p class="text-slate-600">Manage your app preferences and data</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Sections -->
+  <div class="space-y-6">
+    
+    <!-- Data Management Section -->
+    <div class="bg-white border border-slate-100 rounded-2xl p-6">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="p-2 rounded-full bg-green-100 text-green-600">
+          <lucide-icon [img]="DatabaseIcon" size="20"></lucide-icon>
+        </div>
+        <div>
+          <h2 class="text-lg font-semibold text-slate-900">Data Management</h2>
+          <p class="text-sm text-slate-600">Import, export, and manage your habit data</p>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Load Sample Data -->
+        <button 
+          (click)="loadSampleData()"
+          class="p-4 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg flex items-center gap-3 transition-colors group">
+          <div class="p-2 rounded-full bg-green-600 text-white group-hover:bg-green-700 transition-colors">
+            <lucide-icon [img]="DatabaseIcon" size="16"></lucide-icon>
+          </div>
+          <div class="text-left">
+            <h3 class="font-medium text-slate-900">Load Sample Data</h3>
+            <p class="text-sm text-slate-600">Add sample habits for testing</p>
+          </div>
+        </button>
+        
+        <!-- Export Data -->
+        <button 
+          (click)="exportData()"
+          class="p-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg flex items-center gap-3 transition-colors group">
+          <div class="p-2 rounded-full bg-slate-900 text-white group-hover:bg-slate-800 transition-colors">
+            <lucide-icon [img]="DownloadIcon" size="16"></lucide-icon>
+          </div>
+          <div class="text-left">
+            <h3 class="font-medium text-slate-900">Export Data</h3>
+            <p class="text-sm text-slate-600">Download your habits as JSON</p>
+          </div>
+        </button>
+        
+        <!-- Import Data -->
+        <button 
+          (click)="importData()"
+          class="p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg flex items-center gap-3 transition-colors group">
+          <div class="p-2 rounded-full bg-blue-600 text-white group-hover:bg-blue-700 transition-colors">
+            <lucide-icon [img]="UploadIcon" size="16"></lucide-icon>
+          </div>
+          <div class="text-left">
+            <h3 class="font-medium text-slate-900">Import Data</h3>
+            <p class="text-sm text-slate-600">Upload habits from JSON file</p>
+          </div>
+        </button>
+        
+        <!-- Clear All Data -->
+        <button 
+          (click)="clearAllData()"
+          class="p-4 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg flex items-center gap-3 transition-colors group">
+          <div class="p-2 rounded-full bg-red-600 text-white group-hover:bg-red-700 transition-colors">
+            <lucide-icon [img]="Trash2Icon" size="16"></lucide-icon>
+          </div>
+          <div class="text-left">
+            <h3 class="font-medium text-slate-900">Clear All Data</h3>
+            <p class="text-sm text-slate-600">Remove all habits permanently</p>
+          </div>
+        </button>
+      </div>
+      
+      <!-- Info Box -->
+      <div class="bg-slate-50 rounded-lg p-4 mt-6">
+        <h4 class="text-sm font-semibold text-slate-800 mb-2">Data Management Tips</h4>
+        <ul class="text-sm text-slate-600 space-y-1">
+          <li>• Export your data regularly for backup</li>
+          <li>• Sample data helps you explore features</li>
+          <li>• Import/Export preserves all your progress</li>
+          <li>• Clear data permanently removes everything</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- App Preferences Section -->
+    <div class="bg-white border border-slate-100 rounded-2xl p-6">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="p-2 rounded-full bg-purple-100 text-purple-600">
+          <lucide-icon [img]="BellIcon" size="20"></lucide-icon>
+        </div>
+        <div>
+          <h2 class="text-lg font-semibold text-slate-900">Notifications</h2>
+          <p class="text-sm text-slate-600">Manage your notification preferences</p>
+        </div>
+      </div>
+      
+      <div class="space-y-4">
+        <div class="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+          <div>
+            <h3 class="font-medium text-slate-900">Habit Reminders</h3>
+            <p class="text-sm text-slate-600">Get notified about your daily habits</p>
+          </div>
+          <div class="text-sm text-slate-500">Coming Soon</div>
+        </div>
+        
+        <div class="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+          <div>
+            <h3 class="font-medium text-slate-900">Streak Alerts</h3>
+            <p class="text-sm text-slate-600">Celebrate your achievements</p>
+          </div>
+          <div class="text-sm text-slate-500">Coming Soon</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Privacy & Security Section -->
+    <div class="bg-white border border-slate-100 rounded-2xl p-6">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="p-2 rounded-full bg-orange-100 text-orange-600">
+          <lucide-icon [img]="ShieldIcon" size="20"></lucide-icon>
+        </div>
+        <div>
+          <h2 class="text-lg font-semibold text-slate-900">Privacy & Security</h2>
+          <p class="text-sm text-slate-600">Your data stays private and secure</p>
+        </div>
+      </div>
+      
+      <div class="space-y-4">
+        <div class="p-4 bg-green-50 rounded-lg border border-green-200">
+          <div class="flex items-center gap-3">
+            <div class="p-2 rounded-full bg-green-600 text-white">
+              <lucide-icon [img]="ShieldIcon" size="16"></lucide-icon>
+            </div>
+            <div>
+              <h3 class="font-medium text-green-900">Local-First Storage</h3>
+              <p class="text-sm text-green-700">All your data is stored locally on your device</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <div class="flex items-center gap-3">
+            <div class="p-2 rounded-full bg-blue-600 text-white">
+              <lucide-icon [img]="UserIcon" size="16"></lucide-icon>
+            </div>
+            <div>
+              <h3 class="font-medium text-blue-900">No Account Required</h3>
+              <p class="text-sm text-blue-700">Use the app without creating an account</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- About Section -->
+    <div class="bg-white border border-slate-100 rounded-2xl p-6">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="p-2 rounded-full bg-indigo-100 text-indigo-600">
+          <lucide-icon [img]="SettingsIcon" size="20"></lucide-icon>
+        </div>
+        <div>
+          <h2 class="text-lg font-semibold text-slate-900">About HabitBuddy</h2>
+          <p class="text-sm text-slate-600">Version 1.0.0</p>
+        </div>
+      </div>
+      
+      <div class="text-sm text-slate-600 space-y-2">
+        <p>HabitBuddy is a local-first habit tracking application that helps you build and maintain healthy habits.</p>
+        <p>Built with Angular and designed for privacy, your data never leaves your device.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Import Modal -->
+<app-import-modal 
+  [isOpen]="isImportModalOpen()"
+  [duplicates]="duplicateHabits"
+  (close)="onImportModalClose()"
+  (importWithAction)="onImportWithAction($event)">
+</app-import-modal>
+
+<!-- Load Sample Data Dialog -->
+<app-dialog
+  [isOpen]="showLoadSampleDialog()"
+  title="Load Sample Data"
+  message="This will add sample habits to your current habits. Your existing data will be preserved. Continue?"
+  type="info"
+  [buttons]="[
+    { label: 'Cancel', action: 'cancel', variant: 'secondary' },
+    { label: 'Load Sample Data', action: 'confirm', variant: 'primary' }
+  ]"
+  (close)="onLoadSampleDialogClose()"
+  (buttonClick)="onLoadSampleDialogAction($event)">
+</app-dialog>
+
+<!-- Clear All Data Dialog -->
+<app-dialog
+  [isOpen]="showClearDataDialog()"
+  title="Delete All Data"
+  message="This will permanently delete ALL habits and progress data. This action cannot be undone. Are you absolutely sure?"
+  type="danger"
+  [buttons]="[
+    { label: 'Cancel', action: 'cancel', variant: 'secondary' },
+    { label: 'Delete All Data', action: 'confirm', variant: 'danger' }
+  ]"
+  (close)="onClearDataDialogClose()"
+  (buttonClick)="onClearDataDialogAction($event)">
+</app-dialog>

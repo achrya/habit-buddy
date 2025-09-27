@@ -1,0 +1,14 @@
+<!-- Floating Help Button -->
+<button 
+  (click)="onHelpClick()"
+  class="help-button"
+  [class.help-button-open]="isHelpOverlayOpen()"
+  [title]="isHelpOverlayOpen() ? 'Close Help' : 'Open Help & Data Management'">
+  <lucide-icon [img]="HelpCircleIcon" size="20"></lucide-icon>
+</button>
+
+<!-- Help Overlay -->
+<app-help-overlay 
+  [isOpen]="isHelpOverlayOpen()"
+  (close)="onHelpOverlayClose()">
+</app-help-overlay>

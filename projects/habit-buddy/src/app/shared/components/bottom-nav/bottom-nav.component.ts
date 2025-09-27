@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { LucideAngularModule, Home, Calendar, BarChart3, Clock } from 'lucide-angular';
+import { LucideAngularModule, Home, Calendar, BarChart3, Clock, Settings } from 'lucide-angular';
 
 @Component({
   selector: 'app-bottom-nav',
@@ -16,4 +16,5 @@ export class BottomNavComponent {
   protected readonly CalendarIcon = Calendar;
   protected readonly BarChart3Icon = BarChart3;
   protected readonly ClockIcon = Clock;
+  protected readonly SettingsIcon = Settings;
 }

@@ -1,0 +1,62 @@
+// Settings Component Styles
+.view {
+  padding: 1rem;
+  
+  @media (min-width: 768px) {
+    padding: 2rem;
+  }
+}
+
+// Card hover effects
+.bg-white {
+  transition: all 0.2s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+}
+
+// Button hover effects
+button {
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Grid responsive behavior
+.grid {
+  gap: 1rem;
+  
+  @media (min-width: 768px) {
+    gap: 1.5rem;
+  }
+}
+
+// Icon animations
+.p-2.rounded-full {
+  transition: all 0.2s ease;
+}
+
+// Info boxes
+.bg-slate-50,
+.bg-green-50,
+.bg-blue-50 {
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+// Coming soon badges
+.text-slate-500 {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  background-color: rgba(148, 163, 184, 0.1);
+  border-radius: 0.375rem;
+}

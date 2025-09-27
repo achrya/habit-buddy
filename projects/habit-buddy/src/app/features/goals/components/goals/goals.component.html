@@ -153,19 +153,7 @@
   </app-reminder-modal>
 
   <!-- Floating Help Button -->
-  <button 
-    type="button"
-    (click)="toggleHelpOverlay()"
-    class="fixed right-0 top-1/2 -translate-y-1/2 bg-blue-600 text-white px-3 py-4 rounded-l-full shadow-lg hover:bg-blue-700 transition-all duration-200 hover:shadow-xl hover:px-4 z-40 flex items-center justify-center"
-    title="Open Help Center">
-    <lucide-icon [img]="HelpCircleIcon" size="20"></lucide-icon>
-  </button>
 
-  <!-- Help Overlay -->
-  <app-help-overlay 
-    [isOpen]="showHelpOverlay()" 
-    (close)="toggleHelpOverlay()">
-  </app-help-overlay>
 
   <!-- Mobile FAB Button -->
   <button 
