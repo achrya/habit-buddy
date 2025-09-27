@@ -2,20 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>HabitBuddy - Redirecting...</title>
+  <title>HabitBuddy - Page Not Found</title>
   <script>
-    // Simple redirect to the main app
-    var l = window.location;
-    var basePath = '/habit-buddy/';
-    var currentPath = l.pathname;
-    
-    // If we're not already at the base path, redirect there
-    if (!currentPath.startsWith(basePath)) {
-      l.replace(basePath);
-    } else {
-      // If we're at the base path but with extra path segments, redirect to base
-      l.replace(basePath);
-    }
+    // Simple redirect to base path
+    window.location.replace('/habit-buddy/');
   </script>
 </head>
 <body>
