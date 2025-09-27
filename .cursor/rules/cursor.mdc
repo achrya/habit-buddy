@@ -47,9 +47,7 @@ You are an expert in UI Design System, TypeScript, Angular, SCSS and scalable we
 
 ## Style & CSS
 - Do not add unnecessary css.
-- Always prefer bootstrap utility classes and SCSS variables over customization.
 - Use customization only if there is strong need but use predefined set of SCSS variable.
-- Prefer updating bootstrap scss variable instead of creating own variable.
 - Avoid use of --var css variables
 
 ## Services

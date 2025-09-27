@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, signal, OnInit, OnChanges, SimpleChanges, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, OnInit, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Reminder } from '../../../../shared/models/habit.model';
@@ -11,8 +11,7 @@ import { DialogService } from '../../../../shared/services/dialog.service';
   standalone: true,
   imports: [CommonModule, FormsModule, LucideAngularModule, DialogComponent],
   templateUrl: './reminder-modal.component.html',
-  styleUrl: './reminder-modal.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrl: './reminder-modal.component.scss'
 })
 export class ReminderModalComponent implements OnInit, OnChanges {
   @Input() habitTitle = '';

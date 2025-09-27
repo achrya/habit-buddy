@@ -1,6 +1,7 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Habit, HabitStats, Reminder, WeeklyTrend, MonthlyTrend, YearlyTrend, HabitBadge, BadgeLevel } from '../models/habit.model';
+import { TimezoneService } from './timezone.service';
 import { BADGE_LEVELS, getBadgeConfigForDays, calculateProgressToNextLevel } from '../config/badge-levels.config';
 
 @Injectable({
@@ -11,6 +12,7 @@ export class HabitService {
   private readonly LAST_TS_KEY = 'habitbuddy_v2_last_ts';
   private readonly COLORS = ['#ff6b6b', '#ffd166', '#06d6a0', '#4d96ff', '#b388eb', '#ffa07a', '#7dd3fc'];
   private readonly DEFAULT_WINDOW_MIN = 120;
+  private timezoneService = inject(TimezoneService);
 
   private habitsSubject = new BehaviorSubject<Habit[]>(this.loadHabits());
   public habits$ = this.habitsSubject.asObservable();
@@ -469,19 +471,19 @@ export class HabitService {
   }
 
   private getTodayString(): string {
-    return new Date().toISOString().slice(0, 10);
+    return this.timezoneService.getTodayString();
   }
 
   private getPreviousDateString(dateStr: string): string {
     const dt = new Date(dateStr);
     dt.setDate(dt.getDate() - 1);
-    return dt.toISOString().slice(0, 10);
+    return this.timezoneService.formatDateString(dt);
   }
 
   private getNextDateString(dateStr: string): string {
     const dt = new Date(dateStr);
     dt.setDate(dt.getDate() + 1);
-    return dt.toISOString().slice(0, 10);
+    return this.timezoneService.formatDateString(dt);
   }
 
   private hasClockTampering(): boolean {

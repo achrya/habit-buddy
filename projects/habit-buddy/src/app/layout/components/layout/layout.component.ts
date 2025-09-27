@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { SidebarComponent } from '../sidebar/sidebar.component';
-import { BottomNavComponent, DialogComponent, HelpOverlayComponent, ReminderDialogComponent, NotificationService } from '../../../shared';
+import { BottomNavComponent, DialogComponent, HelpOverlayComponent, ReminderDialogComponent, NotificationService, HabitService } from '../../../shared';
 import { GlobalHelpComponent } from '../../../shared/components/global-help/global-help.component';
 import { DialogService } from '../../../shared/services/dialog.service';
 import { HeaderComponent } from '../header/header.component';
@@ -17,6 +17,7 @@ import { HeaderComponent } from '../header/header.component';
 export class LayoutComponent {
   protected dialogService = inject(DialogService);
   protected notificationService = inject(NotificationService);
+  protected habitService = inject(HabitService);
   protected readonly isHelpOverlayOpen = signal(false);
 
   protected onGlobalDialogAction(action: string): void {
@@ -42,4 +43,6 @@ export class LayoutComponent {
   protected onSnoozeReminder(habitId: string): void {
     this.notificationService.snoozeReminder(habitId);
   }
+
+
 }

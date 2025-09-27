@@ -13,7 +13,7 @@
   <!-- Main content area -->
   <div class="card-content">
     <!-- Left side: Circular progress chart -->
-    <div class="chart-section" [attr.data-tooltip]="chartTooltip()">
+    <div class="chart-section tooltip-element" [attr.data-tooltip]="chartTooltip()">
       <app-circular-progress 
         [percentage]="progressPercentage()"
         [size]="120"
@@ -61,10 +61,9 @@
     <h4 class="section-title">{{ getActivitySectionTitle() }}</h4>
     <div class="activity-timeline">
       @for (day of getRecentActivityDays(); track day.date) {
-        <div class="activity-day" 
+        <div class="activity-day tooltip-element" 
              [class]="day.status"
-             [attr.data-tooltip]="day.tooltip"
-             [attr.data-mobile-tooltip]="day.tooltip">
+             [attr.data-tooltip]="day.tooltip">
           <div class="day-indicator"></div>
         </div>
       }
@@ -76,27 +75,27 @@
     <!-- Left side: Icon buttons group -->
     <div class="icon-buttons-group">
       <button 
-        class="action-btn icon-btn"
+        class="action-btn icon-btn tooltip-element"
         (click)="onViewCalendar()"
-        title="View calendar">
+        data-tooltip="View calendar">
         <lucide-icon [img]="LinkIcon" size="16"></lucide-icon>
       </button>
       <button 
-        class="action-btn icon-btn"
+        class="action-btn icon-btn tooltip-element"
         (click)="onRemove()"
-        title="Remove habit">
+        data-tooltip="Remove habit">
         <lucide-icon [img]="Trash2Icon" size="16"></lucide-icon>
       </button>
       <button 
-        class="action-btn icon-btn"
+        class="action-btn icon-btn tooltip-element"
         (click)="onEditReminder()"
-        title="Edit reminder">
+        data-tooltip="Edit reminder">
         <lucide-icon [img]="BellIcon" size="16"></lucide-icon>
       </button>
       <button 
-        class="action-btn icon-btn"
+        class="action-btn icon-btn tooltip-element"
         (click)="onViewCalendar()"
-        title="View calendar">
+        data-tooltip="View calendar">
         <lucide-icon [img]="CalendarIcon" size="16"></lucide-icon>
       </button>
     </div>

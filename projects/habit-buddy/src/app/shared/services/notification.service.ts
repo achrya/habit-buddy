@@ -1,5 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HabitService } from './habit.service';
+import { TimezoneService } from './timezone.service';
 import { Habit, Reminder } from '../models/habit.model';
 
 @Injectable({
@@ -7,6 +8,7 @@ import { Habit, Reminder } from '../models/habit.model';
 })
 export class NotificationService {
   private habitService = inject(HabitService);
+  private timezoneService = inject(TimezoneService);
   private reminderIntervalId?: number;
 
   // Reminder dialog state
@@ -89,12 +91,19 @@ export class NotificationService {
 
   playSuccessSound(): void {
     try {
-      if (typeof window === 'undefined') return;
+      console.log('playSuccessSound called');
+      if (typeof window === 'undefined') {
+        console.warn('Window is undefined, cannot play sound');
+        return;
+      }
+      
+      console.log('Creating audio context...');
       const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       
       // Create a more celebratory sound - ascending notes
       const frequencies = [523, 659, 784, 1047]; // C, E, G, C (C major chord)
       
+      console.log('Playing success sound with frequencies:', frequencies);
       frequencies.forEach((freq, index) => {
         const oscillator = audioContext.createOscillator();
         const gainNode = audioContext.createGain();
@@ -114,6 +123,7 @@ export class NotificationService {
         gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + 0.4);
         oscillator.stop(startTime + 0.45);
       });
+      console.log('Success sound started');
     } catch (error) {
       console.warn('Could not play success sound:', error);
     }
@@ -145,12 +155,17 @@ export class NotificationService {
 
   triggerConfetti(): void {
     try {
+      console.log('triggerConfetti called');
       if (typeof window !== 'undefined' && (window as any).confetti) {
+        console.log('Confetti library found, triggering...');
         (window as any).confetti({
           particleCount: 60,
           spread: 60,
           origin: { y: 0.6 }
         });
+        console.log('Confetti triggered successfully');
+      } else {
+        console.warn('Confetti library not found or window undefined');
       }
     } catch (error) {
       console.warn('Could not trigger confetti:', error);
@@ -160,19 +175,31 @@ export class NotificationService {
   checkReminders(habits: any[]): void {
     if (typeof window === 'undefined') return;
     
-    const now = new Date();
-    const minsNow = now.getHours() * 60 + now.getMinutes();
-    const weekday = now.getDay();
+    const now = this.timezoneService.getCurrentDate();
+    const minsNow = this.timezoneService.getCurrentTimeInMinutes();
+    const weekday = this.timezoneService.getCurrentWeekday();
+    const today = this.timezoneService.getTodayString();
+
+    // Don't show new reminder if dialog is already open
+    if (this.showReminderDialog()) return;
 
     habits.forEach(habit => {
       if (!habit.reminder) return;
       if (!habit.reminder.days.includes(weekday)) return;
 
-      const lastNotifiedKey = `hb_notified_${habit.id}_${now.toISOString().slice(0, 16)}`;
-      const snoozeKey = `hb_snooze_${habit.id}_${now.toISOString().slice(0, 16)}`;
-      if (localStorage.getItem(lastNotifiedKey) || localStorage.getItem(snoozeKey)) return;
+      // Check if habit is already completed today - no need to remind!
+      if (habit.checkIns && habit.checkIns[today]) return;
 
-      const target = this.hhmmToMins(habit.reminder.time);
+      // Use date-only key to prevent showing multiple times per day
+      const lastNotifiedKey = `hb_notified_${habit.id}_${today}`;
+      if (localStorage.getItem(lastNotifiedKey)) return;
+      
+      // Check if habit is snoozed
+      const snoozeKey = `hb_snooze_${habit.id}_until`;
+      const snoozeUntil = localStorage.getItem(snoozeKey);
+      if (snoozeUntil && Date.now() < parseInt(snoozeUntil)) return;
+
+      const target = this.timezoneService.timeStringToMinutes(habit.reminder.time);
       const diff = Math.min(
         Math.abs(minsNow - target),
         24 * 60 - Math.abs(minsNow - target)
@@ -187,18 +214,23 @@ export class NotificationService {
         
         // Only play bell sound for reminder (no confetti yet)
         this.playBell();
-        localStorage.setItem(lastNotifiedKey, '1');
+        // Don't set localStorage here - let dialog close handle it
+        return; // Exit early to prevent multiple dialogs
       }
     });
   }
 
-  private hhmmToMins(hhmm: string): number {
-    const [h, m] = (hhmm || '00:00').split(':').map(Number);
-    return h * 60 + m;
-  }
 
   // Reminder dialog methods
   closeReminderDialog(): void {
+    const habit = this.currentReminderHabit();
+    if (habit) {
+      // Mark this reminder as shown for today (date only, not time)
+      const today = this.timezoneService.getTodayString();
+      const lastNotifiedKey = `hb_notified_${habit.id}_${today}`;
+      localStorage.setItem(lastNotifiedKey, '1');
+    }
+    
     this.showReminderDialog.set(false);
     this.currentReminderHabit.set(null);
     this.currentReminder.set(null);
@@ -206,11 +238,18 @@ export class NotificationService {
 
   async markHabitAsDone(habitId: string): Promise<void> {
     try {
+      console.log('markHabitAsDone called for habit:', habitId);
       const result = await this.habitService.toggleCheckinToday(habitId);
+      console.log('toggleCheckinToday result:', result);
+      
       if (result.success) {
+        console.log('Habit marked as done successfully, triggering effects...');
         // Show confetti celebration when habit is successfully completed
         this.triggerConfetti();
         this.playSuccessSound(); // Celebratory success sound
+        console.log('Effects triggered');
+      } else {
+        console.log('Habit not marked as done, reason:', result.message);
       }
     } catch (error) {
       console.warn('Could not mark habit as done:', error);
@@ -219,16 +258,14 @@ export class NotificationService {
 
   snoozeReminder(habitId: string): void {
     // Set a temporary flag to prevent showing this reminder again for 5 minutes
-    const snoozeKey = `hb_snooze_${habitId}_${new Date().toISOString().slice(0, 16)}`;
-    localStorage.setItem(snoozeKey, '1');
+    const now = this.timezoneService.getCurrentDate();
+    const snoozeUntil = now.getTime() + (5 * 60 * 1000); // 5 minutes from now
+    const snoozeKey = `hb_snooze_${habitId}_until`;
+    localStorage.setItem(snoozeKey, snoozeUntil.toString());
     
     // Play gentle acknowledgment sound
     this.playSnoozeSound();
-    
-    // Clear the snooze after 5 minutes
-    setTimeout(() => {
-      localStorage.removeItem(snoozeKey);
-    }, 5 * 60 * 1000);
   }
+
 
 }

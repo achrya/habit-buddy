@@ -11,6 +11,7 @@ export * from './components/reminder-dialog/reminder-dialog.component';
 export * from './services/habit.service';
 export * from './services/notification.service';
 export * from './services/dialog.service';
+export * from './services/timezone.service';
 export * from './components/import-modal/import.service';
 
 // Export all shared models

@@ -3,6 +3,9 @@
 /* Tailwind CSS CDN */
 @import url('https://cdn.tailwindcss.com');
 
+/* Import global tooltip styles */
+@import './app/shared/styles/tooltips.scss';
+
 /* Global styles */
 html, body {
   height: 100%;
