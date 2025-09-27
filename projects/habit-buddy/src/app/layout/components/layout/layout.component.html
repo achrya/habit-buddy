@@ -39,3 +39,13 @@
   (close)="dialogService.close()"
   (buttonClick)="onGlobalDialogAction($event)">
 </app-dialog>
+
+<!-- Reminder Dialog -->
+<app-reminder-dialog
+  [isOpen]="notificationService.showReminderDialog"
+  [habit]="notificationService.currentReminderHabit()"
+  [reminder]="notificationService.currentReminder()"
+  (close)="onReminderDialogClose()"
+  (markAsDone)="onMarkHabitAsDone($event)"
+  (snooze)="onSnoozeReminder($event)">
+</app-reminder-dialog>

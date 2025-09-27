@@ -37,6 +37,8 @@ export interface Reminder {
 export interface HabitStats {
   current: number;
   longest: number;
+  total: number;
+  breaks: number;
 }
 
 export interface WeeklyTrend {

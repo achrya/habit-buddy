@@ -5,6 +5,7 @@ export * from './components/import-modal/import-modal.component';
 export * from './components/dialog/dialog.component';
 export * from './components/help-overlay/help-overlay.component';
 export * from './components/circular-progress/circular-progress.component';
+export * from './components/reminder-dialog/reminder-dialog.component';
 
 // Export all shared services
 export * from './services/habit.service';

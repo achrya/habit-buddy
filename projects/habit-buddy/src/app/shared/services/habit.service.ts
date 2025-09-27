@@ -285,12 +285,14 @@ export class HabitService {
 
   calcStreaksForHabit(habit: Habit): HabitStats {
     const days = habit.checkIns ? Object.keys(habit.checkIns).sort() : [];
-    if (!days.length) return { current: 0, longest: 0 };
+    if (!days.length) return { current: 0, longest: 0, total: 0, breaks: 0 };
 
     const checkinSet = new Set(days);
     let longest = 0;
+    let total = days.length;
+    let breaks = 0;
 
-    // Calculate longest streak
+    // Calculate longest streak and breaks
     for (const day of days) {
       const prev = this.getPreviousDateString(day);
       if (!checkinSet.has(prev)) {
@@ -301,6 +303,11 @@ export class HabitService {
           next = this.getNextDateString(next);
         }
         longest = Math.max(longest, current);
+        
+        // Count breaks (gaps between streaks)
+        if (current > 1) {
+          breaks++;
+        }
       }
     }
 
@@ -321,7 +328,7 @@ export class HabitService {
       }
     }
 
-    return { current, longest };
+    return { current, longest, total, breaks };
   }
 
   exportHabits(): string {

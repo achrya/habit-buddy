@@ -1,0 +1,85 @@
+<!-- Modal Container -->
+<div 
+  *ngIf="isOpen()" 
+  class="reminder-dialog-backdrop"
+  (click)="onClose()">
+  
+  <!-- Dialog -->
+  <div 
+    class="reminder-dialog"
+    (click)="$event.stopPropagation()">
+  
+  <!-- Header -->
+  <div class="dialog-header">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+        <lucide-icon [img]="BellIcon" size="20" class="text-blue-600"></lucide-icon>
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold text-slate-800">Reminder</h3>
+        <p class="text-sm text-slate-600">Time for your habit!</p>
+      </div>
+    </div>
+    <button 
+      (click)="onClose()"
+      class="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+      <lucide-icon [img]="XIcon" size="18" class="text-slate-500"></lucide-icon>
+    </button>
+  </div>
+
+  <!-- Content -->
+  <div class="dialog-content" *ngIf="habit && reminder">
+    <!-- Habit Info -->
+    <div class="habit-info">
+      <div class="flex items-center gap-3 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+        <div 
+          class="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg"
+          [style.background-color]="habit.color">
+          {{ habit.title.charAt(0).toUpperCase() }}
+        </div>
+        <div class="flex-1">
+          <h4 class="text-lg font-semibold text-slate-800">{{ habit.title }}</h4>
+          <p class="text-sm text-slate-600">Complete your daily habit now!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reminder Details -->
+    <div class="reminder-details">
+      <h5 class="text-sm font-medium text-slate-700 mb-3">Reminder Details:</h5>
+      <div class="space-y-3">
+        <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
+          <lucide-icon [img]="ClockIcon" size="16" class="text-slate-500"></lucide-icon>
+          <div>
+            <div class="text-sm font-medium text-slate-700">Time</div>
+            <div class="text-sm text-slate-600">{{ formatTime(reminder.time) }}</div>
+          </div>
+        </div>
+        
+        <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
+          <lucide-icon [img]="CheckCircleIcon" size="16" class="text-slate-500"></lucide-icon>
+          <div>
+            <div class="text-sm font-medium text-slate-700">Days</div>
+            <div class="text-sm text-slate-600">{{ getDaysText(reminder.days) }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="dialog-actions">
+    <button 
+      (click)="onSnooze()"
+      class="flex-1 px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-lg transition-colors">
+      Snooze (5 min)
+    </button>
+    <button 
+      (click)="onMarkAsDone()"
+      class="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
+      Mark as Done
+    </button>
+  </div>
+  
+  </div> <!-- Close dialog -->
+</div> <!-- Close backdrop -->
