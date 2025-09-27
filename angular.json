@@ -52,8 +52,8 @@
               "outputHashing": "all"
             },
             "gh-pages": {
-              "baseHref": "./",
-              "deployUrl": "./",
+              "baseHref": "/habit-buddy/",
+              "deployUrl": "/habit-buddy/",
               "outputHashing": "all"
             },
             "development": {
