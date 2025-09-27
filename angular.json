@@ -52,7 +52,6 @@
               "outputHashing": "all"
             },
             "gh-pages": {
-              "outputMode": "browser",
               "baseHref": "./",
               "deployUrl": "./",
               "outputHashing": "all"
